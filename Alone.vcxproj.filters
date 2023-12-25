@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Graphics">
+      <UniqueIdentifier>{a4db73ca-71f8-44bc-b0e2-988a53bf4fed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Shaders">
+      <UniqueIdentifier>{895f700b-913d-4316-81d5-dc803ae8d957}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Shaders\Vertex">
+      <UniqueIdentifier>{4db535d7-8810-4ddc-b09e-2af00361d5b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Shaders\Fragment">
+      <UniqueIdentifier>{c661ef07-158c-49e9-be79-b92a8dafead7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Textures">
+      <UniqueIdentifier>{2148f4d9-a622-4bd2-bb3b-4584cf9cad26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ExternLibFiles">
+      <UniqueIdentifier>{c6203a72-33fa-4996-b4d9-64155933eda7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Build">
+      <UniqueIdentifier>{174e0a0e-198f-475c-acd0-5752e5e3d958}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Font">
+      <UniqueIdentifier>{b6d57d53-d787-48d5-92b1-0983b5bb20e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Window">
+      <UniqueIdentifier>{040204c3-6352-40e3-92f8-aedfd2fadc03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Camera">
+      <UniqueIdentifier>{a6b3a194-ee64-4431-8f02-635ca3b473ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Color">
+      <UniqueIdentifier>{24f08d1d-9da8-4f9f-8641-836773d4c00a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="FreeTypeFont.cpp">
+      <Filter>Graphics\Font</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Build</Filter>
+    </ClCompile>
+    <ClCompile Include="glad.c">
+      <Filter>ExternLibFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="stb.cpp">
+      <Filter>ExternLibFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Graphics\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderClass.cpp">
+      <Filter>Graphics\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="VBO.cpp">
+      <Filter>Graphics\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="VAO.cpp">
+      <Filter>Graphics\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="EBO.cpp">
+      <Filter>Graphics\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="Colors.cpp">
+      <Filter>Graphics\Color</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>Window</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Graphics\Camera</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="FreeTypeFont.h">
+      <Filter>Graphics\Font</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders\shader.h">
+      <Filter>Graphics\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="main.h">
+      <Filter>Build</Filter>
+    </ClInclude>
+    <ClInclude Include="engine.h">
+      <Filter>Build</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Graphics\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderClass.h">
+      <Filter>Graphics\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="VBO.h">
+      <Filter>Graphics\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="VAO.h">
+      <Filter>Graphics\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="EBO.h">
+      <Filter>Graphics\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Colors.h">
+      <Filter>Graphics\Color</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Graphics\Camera</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\text.vs">
+      <Filter>Graphics\Shaders\Vertex</Filter>
+    </None>
+    <None Include="shaders\text.fs">
+      <Filter>Graphics\Shaders\Fragment</Filter>
+    </None>
+    <None Include="shaders\shape.fs">
+      <Filter>Graphics\Shaders\Fragment</Filter>
+    </None>
+    <None Include="shaders\shape.vs">
+      <Filter>Graphics\Shaders\Vertex</Filter>
+    </None>
+  </ItemGroup>
+</Project>
