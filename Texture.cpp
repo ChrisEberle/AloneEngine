@@ -1,4 +1,4 @@
-#include"Texture.h"
+#include"engine.h"
 
 Texture::Texture(const char* image, GLenum texType, GLenum slot, GLenum format, GLenum pixelType)
 {
@@ -55,6 +55,7 @@ void Texture::texUnit(Shaderer& shader, const char* uniform, GLuint unit)
 void Texture::Bind()
 {
 	glBindTexture(type, ID);
+	
 }
 
 void Texture::Unbind()

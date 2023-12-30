@@ -1,10 +1,3 @@
-#ifndef TEXTURE_CLASS_H
-#define TEXTURE_CLASS_H
-
-#include<glad/glad.h>
-#include<stb/stb_image.h>
-
-#include"ShaderClass.h"
 
 class Texture
 {
@@ -22,4 +15,3 @@ public:
 	// Deletes a texture
 	void Delete();
 };
-#endif

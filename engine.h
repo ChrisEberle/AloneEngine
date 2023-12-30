@@ -29,11 +29,12 @@
 #include "shaders/shader.h"
 #include "FreeTypeFont.h"
 #include "Window.h"
-#include"Texture.h"
 #include"shaderClass.h"
 #include"VAO.h"
 #include"VBO.h"
 #include"EBO.h"
+#include"Texture.h"
+
 #include"Camera.h"
 
 //program run

@@ -16,7 +16,7 @@ void Camera::Matrix(float FOVdeg, float nearPlane, float farPlane, Shaderer& sha
 	glm::mat4 projection = glm::mat4(1.0f);
 
 	// Makes camera look in the right direction from the right position
-	view = glm::lookAt(Position, Position + Orientation, Up);
+	view = glm::lookAt(Position , Position + Orientation, Up);
 	// Adds perspective to the scene
 	projection = glm::perspective(glm::radians(FOVdeg), (float)width / height, nearPlane, farPlane);
 
@@ -49,7 +49,7 @@ void Camera::Inputs(GLFWwindow* window)
 	{
 		Position += speed * Up;
 	}
-	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
 	{
 		Position += speed * -Up;
 	}

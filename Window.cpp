@@ -31,8 +31,8 @@ void Window::glad_init()
 // Function to create a GLFW window and return the window pointer
 GLFWwindow* Window::createWindow(int width, int height, const char* title) {
     glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_ANY_PROFILE /*GLFW_OPENGL_CORE_PROFILE*/);
     glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 
