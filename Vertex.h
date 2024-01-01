@@ -1,4 +1,5 @@
 #pragma once
+
 struct Vertex
 {
 	GLfloat position[3];

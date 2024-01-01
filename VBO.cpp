@@ -1,11 +1,12 @@
 #include"VBO.h"
+#include "Vertex.h"
 
 // Constructor that generates a empty Vertex Buffer Object
 VBO::VBO(GLsizeiptr size)
 {
 	glGenBuffers(1, &ID);
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
-	glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER,size, nullptr, GL_DYNAMIC_DRAW);
 }
 
 // dynamiccaly fills the vbo
