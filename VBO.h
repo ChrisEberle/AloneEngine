@@ -11,8 +11,8 @@ public:
 	// Constructor that generates a Vertex Buffer Object and links it to vertices
 	VBO(GLsizeiptr size);
 
-	void dynamic_update(GLfloat* vertices);
-
+	//dynamically updates the vbo in program loop
+	void dynamic_update(const void* data, GLsizei size);
 	// Binds the VBO
 	void Bind();
 	// Unbinds the VBO

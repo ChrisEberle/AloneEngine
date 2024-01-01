@@ -34,6 +34,12 @@
     <Filter Include="Graphics\Color">
       <UniqueIdentifier>{24f08d1d-9da8-4f9f-8641-836773d4c00a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Graphics\Renderer">
+      <UniqueIdentifier>{b6587780-a83c-4c7b-82de-b370e9270d70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Renderer\Pipeline">
+      <UniqueIdentifier>{8288c42a-e15e-44f7-8a37-5284eec12cb0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FreeTypeFont.cpp">
@@ -51,15 +57,6 @@
     <ClCompile Include="ShaderClass.cpp">
       <Filter>Graphics\Shaders</Filter>
     </ClCompile>
-    <ClCompile Include="VBO.cpp">
-      <Filter>Graphics\Shaders</Filter>
-    </ClCompile>
-    <ClCompile Include="VAO.cpp">
-      <Filter>Graphics\Shaders</Filter>
-    </ClCompile>
-    <ClCompile Include="EBO.cpp">
-      <Filter>Graphics\Shaders</Filter>
-    </ClCompile>
     <ClCompile Include="Colors.cpp">
       <Filter>Graphics\Color</Filter>
     </ClCompile>
@@ -70,6 +67,15 @@
       <Filter>Graphics\Camera</Filter>
     </ClCompile>
     <ClCompile Include="Vertex.cpp" />
+    <ClCompile Include="EBO.cpp">
+      <Filter>Graphics\Renderer\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="VAO.cpp">
+      <Filter>Graphics\Renderer\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="VBO.cpp">
+      <Filter>Graphics\Renderer\Pipeline</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FreeTypeFont.h">
@@ -90,15 +96,6 @@
     <ClInclude Include="ShaderClass.h">
       <Filter>Graphics\Shaders</Filter>
     </ClInclude>
-    <ClInclude Include="VBO.h">
-      <Filter>Graphics\Shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="VAO.h">
-      <Filter>Graphics\Shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="EBO.h">
-      <Filter>Graphics\Shaders</Filter>
-    </ClInclude>
     <ClInclude Include="Colors.h">
       <Filter>Graphics\Color</Filter>
     </ClInclude>
@@ -109,6 +106,15 @@
       <Filter>Graphics\Camera</Filter>
     </ClInclude>
     <ClInclude Include="Vertex.h" />
+    <ClInclude Include="VBO.h">
+      <Filter>Graphics\Renderer\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="EBO.h">
+      <Filter>Graphics\Renderer\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="VAO.h">
+      <Filter>Graphics\Renderer\Pipeline</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\text.vs">

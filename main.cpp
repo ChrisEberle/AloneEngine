@@ -1,10 +1,5 @@
 #include "engine.h"
 
-bool wireframe = false;
-
-GLfloat move_cube;
-
-
 static std::array<Vertex, 24> createCube(GLfloat x, GLfloat texID) {
 	// Define the eight vertices of a cube
 	std::array<Vertex, 24> vertices = { {
@@ -47,8 +42,7 @@ static std::array<Vertex, 24> createCube(GLfloat x, GLfloat texID) {
 // Indices for vertices order
 GLuint indices[] =
 {	
-	// CUBE 1
-	// ~~~~~~~~~~~~~~~~
+	// CUBE 
 	//front face
 	0, 1, 2,
 	1, 2, 3,
@@ -80,7 +74,6 @@ void render_cube(Shaderer& shaderProgram, const GLuint* indices, GLsizei size, g
 }
 
 
-
 void input_callback(GLFWwindow* window, Camera& camera) {
 	if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) {
 		wireframe = true;
@@ -89,61 +82,23 @@ void input_callback(GLFWwindow* window, Camera& camera) {
 		wireframe = false;
 	}
 	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
-		move_cube += 0.01;
+		move_cube += 0.01f;
 	}
 	if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS) {
-		move_cube -= 0.01;
+		move_cube -= 0.01f;
 	}
 	// Handles camera inputs
 	camera.Inputs(window);
 }
 
 
-
-
-static GLuint LoadTexture(const std::string& path) {
-	int w, h, bits;
-	
-	stbi_set_flip_vertically_on_load(1);
-	auto* pixels = stbi_load(path.c_str(), &w, &h, &bits, STBI_rgb);
-	GLuint textureID;
-
-	glCreateTextures(GL_TEXTURE_2D, 1, &textureID);
-	// Binds the texture to a Texture Unit directly
-	glBindTexture(GL_TEXTURE_2D, textureID);
-
-	// Configures the type of algorithm that is used to make the image smaller or bigger
-	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	// Configures the way the texture repeats (if it does at all)
-	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	// Assigns the image to the OpenGL Texture object
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels);
-	// Generates MipMaps
-   	glGenerateTextureMipmap(textureID);
-	// Unbind the texture (important to avoid issues with other texture operations)
-	glBindTexture(textureID, 0);
-
-	stbi_image_free(pixels);
-
-	return textureID;
-
-}
-
-
-
-
 int main()
 {
-
 	// GLFW window creation ang initialization of GLAD
 	GLFWwindow* window = wnd.createWindow(SCR_WIDTH, SCR_HEIGHT, "Alone Engine V - 0.0.1");
 	wnd.glad_init();
 	wnd.print_gl_renderer();
 	wnd.framebuffer_size_callback(window, SCR_WIDTH, SCR_HEIGHT);
-
-	
 
 
 	// Font Rendering Initialization
@@ -156,7 +111,7 @@ int main()
 
 
 	// Generates Shader object
-	Shaderer cubeShader("shaders/shape.vs", "shaders/shape.fs");
+	Shaderer objectShader("shaders/shape.vs", "shaders/shape.fs");
 	// Generates Vertex Array Object and binds it
 	VAO VAO1;
 	// Generates Vertex Buffer Object and links it to vertices
@@ -174,67 +129,71 @@ int main()
 	VBO1.Unbind();
 	EBO1.Unbind();
 
-	GLfloat tex0 = LoadTexture("textures/dirt.png");
-	GLfloat tex1 = LoadTexture("textures/grasstop.png");
-    GLfloat tex2 = LoadTexture("textures/brick.png");
 
- 	// Creates camera object
+	// Load all the textures
+	GLuint tex0 = LoadTexture("textures/dirt.png");
+	GLuint tex1 = LoadTexture("textures/grasstop.png");
+    GLuint tex2 = LoadTexture("textures/brick.png");
+
+
+ 	// Create camera object
 	Camera camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(0.0f, 0.0f, 2.0f));
+
+
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
 	{
-		//set the window background color and clear the buffer
+		//set the window background color and clear the window buffer
 		wnd.clear_buffer(color.skyBlue);
 
 		// input handling
-		// ==========================================================A
 		input_callback(window, camera);
+		//===============
 
-		auto c0 = createCube(move_cube,3);
 
-		Vertex verts[24];
-		memcpy(verts, c0.data(), c0.size() * sizeof(Vertex));
-
-		VBO1.Bind();
-		//VBO1.dynamic_update(verts);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(verts), verts);
-
-		glEnable(GL_DEPTH_TEST);
 		// Whether to render wireframe or full textured
 		if (wireframe) { glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); }
 		else { glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); }
-		// Tell OpenGL which Shader Program we want to use
-		cubeShader.Activate();
 
-		auto loc = glGetUniformLocation(cubeShader.ID, "textureContainer");
+		
+		// Tell OpenGL which Shader Program we want to use
+		objectShader.Activate();
+		glEnable(GL_DEPTH_TEST);
+		//update the vbo with dynamic vertex data
+		auto c0 = createCube(move_cube, 3);
+		Vertex verts[24];
+		memcpy(verts, c0.data(), c0.size() * sizeof(Vertex));
+		VBO1.dynamic_update(verts, sizeof(verts));
+		VAO1.Bind();
+		// bind the textures to the texture units in the vbo/shader
+		auto loc = glGetUniformLocation(objectShader.ID, "textureContainer");
 		int samplers[4] = { 0,1,2,3};
 		glUniform1iv(loc, 4, samplers);
-		
 		glBindTextureUnit(0, tex0);
 		glBindTextureUnit(1, tex1);
 		glBindTextureUnit(2, tex2);
 		glBindTextureUnit(3, tex0);
-
-		// Move uniform updates outside the loop
-		camera.Matrix(45.0f, 0.1f, 180.0f, cubeShader, "camMatrix");
-		VAO1.Bind();
-	    render_cube(cubeShader, indices, std::size(indices), glm::vec3(0.0f,0.0f,0.0f));
-
+		//render the cube
+	    render_cube(objectShader, indices, sizeof(indices), glm::vec3(0.0f,0.0f,0.0f));
 		VBO1.Unbind();
 		VAO1.Unbind();
 			
 
+		// update the camera
+		camera.Matrix(45.0f, 0.1f, 180.0f, objectShader, "camMatrix");
+
+
 		// Font Rendering
-		// ==========================================================
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDisable(GL_DEPTH_TEST);
 		font_shader.use();
 		//draw text
 		RenderText(font_shader, "Alone Engine - V 0.0.1", 25.0f, 25.0f, 1.0f, color.white, font_vao, font_vbo);
+		// ==========================================================
 
+		
 		// Swap the back buffer with the front buffer
 		wnd.swap_buffers(window);
-
 		// Take care of all GLFW events and swap buffers
 		wnd.events();
 	}
@@ -242,7 +201,7 @@ int main()
 	VAO1.Delete();
 	VBO1.Delete();
 	EBO1.Delete();
-	cubeShader.Delete();
+	objectShader.Delete();
 	font_shader.Delete();
 	// Delete window before ending the program
 	glfwDestroyWindow(window);
