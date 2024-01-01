@@ -12,7 +12,7 @@ public:
     // exits program if a window failed to create
     int check_creation(GLFWwindow* window);
     void clear_buffer(const glm::vec4 color);
-
+    void print_gl_renderer();
     //glad
     void glad_init();
 };

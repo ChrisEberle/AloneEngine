@@ -143,13 +143,13 @@
     <ClCompile Include="Colors.cpp" />
     <ClCompile Include="EBO.cpp" />
     <ClCompile Include="FreeTypeFont.cpp" />
-    <ClCompile Include="glad.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ShaderClass.cpp" />
     <ClCompile Include="stb.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="VAO.cpp" />
     <ClCompile Include="VBO.cpp" />
+    <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -164,6 +164,7 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="VAO.h" />
     <ClInclude Include="VBO.h" />
+    <ClInclude Include="Vertex.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>

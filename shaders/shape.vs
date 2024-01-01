@@ -10,7 +10,7 @@ layout (location = 2) in float aTexIndex;
 // Outputs the texture coordinates to the fragment shader
 out vec2 texCoord;
 
-out float texIndex;
+flat out float texIndex;
 
 uniform mat4 camMatrix;
 

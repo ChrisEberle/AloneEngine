@@ -42,9 +42,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Build</Filter>
     </ClCompile>
-    <ClCompile Include="glad.c">
-      <Filter>ExternLibFiles</Filter>
-    </ClCompile>
     <ClCompile Include="stb.cpp">
       <Filter>ExternLibFiles</Filter>
     </ClCompile>
@@ -72,6 +69,7 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Graphics\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="Vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FreeTypeFont.h">
@@ -110,6 +108,7 @@
     <ClInclude Include="Camera.h">
       <Filter>Graphics\Camera</Filter>
     </ClInclude>
+    <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\text.vs">

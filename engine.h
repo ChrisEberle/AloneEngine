@@ -1,6 +1,7 @@
 #pragma once
 // standard libs
 #include <iostream>
+#include <array>
 #include <vector>
 #include <map>
 #include <cmath>
@@ -25,6 +26,7 @@
 #include FT_TRIGONOMETRY_H
 
 // internal engine files
+#include "Vertex.h"
 #include "Colors.h"
 #include "shaders/shader.h"
 #include "FreeTypeFont.h"

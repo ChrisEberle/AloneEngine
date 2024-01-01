@@ -1,5 +1,5 @@
 #include "engine.h"
-
+#include "glad.c"
 void Window::events()
 {
     glfwPollEvents();
@@ -28,6 +28,27 @@ void Window::glad_init()
     }
 }
 
+void Window::print_gl_renderer() {
+    // Get and print OpenGL version
+    const GLubyte* version = glGetString(GL_VERSION);
+    if (version == nullptr) {
+        std::cerr << "Unable to retrieve OpenGL version" << std::endl;
+        return;
+    }
+    else {
+        std::cout << "OpenGL Version: " << version << std::endl;
+    }
+
+    const GLubyte* renderer = glGetString(GL_RENDERER);
+    if (renderer == nullptr) {
+        std::cerr << "Unable to retrieve renderer information" << std::endl;
+        return;
+    }
+    else {
+        std::cout << "Renderer: " << renderer << std::endl;
+    }
+}
+
 // Function to create a GLFW window and return the window pointer
 GLFWwindow* Window::createWindow(int width, int height, const char* title) {
     glfwInit();
@@ -36,6 +57,7 @@ GLFWwindow* Window::createWindow(int width, int height, const char* title) {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_ANY_PROFILE /*GLFW_OPENGL_CORE_PROFILE*/);
     glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 
+    
     GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, title, NULL, NULL);
 
     if (window == NULL) {
@@ -45,9 +67,9 @@ GLFWwindow* Window::createWindow(int width, int height, const char* title) {
     }
     // Make the window's context current
     glfwMakeContextCurrent(window);
-
     // Set the framebuffer size callback
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+  
     return window;
 }
 
