@@ -8,7 +8,9 @@ static int get_fps(int& frameCount, double& lastTime) {
 	if (currentTime - lastTime >= 1.0)
 	{
 		// Calculate and return FPS
-		return static_cast<float>(frameCount) / static_cast<float>(currentTime - lastTime);
+		float fps = static_cast<float>(frameCount) / static_cast<float>(currentTime - lastTime);
+
+		return static_cast<int>(fps);
 		frameCount = 0;
 		lastTime += 1.0;
 	}
