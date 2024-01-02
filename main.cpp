@@ -50,6 +50,16 @@ static std::vector<Vertex> createCube(GLfloat x, GLfloat y, GLfloat z, GLfloat t
 	return vertices;
 }
 
+void move_cube(std::vector<Vertex>& verts, int size) {
+	// Modify the values in the verts vector
+	for (int i = 0; i < size*24; ++i) {
+		// Access and modify the values of the vertices in the verts vector
+		verts[i].position[0] += xpos;  // Modify X-coordinate
+		// Modify other attributes if needed...
+	}
+}
+
+
 
 void input_callback(GLFWwindow* window, Camera& camera) {
 	if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) {
@@ -59,10 +69,10 @@ void input_callback(GLFWwindow* window, Camera& camera) {
 		wireframe = false;
 	}
 	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
-		move_cube += 0.01f;
+		xpos += 0.01f;
 	}
 	if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS) {
-		move_cube -= 0.01f;
+		xpos -= 0.01f;
 	}
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		exit(EXIT_SUCCESS);
@@ -130,16 +140,9 @@ int main()
 	// Generates Element Buffer Object and links it to indices
 	EBO EBO1(indices.get(), sizeof(GLuint) * max_index_count);
 
-	float boop = distanceBetween3DPoints(0, 0, 0, 1, 1, 1);
-
-	// Load all the textures
-	//GLuint tex0 = LoadTexture("textures/m_dirt.png");
-	//GLuint tex1 = LoadTexture("textures/m_grasstop.png");
-    //GLuint tex2 = LoadTexture("textures/m_grassside.png");
-
 	GLuint tex0 = LoadTexture("textures/dirt.png");
-	GLuint tex1 = LoadTexture("textures/m_grasstop.png");
-	GLuint tex2 = LoadTexture("textures/m_grassside.png");
+	GLuint tex1 = LoadTexture("textures/dirt.png");
+	GLuint tex2 = LoadTexture("textures/dirt.png");
 	// put textures in container array
 	GLuint textureContainer[4] = { tex0,tex1,tex2 };
 
@@ -178,6 +181,8 @@ int main()
 		}
 	}
 
+
+
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -193,12 +198,13 @@ int main()
 		//switch between textured or wireframe
 		wireframe_state(wireframe);
 
-		
+		move_cube(*verts, 2);
+
+
 		// Tell OpenGL which Shader Program we want to use
-		
-		
 		objectShader.Activate();
 		glEnable(GL_DEPTH_TEST);
+
 		VBO1.dynamic_update(*verts);
 
 		
