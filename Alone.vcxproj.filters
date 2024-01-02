@@ -40,6 +40,9 @@
     <Filter Include="Graphics\Renderer\Pipeline">
       <UniqueIdentifier>{8288c42a-e15e-44f7-8a37-5284eec12cb0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utilities">
+      <UniqueIdentifier>{aadeed83-4514-4029-ae5f-db620895db0d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FreeTypeFont.cpp">
@@ -114,6 +117,12 @@
     </ClInclude>
     <ClInclude Include="VAO.h">
       <Filter>Graphics\Renderer\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Graphics\Renderer\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="debugUtils.h">
+      <Filter>Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

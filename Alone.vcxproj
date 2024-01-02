@@ -155,10 +155,12 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Colors.h" />
+    <ClInclude Include="debugUtils.h" />
     <ClInclude Include="EBO.h" />
     <ClInclude Include="engine.h" />
     <ClInclude Include="FreeTypeFont.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="Renderer.h" />
     <ClInclude Include="ShaderClass.h" />
     <ClInclude Include="shaders\shader.h" />
     <ClInclude Include="Texture.h" />

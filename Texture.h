@@ -26,3 +26,19 @@ static GLuint LoadTexture(const std::string& path) {
 
 	return textureID;
 }
+
+static void load_texture_package() {
+
+}
+
+
+static void texture_units(GLuint& id,GLuint* texture_array, std::string path ) {
+	// bind the textures to the texture units in the vbo/shader
+	auto loc = glGetUniformLocation(id, path.c_str());
+	int samplers[4] = { 0,1,2,3 };
+	glUniform1iv(loc, 4, samplers);
+	glBindTextureUnit(0, texture_array[0]);
+	glBindTextureUnit(1, texture_array[1]);
+	glBindTextureUnit(2, texture_array[2]);
+	glBindTextureUnit(3, texture_array[3]);
+}

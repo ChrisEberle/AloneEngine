@@ -1,5 +1,5 @@
 #include"VBO.h"
-#include "Vertex.h"
+
 
 // Constructor that generates a empty Vertex Buffer Object
 VBO::VBO(GLsizeiptr size)
@@ -10,10 +10,9 @@ VBO::VBO(GLsizeiptr size)
 }
 
 // dynamiccaly fills the vbo
-void VBO::dynamic_update(const void* data, GLsizei size)
-{
+void VBO::dynamic_update(const std::vector<Vertex>& data) {
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, data.size() * sizeof(Vertex), data.data());
 }
 
 // Binds the VBO

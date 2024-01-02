@@ -33,10 +33,12 @@
 #include "FreeTypeFont.h"
 #include "Window.h"
 #include"shaderClass.h"
+#include "Renderer.h"
 #include"VAO.h"
 #include"VBO.h"
 #include"EBO.h"
 #include"Texture.h"
+#include "debugUtils.h"
 
 #include"Camera.h"
 
