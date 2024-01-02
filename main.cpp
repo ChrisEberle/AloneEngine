@@ -78,9 +78,9 @@ int main()
 	init_renderer(font_vao, font_vbo);
 
 
-	const size_t max_cube_count = 1023;
-	const size_t max_vertex_count = max_cube_count * 24;
-	const size_t max_index_count = max_cube_count * 36;
+	const GLint max_cube_count = 22500;
+	const GLint max_vertex_count = max_cube_count * 24;
+	const GLint max_index_count = max_cube_count * 36;
 
 
 	// Generates Shader object
@@ -97,8 +97,7 @@ int main()
 	VAO1.LinkAttrib(VBO1, 2, 1, GL_FLOAT, sizeof(Vertex), (void*)offsetof(Vertex, texId));
 
 
-
-	GLuint indices[max_index_count];
+	GLuint* indices = new GLuint[max_index_count];
 	GLuint offset = 0;
 	for (size_t i = 0; i < max_index_count; i += 36) {
 		GLuint base = offset * 24;  // Calculate the base index for each cube
@@ -117,7 +116,7 @@ int main()
 
 
 	// Generates Element Buffer Object and links it to indices
-	EBO EBO1(indices, sizeof(indices));
+	EBO EBO1(indices, sizeof(GLuint) * max_index_count);
 
 
 
@@ -132,13 +131,13 @@ int main()
  	// Create camera object
 	Camera camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(0.0f, 0.0f, 5.0f));
 
-	
 	// Timing variables for FPS calculation
 	double lastTime = glfwGetTime();
 	int frameCount = 0;
 	float fps = 0.0f;
 
-	std::vector<Vertex> verts(24 * max_cube_count);
+	// Use smart pointer for verts
+	std::unique_ptr<std::vector<Vertex>> verts = std::make_unique<std::vector<Vertex>>(24 * max_cube_count);
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -160,21 +159,21 @@ int main()
 		glEnable(GL_DEPTH_TEST);
 		GLfloat row = 1.0f;
 		GLfloat col = 1.0f;
-		const size_t numRows = 32; // Assuming 32 blocks per row for a perfect square
-		for (size_t i = 0; i < max_cube_count; ++i) {
-			auto cube = createCube(col, 0.0f, row, 0);
-			size_t offset = i * 24;
-			std::copy(cube.begin(), cube.end(), verts.begin() + offset);
+		const GLint numRows = 150;
+		std::vector<Vertex> cube;
+		for (GLint i = 0; i < max_cube_count; ++i) {
+			cube = createCube(col, 0.0f, row, 0);
+			GLint offset = i * 24;
+			std::copy(cube.begin(), cube.end(), verts->begin() + offset);
 
-			col++; // Increment column for each cube
+			col++;
 
-			// Check if the column reaches the end of a row
 			if (col > numRows) {
-				col = 1.0f; // Reset column to start from the beginning of the row
-				row++;      // Move to the next row
+				col = 1.0f;
+				row++;
 			}
 		}
-		VBO1.dynamic_update(verts);
+		VBO1.dynamic_update(*verts);
 		
 
 
@@ -199,6 +198,7 @@ int main()
 		//draw text
 		RenderText(font_shader, "Alone Engine - V 0.0.1", 25.0f, 25.0f, 1.0f, color.white, font_vao, font_vbo);
 		RenderText(font_shader, std::to_string(get_fps(frameCount,lastTime)), 25.0f, SCR_HEIGHT - 50.0f, 1.0f, color.white, font_vao, font_vbo);
+		RenderText(font_shader, std::to_string(max_vertex_count), 500.0f, SCR_HEIGHT - 50.0f, 1.0f, color.white, font_vao, font_vbo);
 		// ==========================================================
 
 		
