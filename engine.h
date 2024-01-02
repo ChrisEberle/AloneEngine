@@ -27,6 +27,8 @@
 #include FT_TRIGONOMETRY_H
 
 // internal engine files
+#include "mathUtils.h"
+#include "debugUtils.h"
 #include "Vertex.h"
 #include "Colors.h"
 #include "shaders/shader.h"
@@ -38,7 +40,7 @@
 #include"VBO.h"
 #include"EBO.h"
 #include"Texture.h"
-#include "debugUtils.h"
+
 
 #include"Camera.h"
 

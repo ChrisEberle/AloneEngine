@@ -124,6 +124,9 @@
     <ClInclude Include="debugUtils.h">
       <Filter>Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="mathUtils.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\text.vs">

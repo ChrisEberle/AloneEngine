@@ -160,6 +160,7 @@
     <ClInclude Include="engine.h" />
     <ClInclude Include="FreeTypeFont.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="mathUtils.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="ShaderClass.h" />
     <ClInclude Include="shaders\shader.h" />

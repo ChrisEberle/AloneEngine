@@ -1,5 +1,17 @@
 #include "engine.h"
 
+static std::vector<Vertex> createQuad(GLfloat x, GLfloat y, GLfloat z, GLfloat texID) {
+	std::vector<Vertex> vertices;
+
+	//FRONT
+	vertices.push_back({ -0.5f + x,    -0.5f + y,     0.5f + z,      0.0f, 0.0f, texID + 2.0f });
+	vertices.push_back({ 0.5f + x,    -0.5f + y,     0.5f + z,      1.0f, 0.0f, texID + 2.0f });
+	vertices.push_back({ -0.5f + x,     0.5f + y,     0.5f + z,      0.0f, 1.0f, texID + 2.0f });
+	vertices.push_back({ 0.5f + x,     0.5f + y,     0.5f + z,      1.0f, 1.0f,  texID + 2.0f });
+
+	return vertices;
+}
+
 
 static std::vector<Vertex> createCube(GLfloat x, GLfloat y, GLfloat z, GLfloat texID) {
 	std::vector<Vertex> vertices;
@@ -78,7 +90,7 @@ int main()
 	init_renderer(font_vao, font_vbo);
 
 
-	const GLint max_cube_count = 15872;
+	const GLint max_cube_count = 155000;
 	const GLint max_vertex_count = max_cube_count * 24;
 	const GLint max_index_count = max_cube_count * 36;
 
@@ -118,12 +130,16 @@ int main()
 	// Generates Element Buffer Object and links it to indices
 	EBO EBO1(indices.get(), sizeof(GLuint) * max_index_count);
 
-
+	float boop = distanceBetween3DPoints(0, 0, 0, 1, 1, 1);
 
 	// Load all the textures
-	GLuint tex0 = LoadTexture("textures/m_dirt.png");
+	//GLuint tex0 = LoadTexture("textures/m_dirt.png");
+	//GLuint tex1 = LoadTexture("textures/m_grasstop.png");
+    //GLuint tex2 = LoadTexture("textures/m_grassside.png");
+
+	GLuint tex0 = LoadTexture("textures/dirt.png");
 	GLuint tex1 = LoadTexture("textures/m_grasstop.png");
-    GLuint tex2 = LoadTexture("textures/m_grassside.png");
+	GLuint tex2 = LoadTexture("textures/m_grassside.png");
 	// put textures in container array
 	GLuint textureContainer[4] = { tex0,tex1,tex2 };
 
@@ -138,6 +154,30 @@ int main()
 
 	// Use smart pointer for verts
 	std::unique_ptr<std::vector<Vertex>> verts = std::make_unique<std::vector<Vertex>>(24 * max_cube_count);
+
+	GLfloat row = 1.0f;
+	GLfloat col = 1.0f;
+	GLfloat height = 1.0f;
+	const GLint numRows = 50;
+	std::vector<Vertex> cube;
+	for (GLint i = 0; i < max_cube_count; ++i) {
+		if (i != 0 && (i % 2500 == 0)) {
+			col = 1.0f;
+			row = 1.0f;
+			height++;
+		}
+		cube = createCube(col, height, row, 0);
+		GLint offset = i * 24;
+		std::copy(cube.begin(), cube.end(), verts->begin() + offset);
+
+		col++;
+
+		if (col > numRows) {
+			col = 1.0f;
+			row++;
+		}
+	}
+
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -155,36 +195,13 @@ int main()
 
 		
 		// Tell OpenGL which Shader Program we want to use
+		
+		
 		objectShader.Activate();
 		glEnable(GL_DEPTH_TEST);
-		GLfloat row = 1.0f;
-		GLfloat col = 1.0f;
-		GLfloat height = 1.0f;
-		const GLint numRows = 16;
-		std::vector<Vertex> cube;
-		for (GLint i = 0; i < max_cube_count; ++i) {
-			if (i  != 0 && (i % 256 == 0)) {
-				col = 1.0f;
-				row = 1.0f;
-				height++;
-
-			}
-			cube = createCube(col, height, row, 0);
-			GLint offset = i * 24;
-			std::copy(cube.begin(), cube.end(), verts->begin() + offset);
-
-			col++;
-
-			if (col > numRows) {
-				col = 1.0f;
-				row++;
-			}
-		}
 		VBO1.dynamic_update(*verts);
 
 		
-
-
 		VAO1.Bind();
 		// bind the textures to the texture units in the vbo/shader
 		texture_units(objectShader.ID, textureContainer, "textureContainer");
