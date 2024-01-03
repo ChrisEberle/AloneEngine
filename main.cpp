@@ -3,11 +3,11 @@
 static std::vector<Vertex> createQuad(GLfloat x, GLfloat y, GLfloat z, GLfloat texID) {
 	std::vector<Vertex> vertices;
 
-	//FRONT
+	//Quad
 	vertices.push_back({ -0.5f + x,    -0.5f + y,     0.5f + z,      0.0f, 0.0f, texID + 2.0f });
 	vertices.push_back({ 0.5f + x,    -0.5f + y,     0.5f + z,      1.0f, 0.0f, texID + 2.0f });
-	vertices.push_back({ -0.5f + x,     0.5f + y,     0.5f + z,      0.0f, 1.0f, texID + 2.0f });
-	vertices.push_back({ 0.5f + x,     0.5f + y,     0.5f + z,      1.0f, 1.0f,  texID + 2.0f });
+	vertices.push_back({ -0.5f + x,    -0.5f + y,     -0.5f + z,      0.0f, 1.0f, texID + 2.0f });
+	vertices.push_back({ 0.5f + x,    -0.5f + y,     -0.5f + z,      1.0f, 1.0f,  texID + 2.0f });
 
 	return vertices;
 }
@@ -49,15 +49,112 @@ static std::vector<Vertex> createCube(GLfloat x, GLfloat y, GLfloat z, GLfloat t
 
 	return vertices;
 }
+ 
 
-void move_cube(std::vector<Vertex>& verts, int size) {
-	// Modify the values in the verts vector
-	for (int i = 0; i < size*24; ++i) {
-		// Access and modify the values of the vertices in the verts vector
-		verts[i].position[0] += xpos;  // Modify X-coordinate
-		// Modify other attributes if needed...
+void move_cube(GLFWwindow* window, std::vector<Vertex>& verts, int numVertices) {
+	
+
+	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
+		// Modify the values in the verts vector
+		for (int i = 0; i < numVertices; ++i) {
+			// Access and modify the values of the vertices in the verts vector
+			verts[i].position[0] = verts[i].position[0] + xpos;  // Modify X-coordinate
+			// Modify other attributes if needed...
+		}
+	}
+	if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS) {
+		// Modify the values in the verts vector
+		for (int i = 0; i < numVertices; ++i) {
+			// Access and modify the values of the vertices in the verts vector
+			verts[i].position[0] = verts[i].position[0] -xpos;  // Modify X-coordinate
+			// Modify other attributes if needed...
+		}
 	}
 }
+static std::vector<Vertex> createPlane(GLfloat originX, GLfloat originY, GLfloat originZ, GLfloat width, GLfloat height, GLuint rows, GLuint cols, GLfloat frequency, GLfloat amplitude) {
+	std::vector<Vertex> vertices;
+
+	for (GLuint i = 0; i < rows; ++i) {
+		for (GLuint j = 0; j < cols; ++j) {
+			GLfloat x = originX + j * (width / (cols - 1));
+			GLfloat y = originY + glm::perlin(glm::vec2(x * frequency, i * frequency)) * amplitude;  // Use Perlin noise for height
+			GLfloat z = originZ - i * (height / (rows - 1));
+
+			// Calculate texCoordX to repeat within each column
+			GLfloat texCoordX = static_cast<GLfloat>(j % cols) / (cols - 1);
+
+			GLfloat texCoordY = static_cast<GLfloat>(i) / (rows - 1);
+
+			GLfloat texID = 0.0f;  // You can adjust this based on your requirements
+
+			vertices.push_back({ x, y, z, texCoordX, texCoordY, texID });
+		}
+	}
+
+	return vertices;
+}
+
+std::unique_ptr<GLuint[]> generatePlaneIndices(GLuint rows, GLuint cols) {
+	GLuint max_indices = (rows - 1) * (cols - 1) * 6;
+	std::unique_ptr<GLuint[]> indicesPLANE(new GLuint[max_indices]);
+
+	GLuint offset = 6;
+	for (GLuint i = 0; i < rows - 1; ++i) {
+		for (GLuint j = 0; j < cols - 1; ++j) {
+			GLuint currentVertex = i * cols + j;
+
+			indicesPLANE[offset * (i * (cols - 1) + j)] = currentVertex;
+			indicesPLANE[offset * (i * (cols - 1) + j) + 1] = currentVertex + 1;
+			indicesPLANE[offset * (i * (cols - 1) + j) + 2] = currentVertex + cols;
+
+			indicesPLANE[offset * (i * (cols - 1) + j) + 3] = currentVertex + 1;
+			indicesPLANE[offset * (i * (cols - 1) + j) + 4] = currentVertex + cols;
+			indicesPLANE[offset * (i * (cols - 1) + j) + 5] = currentVertex + cols + 1;
+		}
+	}
+
+	return indicesPLANE;
+}
+
+
+std::unique_ptr<GLuint[]> generateCubeIndices(size_t max_index_count, size_t spacing_offset) {
+	std::unique_ptr<GLuint[]> indices(new GLuint[max_index_count]);
+	size_t offset = 0;
+
+	for (size_t i = 0; i < max_index_count; i += 36) {
+		GLuint base = offset * 24;  // Calculate the base index for each cube
+		GLuint indicesTemplate[36] = {
+			0, 1, 2, 1, 2, 3, 4, 5, 6, 5, 6, 7, 8, 9, 10, 9, 10, 11, 12, 13, 14, 13, 14, 15,
+			16, 17, 18, 17, 18, 19, 20, 21, 22, 21, 22, 23
+		};
+
+		// Offset the template by the base index for the current cube
+		for (size_t j = 0; j < 36; ++j) {
+			indices[i + j] = base + indicesTemplate[j];
+		}
+
+		offset += spacing_offset;  // Move to the next cube
+	}
+
+	return indices;
+}
+
+
+// Assuming GLuint is defined somewhere in your code
+typedef unsigned int GLuint;
+
+std::unique_ptr<GLuint[]> concatenateArrays(const std::unique_ptr<GLuint[]>& arr1, size_t size1, const std::unique_ptr<GLuint[]>& arr2, size_t size2) {
+	std::unique_ptr<GLuint[]> result(new GLuint[size1 + size2]);
+
+	// Copy elements from the first array
+	std::copy(arr1.get(), arr1.get() + size1, result.get());
+
+	// Copy elements from the second array
+	std::copy(arr2.get(), arr2.get() + size2, result.get() + size1);
+
+	return result;
+}
+
 
 
 
@@ -67,12 +164,6 @@ void input_callback(GLFWwindow* window, Camera& camera) {
 	}
 	if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS) {
 		wireframe = false;
-	}
-	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
-		xpos += 0.01f;
-	}
-	if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS) {
-		xpos -= 0.01f;
 	}
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		exit(EXIT_SUCCESS);
@@ -100,15 +191,17 @@ int main()
 	init_renderer(font_vao, font_vbo);
 
 
-	const GLint max_cube_count = 155000;
-	const GLint max_vertex_count = max_cube_count * 24;
-	const GLint max_index_count = max_cube_count * 36;
+	// 3 by 3 plane
+	const GLfloat cols_rows = 1000;
+	const GLfloat max_verts = cols_rows*cols_rows;
+	const GLfloat max_indices = ((cols_rows -1)*(cols_rows-1)) * 6;
+	const GLfloat max_quads = ((cols_rows - 1) * (cols_rows - 1));
 
 
 	// Generates Shader object
 	Shaderer objectShader("shaders/shape.vs", "shaders/shape.fs");
 	// Generates Vertex Buffer Object and links it to vertices
-	VBO VBO1(sizeof(Vertex)*max_vertex_count);
+	VBO VBO1(sizeof(Vertex)*(max_verts));
 	// Generates Vertex Array Object and binds it
 	VAO VAO1;
 	// binds the VAO
@@ -119,28 +212,20 @@ int main()
 	VAO1.LinkAttrib(VBO1, 2, 1, GL_FLOAT, sizeof(Vertex), (void*)offsetof(Vertex, texId));
 
 
-	std::unique_ptr<GLuint[]> indices(new GLuint[max_index_count]);
-	GLuint offset = 0;
-	for (size_t i = 0; i < max_index_count; i += 36) {
-		GLuint base = offset * 24;  // Calculate the base index for each cube
-		GLuint indicesTemplate[36] = {
-			0, 1, 2, 1, 2, 3, 4, 5, 6, 5, 6, 7, 8, 9, 10, 9, 10, 11, 12, 13, 14, 13, 14, 15,
-			16, 17, 18, 17, 18, 19, 20, 21, 22, 21, 22, 23
-		};
 
-		// Offset the template by the base index for the current cube
-		for (size_t j = 0; j < 36; ++j) {
-			indices[i + j] = base + indicesTemplate[j];
-		}
 
-		offset += 1;  // Move to the next cube
-	}
+	// Use smart pointer for verts
+	std::unique_ptr<std::vector<Vertex>> verts = std::make_unique<std::vector<Vertex>>(max_verts);
+	// Generate indices for the plane and chunk
+	std::unique_ptr<GLuint[]> indicesPLANE = generatePlaneIndices(cols_rows, cols_rows);
+	std::vector<Vertex> plane = createPlane(0.0f, 0.0f, 0.0f, 100.0f, 100.0f, cols_rows, cols_rows, 0.01f, 5.0f);
+	std::copy(plane.begin(), plane.end(), verts->begin());
 
 
 	// Generates Element Buffer Object and links it to indices
-	EBO EBO1(indices.get(), sizeof(GLuint) * max_index_count);
+	EBO EBO1(indicesPLANE.get(), sizeof(GLuint) * (max_indices));
 
-	GLuint tex0 = LoadTexture("textures/dirt.png");
+	GLuint tex0 = LoadTexture("textures/grey_sand.png");
 	GLuint tex1 = LoadTexture("textures/dirt.png");
 	GLuint tex2 = LoadTexture("textures/dirt.png");
 	// put textures in container array
@@ -155,40 +240,12 @@ int main()
 	int frameCount = 0;
 	float fps = 0.0f;
 
-	// Use smart pointer for verts
-	std::unique_ptr<std::vector<Vertex>> verts = std::make_unique<std::vector<Vertex>>(24 * max_cube_count);
-
-	GLfloat row = 1.0f;
-	GLfloat col = 1.0f;
-	GLfloat height = 1.0f;
-	const GLint numRows = 50;
-	std::vector<Vertex> cube;
-	for (GLint i = 0; i < max_cube_count; ++i) {
-		if (i != 0 && (i % 2500 == 0)) {
-			col = 1.0f;
-			row = 1.0f;
-			height++;
-		}
-		cube = createCube(col, height, row, 0);
-		GLint offset = i * 24;
-		std::copy(cube.begin(), cube.end(), verts->begin() + offset);
-
-		col++;
-
-		if (col > numRows) {
-			col = 1.0f;
-			row++;
-		}
-	}
-
-
-
+	GLfloat sizw = 100.0f;
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
 	{
 		//set the window background color and clear the window buffer
 		wnd.clear_buffer(color.skyBlue);
-
 
 		// input handling
 		input_callback(window, camera);
@@ -198,23 +255,20 @@ int main()
 		//switch between textured or wireframe
 		wireframe_state(wireframe);
 
-		move_cube(*verts, 2);
 
-
+		move_cube(window, *verts, max_verts);
 		// Tell OpenGL which Shader Program we want to use
 		objectShader.Activate();
 		glEnable(GL_DEPTH_TEST);
-
 		VBO1.dynamic_update(*verts);
-
-		
 		VAO1.Bind();
 		// bind the textures to the texture units in the vbo/shader
 		texture_units(objectShader.ID, textureContainer, "textureContainer");
-		glDrawElements(GL_TRIANGLES, max_index_count, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, max_indices, GL_UNSIGNED_INT, 0);
 		VBO1.Unbind();
 		VAO1.Unbind();
 			
+
 
 		// update the camera
 		camera.Matrix(45.0f, 0.1f, 10000.0f, objectShader, "camMatrix");
@@ -226,11 +280,10 @@ int main()
 		font_shader.use();
 
 
-
 		//draw text
 		RenderText(font_shader, "Alone Engine - V 0.0.1", 25.0f, 25.0f, 1.0f, color.white, font_vao, font_vbo);
 		RenderText(font_shader, std::to_string(get_fps(frameCount,lastTime)), 25.0f, SCR_HEIGHT - 50.0f, 1.0f, color.white, font_vao, font_vbo);
-		RenderText(font_shader, std::to_string((max_vertex_count)), 500.0f, SCR_HEIGHT - 50.0f, 1.0f, color.white, font_vao, font_vbo);
+		RenderText(font_shader, std::to_string((int(max_verts))), 500.0f, SCR_HEIGHT - 50.0f, 1.0f, color.white, font_vao, font_vbo);
 		// ==========================================================
 
 		
