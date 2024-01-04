@@ -2,11 +2,11 @@
 
 
 // Constructor that generates a empty Vertex Buffer Object
-VBO::VBO(GLsizeiptr size)
+VBO::VBO(GLsizeiptr num_indices)
 {
 	glGenBuffers(1, &ID);
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
-	glBufferData(GL_ARRAY_BUFFER,size, nullptr, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * num_indices, nullptr, GL_DYNAMIC_DRAW);
 }
 
 // dynamiccaly fills the vbo

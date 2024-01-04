@@ -1,158 +1,105 @@
 #include "engine.h"
 
-static std::vector<Vertex> createQuad(GLfloat x, GLfloat y, GLfloat z, GLfloat texID) {
+static std::vector<Vertex> obj_vert_generator(std::string file_path) {
+	std::ifstream objFile(file_path);
+	std::string lineText;
 	std::vector<Vertex> vertices;
+	std::vector<ObjPositionCoordinates> posCoords;
+	std::vector<ObjTextureCoordinates> texCoords;
 
-	//Quad
-	vertices.push_back({ -0.5f + x,    -0.5f + y,     0.5f + z,      0.0f, 0.0f, texID + 2.0f });
-	vertices.push_back({ 0.5f + x,    -0.5f + y,     0.5f + z,      1.0f, 0.0f, texID + 2.0f });
-	vertices.push_back({ -0.5f + x,    -0.5f + y,     -0.5f + z,      0.0f, 1.0f, texID + 2.0f });
-	vertices.push_back({ 0.5f + x,    -0.5f + y,     -0.5f + z,      1.0f, 1.0f,  texID + 2.0f });
+	while (std::getline(objFile, lineText)) {
+		std::stringstream objTextStream(lineText);
+		GLfloat pos[3];
+		GLfloat tc[2];
 
-	return vertices;
-}
-
-
-static std::vector<Vertex> createCube(GLfloat x, GLfloat y, GLfloat z, GLfloat texID) {
-	std::vector<Vertex> vertices;
-
-		//FRONT
-		vertices.push_back({ -0.5f + x,    -0.5f + y,     0.5f + z,      0.0f, 0.0f, texID  + 2.0f});
-		vertices.push_back({ 0.5f + x,    -0.5f + y,     0.5f + z,      1.0f, 0.0f, texID   + 2.0f});
-		vertices.push_back({ -0.5f + x,     0.5f + y,     0.5f + z,      0.0f, 1.0f, texID  + 2.0f});
-		vertices.push_back({ 0.5f  + x,     0.5f + y,     0.5f + z,      1.0f, 1.0f,  texID + 2.0f});
-		//BACK  			
-		vertices.push_back({ -0.5f + x,    -0.5f + y,    -0.5f + z,     0.0f, 0.0f, texID  + 2.0f});
-		vertices.push_back({ 0.5f  + x,    -0.5f + y,    -0.5f + z,     1.0f, 0.0f,  texID + 2.0f});
-		vertices.push_back({ -0.5f + x,     0.5f + y,    -0.5f + z,     0.0f, 1.0f, texID  + 2.0f});
-		vertices.push_back({ 0.5f  + x,     0.5f + y,    -0.5f + z,     1.0f, 1.0f,  texID + 2.0f});
-		//LEFT  			
-		vertices.push_back({ -0.5f + x,    -0.5f + y,    -0.5f + z,     0.0f, 0.0f, texID + 2.0f});
-		vertices.push_back({ -0.5f + x,    -0.5f + y,     0.5f + z,     1.0f, 0.0f, texID + 2.0f});
-		vertices.push_back({ -0.5f + x,     0.5f + y,    -0.5f + z,     0.0f, 1.0f, texID + 2.0f});
-		vertices.push_back({ -0.5f + x,     0.5f + y,     0.5f + z,     1.0f, 1.0f, texID + 2.0f});
-		//RIGHT 		
-		vertices.push_back({ 0.5f + x,    -0.5f + y,    -0.5f + z,     0.0f, 0.0f,  texID + 2.0f});
-		vertices.push_back({ 0.5f + x,    -0.5f + y,     0.5f + z,     1.0f, 0.0f,  texID + 2.0f});
-		vertices.push_back({ 0.5f + x,     0.5f + y,    -0.5f + z,     0.0f, 1.0f,  texID + 2.0f});
-		vertices.push_back({ 0.5f + x,     0.5f + y,     0.5f + z,     1.0f, 1.0f,  texID + 2.0f});
-		//TOP   		
-		vertices.push_back({ -0.5f + x,     0.5f + y,     0.5f + z,     0.0f, 0.0f, texID  + 1.0f});
-		vertices.push_back({ 0.5f  + x,     0.5f + y,     0.5f + z,     1.0f, 0.0f,  texID + 1.0f});
-		vertices.push_back({ -0.5f + x,     0.5f + y,    -0.5f + z,     0.0f, 1.0f, texID  + 1.0f});
-		vertices.push_back({ 0.5f  + x,     0.5f + y,    -0.5f + z,     1.0f, 1.0f,  texID + 1.0f});
-		//BOTTOM	
-		vertices.push_back({ -0.5f + x,    -0.5f + y,     0.5f + z,    0.0f, 0.0f, texID });
-		vertices.push_back({ 0.5f  + x,    -0.5f + y,     0.5f + z,    1.0f, 0.0f,  texID });
-		vertices.push_back({ -0.5f + x,    -0.5f + y,    -0.5f + z,    0.0f, 1.0f, texID });
-		vertices.push_back({ 0.5f  + x,    -0.5f + y,    -0.5f + z,    1.0f, 1.0f,  texID });
-
-	return vertices;
-}
- 
-
-void move_cube(GLFWwindow* window, std::vector<Vertex>& verts, int numVertices) {
-	
-
-	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
-		// Modify the values in the verts vector
-		for (int i = 0; i < numVertices; ++i) {
-			// Access and modify the values of the vertices in the verts vector
-			verts[i].position[0] = verts[i].position[0] + xpos;  // Modify X-coordinate
-			// Modify other attributes if needed...
+		// Extract the three float position values
+		if (lineText[0] == 'v' && lineText[1] == ' ') {
+			// Ignore the first token ("v")
+			std::string token;
+			objTextStream >> token;
+			objTextStream >> pos[0] >> pos[1] >> pos[2];
+			ObjPositionCoordinates vert;
+			vert.position[0] = pos[0];
+			vert.position[1] = pos[1];
+			vert.position[2] = pos[2];
+			posCoords.push_back(vert);
+		}
+		// Extract the two float texCoord values
+		if (lineText[0] == 'v' && lineText[1] == 't') {
+			// Ignore the first token ("vt")
+			std::string token;
+			objTextStream >> token;
+			objTextStream >> tc[0] >> tc[1];
+			ObjTextureCoordinates vert;
+			vert.texCoord[0] = tc[0];  // Corrected line
+			vert.texCoord[1] = tc[1];  // Corrected line
+			texCoords.push_back(vert);
 		}
 	}
-	if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS) {
-		// Modify the values in the verts vector
-		for (int i = 0; i < numVertices; ++i) {
-			// Access and modify the values of the vertices in the verts vector
-			verts[i].position[0] = verts[i].position[0] -xpos;  // Modify X-coordinate
-			// Modify other attributes if needed...
-		}
-	}
-}
-static std::vector<Vertex> createPlane(GLfloat originX, GLfloat originY, GLfloat originZ, GLfloat width, GLfloat height, GLuint rows, GLuint cols, GLfloat frequency, GLfloat amplitude) {
-	std::vector<Vertex> vertices;
 
-	for (GLuint i = 0; i < rows; ++i) {
-		for (GLuint j = 0; j < cols; ++j) {
-			GLfloat x = originX + j * (width / (cols - 1));
-			GLfloat y = originY + glm::perlin(glm::vec2(x * frequency, i * frequency)) * amplitude;  // Use Perlin noise for height
-			GLfloat z = originZ - i * (height / (rows - 1));
 
-			// Calculate texCoordX to repeat within each column
-			GLfloat texCoordX = static_cast<GLfloat>(j % cols) / (cols - 1);
+	// Move the file cursor back to the beginning of the file
+	objFile.clear();
+	objFile.seekg(0, std::ios::beg);
 
-			GLfloat texCoordY = static_cast<GLfloat>(i) / (rows - 1);
 
-			GLfloat texID = 0.0f;  // You can adjust this based on your requirements
+	while (std::getline(objFile, lineText)) {
+		std::stringstream objTextStream(lineText);
 
-			vertices.push_back({ x, y, z, texCoordX, texCoordY, texID });
+		if (lineText.substr(0, 2) == "f ") {
+			// Extract face indices
+			std::string token;
+			objTextStream >> token; // Ignore 'f'
+
+			std::vector<int> positionIndices;
+			std::vector<int> textureIndices;
+
+			while (objTextStream >> token) {
+				std::istringstream indexStream(token);
+				std::string positionIndexStr, textureIndexStr;
+
+				// Extract position index and texture coordinate index
+				std::getline(indexStream, positionIndexStr, '/');
+				std::getline(indexStream, textureIndexStr, '/');
+
+				// Convert strings to integers
+				int pIndex = std::stoi(positionIndexStr);
+				int tIndex = std::stoi(textureIndexStr);
+
+			
+
+				Vertex vert;
+				vert.position[0] = posCoords[pIndex - 1].position[0];
+				vert.position[1] = posCoords[pIndex - 1].position[1];
+				vert.position[2] = posCoords[pIndex - 1].position[2];
+
+				vert.texCoord[0] = texCoords[tIndex - 1].texCoord[0];
+				vert.texCoord[1] = texCoords[tIndex - 1].texCoord[1];
+				vert.texId = 1;
+				vertices.push_back(vert);
+
+
+				// Store the indices if needed for further processing
+				positionIndices.push_back(pIndex);
+				textureIndices.push_back(tIndex);
+			}
 		}
 	}
 
 	return vertices;
 }
 
-std::unique_ptr<GLuint[]> generatePlaneIndices(GLuint rows, GLuint cols) {
-	GLuint max_indices = (rows - 1) * (cols - 1) * 6;
-	std::unique_ptr<GLuint[]> indicesPLANE(new GLuint[max_indices]);
 
-	GLuint offset = 6;
-	for (GLuint i = 0; i < rows - 1; ++i) {
-		for (GLuint j = 0; j < cols - 1; ++j) {
-			GLuint currentVertex = i * cols + j;
 
-			indicesPLANE[offset * (i * (cols - 1) + j)] = currentVertex;
-			indicesPLANE[offset * (i * (cols - 1) + j) + 1] = currentVertex + 1;
-			indicesPLANE[offset * (i * (cols - 1) + j) + 2] = currentVertex + cols;
+static std::unique_ptr<GLuint[]> obj_indices(GLuint num_verts) {
+	std::unique_ptr<GLuint[]> indicesPLANE(new GLuint[num_verts]);
 
-			indicesPLANE[offset * (i * (cols - 1) + j) + 3] = currentVertex + 1;
-			indicesPLANE[offset * (i * (cols - 1) + j) + 4] = currentVertex + cols;
-			indicesPLANE[offset * (i * (cols - 1) + j) + 5] = currentVertex + cols + 1;
-		}
+
+	for (GLuint i = 0; i < num_verts; ++i) {
+		indicesPLANE[i] = i;
 	}
 
 	return indicesPLANE;
-}
-
-
-std::unique_ptr<GLuint[]> generateCubeIndices(size_t max_index_count, size_t spacing_offset) {
-	std::unique_ptr<GLuint[]> indices(new GLuint[max_index_count]);
-	size_t offset = 0;
-
-	for (size_t i = 0; i < max_index_count; i += 36) {
-		GLuint base = offset * 24;  // Calculate the base index for each cube
-		GLuint indicesTemplate[36] = {
-			0, 1, 2, 1, 2, 3, 4, 5, 6, 5, 6, 7, 8, 9, 10, 9, 10, 11, 12, 13, 14, 13, 14, 15,
-			16, 17, 18, 17, 18, 19, 20, 21, 22, 21, 22, 23
-		};
-
-		// Offset the template by the base index for the current cube
-		for (size_t j = 0; j < 36; ++j) {
-			indices[i + j] = base + indicesTemplate[j];
-		}
-
-		offset += spacing_offset;  // Move to the next cube
-	}
-
-	return indices;
-}
-
-
-// Assuming GLuint is defined somewhere in your code
-typedef unsigned int GLuint;
-
-std::unique_ptr<GLuint[]> concatenateArrays(const std::unique_ptr<GLuint[]>& arr1, size_t size1, const std::unique_ptr<GLuint[]>& arr2, size_t size2) {
-	std::unique_ptr<GLuint[]> result(new GLuint[size1 + size2]);
-
-	// Copy elements from the first array
-	std::copy(arr1.get(), arr1.get() + size1, result.get());
-
-	// Copy elements from the second array
-	std::copy(arr2.get(), arr2.get() + size2, result.get() + size1);
-
-	return result;
 }
 
 
@@ -181,7 +128,6 @@ int main()
 	wnd.print_gl_renderer();
 	wnd.framebuffer_size_callback(window, SCR_WIDTH, SCR_HEIGHT);
 
-
 	// Font Rendering Initialization
 	Shader font_shader("shaders/text.vs", "shaders/text.fs");
 	GLuint font_vao, font_vbo;
@@ -192,16 +138,33 @@ int main()
 
 
 	// 3 by 3 plane
-	const GLfloat cols_rows = 1000;
+	const GLfloat cols_rows = 20;
 	const GLfloat max_verts = cols_rows*cols_rows;
 	const GLfloat max_indices = ((cols_rows -1)*(cols_rows-1)) * 6;
 	const GLfloat max_quads = ((cols_rows - 1) * (cols_rows - 1));
+
+	// OBJ
+	std::vector<Vertex> objModel = obj_vert_generator("obj_models/car.obj");
+	int size_of_model = objModel.size();
+
+	// PLANE
+	std::vector<Vertex> plane = createPlane(0.0f, 0.0f, 0.0f, 100.0f, 100.0f, cols_rows, cols_rows, 0.05f, 4.0f);
+
+	// Use smart pointer for verts
+	std::unique_ptr<std::vector<Vertex>> verts = std::make_unique<std::vector<Vertex>>(size_of_model);
+
+	// Generate indices for the plane and chunk
+	std::unique_ptr<GLuint[]> indicesPLANE = generatePlaneIndices(cols_rows, cols_rows);
+	std::unique_ptr<GLuint[]> indicesOBJ = obj_indices(size_of_model);
+	
+	//copy obj verts to verts
+	std::copy(objModel.begin(), objModel.end(), verts->begin());
 
 
 	// Generates Shader object
 	Shaderer objectShader("shaders/shape.vs", "shaders/shape.fs");
 	// Generates Vertex Buffer Object and links it to vertices
-	VBO VBO1(sizeof(Vertex)*(max_verts));
+	VBO VBO1(size_of_model);
 	// Generates Vertex Array Object and binds it
 	VAO VAO1;
 	// binds the VAO
@@ -214,19 +177,12 @@ int main()
 
 
 
-	// Use smart pointer for verts
-	std::unique_ptr<std::vector<Vertex>> verts = std::make_unique<std::vector<Vertex>>(max_verts);
-	// Generate indices for the plane and chunk
-	std::unique_ptr<GLuint[]> indicesPLANE = generatePlaneIndices(cols_rows, cols_rows);
-	std::vector<Vertex> plane = createPlane(0.0f, 0.0f, 0.0f, 100.0f, 100.0f, cols_rows, cols_rows, 0.01f, 5.0f);
-	std::copy(plane.begin(), plane.end(), verts->begin());
-
 
 	// Generates Element Buffer Object and links it to indices
-	EBO EBO1(indicesPLANE.get(), sizeof(GLuint) * (max_indices));
+	EBO EBO1(indicesOBJ.get(), size_of_model);
 
 	GLuint tex0 = LoadTexture("textures/grey_sand.png");
-	GLuint tex1 = LoadTexture("textures/dirt.png");
+	GLuint tex1 = LoadTexture("textures/dirasdt.png");
 	GLuint tex2 = LoadTexture("textures/dirt.png");
 	// put textures in container array
 	GLuint textureContainer[4] = { tex0,tex1,tex2 };
@@ -240,7 +196,8 @@ int main()
 	int frameCount = 0;
 	float fps = 0.0f;
 
-	GLfloat sizw = 100.0f;
+	std::cout << size_of_model;
+
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -251,12 +208,12 @@ int main()
 		input_callback(window, camera);
 		//===============
 
-
+		
 		//switch between textured or wireframe
 		wireframe_state(wireframe);
 
 
-		move_cube(window, *verts, max_verts);
+		move_cube(window, *verts, size_of_model, xpos);
 		// Tell OpenGL which Shader Program we want to use
 		objectShader.Activate();
 		glEnable(GL_DEPTH_TEST);
@@ -264,7 +221,7 @@ int main()
 		VAO1.Bind();
 		// bind the textures to the texture units in the vbo/shader
 		texture_units(objectShader.ID, textureContainer, "textureContainer");
-		glDrawElements(GL_TRIANGLES, max_indices, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, size_of_model, GL_UNSIGNED_INT, 0);
 		VBO1.Unbind();
 		VAO1.Unbind();
 			
@@ -283,7 +240,7 @@ int main()
 		//draw text
 		RenderText(font_shader, "Alone Engine - V 0.0.1", 25.0f, 25.0f, 1.0f, color.white, font_vao, font_vbo);
 		RenderText(font_shader, std::to_string(get_fps(frameCount,lastTime)), 25.0f, SCR_HEIGHT - 50.0f, 1.0f, color.white, font_vao, font_vbo);
-		RenderText(font_shader, std::to_string((int(max_verts))), 500.0f, SCR_HEIGHT - 50.0f, 1.0f, color.white, font_vao, font_vbo);
+		RenderText(font_shader, std::to_string(size_of_model), 500.0f, SCR_HEIGHT - 50.0f, 1.0f, color.white, font_vao, font_vbo);
 		// ==========================================================
 
 		

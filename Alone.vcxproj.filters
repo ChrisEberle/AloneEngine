@@ -43,6 +43,12 @@
     <Filter Include="Utilities">
       <UniqueIdentifier>{aadeed83-4514-4029-ae5f-db620895db0d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Graphics\Objects">
+      <UniqueIdentifier>{25bc946e-2533-4758-9369-84b8909e8df0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\Objects\BaseMesh">
+      <UniqueIdentifier>{6f699b07-c307-4f81-b4ab-bd1071478c57}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FreeTypeFont.cpp">
@@ -126,6 +132,9 @@
     </ClInclude>
     <ClInclude Include="mathUtils.h">
       <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Graphics\Objects\BaseMesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

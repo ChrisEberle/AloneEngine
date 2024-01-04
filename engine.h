@@ -6,6 +6,7 @@
 #include <map>
 #include <cmath>
 #include <iomanip>
+#include <fstream>
 
 //openGL libs
 #include "glad/glad.h"
@@ -41,6 +42,7 @@
 #include"VBO.h"
 #include"EBO.h"
 #include"Texture.h"
+#include "Mesh.h"
 
 
 #include"Camera.h"
