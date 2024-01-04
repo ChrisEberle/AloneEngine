@@ -144,6 +144,7 @@
     <ClCompile Include="EBO.cpp" />
     <ClCompile Include="FreeTypeFont.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Model_obj.cpp" />
     <ClCompile Include="ShaderClass.cpp" />
     <ClCompile Include="stb.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -162,6 +163,7 @@
     <ClInclude Include="main.h" />
     <ClInclude Include="mathUtils.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Model_obj.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="ShaderClass.h" />
     <ClInclude Include="shaders\shader.h" />

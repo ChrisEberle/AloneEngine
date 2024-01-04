@@ -43,6 +43,7 @@
 #include"EBO.h"
 #include"Texture.h"
 #include "Mesh.h"
+#include "Model_obj.h"
 
 
 #include"Camera.h"

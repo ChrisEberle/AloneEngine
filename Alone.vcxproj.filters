@@ -85,6 +85,9 @@
     <ClCompile Include="VBO.cpp">
       <Filter>Graphics\Renderer\Pipeline</Filter>
     </ClCompile>
+    <ClCompile Include="Model_obj.cpp">
+      <Filter>Graphics\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FreeTypeFont.h">
@@ -135,6 +138,9 @@
     </ClInclude>
     <ClInclude Include="Mesh.h">
       <Filter>Graphics\Objects\BaseMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Model_obj.h">
+      <Filter>Graphics\Objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
