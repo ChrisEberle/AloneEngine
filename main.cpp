@@ -31,7 +31,7 @@ int main()
 	ft_init(ft, face, font_shader, filepath, SCR_WIDTH, SCR_HEIGHT);
 	init_renderer(font_vao, font_vbo);
 
-	Model_obj bottle("obj_models/car.obj");
+	Model_obj bottle("obj_models/ball.obj");
 	// 3 by 3 plane
 	const GLfloat cols_rows = 20;
 	const GLfloat max_verts = cols_rows*cols_rows;
