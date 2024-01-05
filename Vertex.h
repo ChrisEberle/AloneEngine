@@ -7,12 +7,12 @@ struct Vertex
 	GLfloat texId;
 };
 
-struct ObjPositionCoordinates
+struct PositionVertex
 {
 	GLfloat position[3];
 };
 
-struct ObjTextureCoordinates
+struct TextureVertex
 {
 	GLfloat texCoord[2];
 };

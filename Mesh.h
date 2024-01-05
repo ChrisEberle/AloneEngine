@@ -1,6 +1,6 @@
 #pragma once
 
-#include "engine.h"
+
 
 static std::vector<Vertex> createQuad(GLfloat x, GLfloat y, GLfloat z, GLfloat texID) {
 	std::vector<Vertex> vertices;
@@ -57,7 +57,7 @@ static std::vector<Vertex> createCube(GLfloat x, GLfloat y, GLfloat z, GLfloat t
 	return vertices;
 }
 
-static std::vector<Vertex> createPlane(GLfloat originX, GLfloat originY, GLfloat originZ, GLfloat width, GLfloat height, GLuint rows, GLuint cols, GLfloat frequency, GLfloat amplitude) {
+static std::vector<Vertex> createPlane(GLfloat originX, GLfloat originY, GLfloat originZ, GLfloat width, GLfloat height, GLuint rows, GLuint cols, GLfloat frequency, GLfloat amplitude, GLfloat textureScaleX, GLfloat textureScaleY) {
 	std::vector<Vertex> vertices;
 
 	for (GLuint i = 0; i < rows; ++i) {
@@ -66,10 +66,14 @@ static std::vector<Vertex> createPlane(GLfloat originX, GLfloat originY, GLfloat
 			GLfloat y = originY + glm::perlin(glm::vec2(x * frequency, i * frequency)) * amplitude;  // Use Perlin noise for height
 			GLfloat z = originZ - i * (height / (rows - 1));
 
-			// Calculate texCoordX to repeat within each column
-			GLfloat texCoordX = static_cast<GLfloat>(j % cols) / (cols - 1);
 
-			GLfloat texCoordY = static_cast<GLfloat>(i) / (rows - 1);
+
+
+			// Calculate texCoordX to repeat within each column
+			GLfloat texCoordX = static_cast<GLfloat>(j % cols) / (cols - 1) * textureScaleX;
+
+			GLfloat texCoordY = static_cast<GLfloat>(i) / (rows - 1) * textureScaleY;
+
 
 			GLfloat texID = 0.0f;  // You can adjust this based on your requirements
 
@@ -94,13 +98,15 @@ static std::unique_ptr<GLuint[]> generatePlaneIndices(GLuint rows, GLuint cols) 
 			indicesPLANE[offset * (i * (cols - 1) + j) + 2] = currentVertex + cols;
 
 			indicesPLANE[offset * (i * (cols - 1) + j) + 3] = currentVertex + 1;
-			indicesPLANE[offset * (i * (cols - 1) + j) + 4] = currentVertex + cols;
-			indicesPLANE[offset * (i * (cols - 1) + j) + 5] = currentVertex + cols + 1;
+			indicesPLANE[offset * (i * (cols - 1) + j) + 4] = currentVertex + cols + 1;  
+			indicesPLANE[offset * (i * (cols - 1) + j) + 5] = currentVertex + cols;
 		}
 	}
 
 	return indicesPLANE;
 }
+
+
 
 
 static std::unique_ptr<GLuint[]> generateCubeChunkIndices(size_t max_index_count, size_t spacing_offset) {
@@ -142,6 +148,18 @@ static void move_cube(GLFWwindow* window, std::vector<Vertex>& verts, int numVer
 			// Access and modify the values of the vertices in the verts vector
 			verts[i].position[2] = verts[i].position[2] - control_variable;  // Modify X-coordinate
 			// Modify other attributes if needed...
+		}
+	}
+}
+
+static void back_face_culling(bool back_cull, bool select_side) {
+	if (back_cull) {
+		glEnable(GL_CULL_FACE);
+		if (select_side) {
+			glCullFace(GL_BACK);
+		}
+		else {
+			glCullFace(GL_FRONT);
 		}
 	}
 }

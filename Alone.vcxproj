@@ -144,6 +144,7 @@
     <ClCompile Include="EBO.cpp" />
     <ClCompile Include="FreeTypeFont.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model_obj.cpp" />
     <ClCompile Include="ShaderClass.cpp" />
     <ClCompile Include="stb.cpp" />

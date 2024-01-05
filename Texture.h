@@ -15,8 +15,8 @@ static GLuint LoadTexture(const std::string& path) {
 	// Set LOD bias to -0.5 (adjust this value as needed)
 	glTextureParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -0.5f);
 	// Configures the way the texture repeats (if it does at all)
-	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	// Assigns the image to the OpenGL Texture object
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels);
 	// Generates MipMaps

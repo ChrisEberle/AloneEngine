@@ -6,7 +6,7 @@ VBO::VBO(GLsizeiptr num_indices)
 {
 	glGenBuffers(1, &ID);
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * num_indices, nullptr, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, num_indices, nullptr, GL_DYNAMIC_DRAW);
 }
 
 // dynamiccaly fills the vbo

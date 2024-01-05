@@ -88,6 +88,9 @@
     <ClCompile Include="Model_obj.cpp">
       <Filter>Graphics\Objects</Filter>
     </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Graphics\Objects\BaseMesh</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FreeTypeFont.h">

@@ -9,8 +9,8 @@ public:
 		std::ifstream objFile(path);
 		std::string lineText;
 		std::vector<Vertex> vertices;
-		std::vector<ObjPositionCoordinates> posCoords;
-		std::vector<ObjTextureCoordinates> texCoords;
+		std::vector<PositionVertex> posCoords;
+		std::vector<TextureVertex> texCoords;
 		while (std::getline(objFile, lineText)) {
 			std::stringstream objTextStream(lineText);
 			GLfloat pos[3];
@@ -22,7 +22,7 @@ public:
 				std::string token;
 				objTextStream >> token;
 				objTextStream >> pos[0] >> pos[1] >> pos[2];
-				ObjPositionCoordinates vert;
+				PositionVertex vert;
 				vert.position[0] = pos[0];
 				vert.position[1] = pos[1];
 				vert.position[2] = pos[2];
@@ -34,7 +34,7 @@ public:
 				std::string token;
 				objTextStream >> token;
 				objTextStream >> tc[0] >> tc[1];
-				ObjTextureCoordinates vert;
+				TextureVertex vert;
 				vert.texCoord[0] = tc[0];  // Corrected line
 				vert.texCoord[1] = tc[1];  // Corrected line
 				texCoords.push_back(vert);
@@ -94,6 +94,8 @@ public:
 		return vertices;
 	}
 
+
+
 	std::unique_ptr<GLuint[]> obj_indices() {
 		std::unique_ptr<GLuint[]> indices(new GLuint[numVertices]);
 
@@ -112,7 +114,6 @@ public:
 
 private:
 	 int numVertices;
-
-
+	 int numIndices;
 };
 

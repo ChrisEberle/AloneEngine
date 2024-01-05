@@ -1,0 +1,503 @@
+# Blender 4.0.2 MTL File: 'None'
+# www.blender.org
+
+newmtl BarrelShroud_High.001
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+
+newmtl BarrelShroud_Low.001
+Ka 0.010000 0.010000 0.010000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 1
+map_Kd F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_BarrelShroud_Low_BaseColor.png
+map_Ns F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_BarrelShroud_Low_Roughness.png
+map_Bump -bm 1.000000 F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_BarrelShroud_Low_Normal.png
+
+newmtl Barrel_High.001
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+
+newmtl Barrel_Low.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 1
+map_Kd F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Barrel_Low_BaseColor.png
+map_Ns F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Barrel_Low_Roughness.png
+map_refl F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Barrel_Low_Metallic.png
+map_Bump -bm 1.000000 F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Barrel_Low_Normal.png
+
+newmtl BoltCarrier_High.001
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+
+newmtl BoltCarrier_Low.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.090909 0.090909 0.090909
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+map_Kd F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_BoltCarrier_Low_BaseColor.png
+map_Ns F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_BoltCarrier_Low_Roughness.png
+map_refl F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_BoltCarrier_Low_Metallic.png
+map_Bump -bm 1.000000 F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_BoltCarrier_Low_Normal.png
+
+newmtl BoltCatch_Low.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.068182 0.068182 0.068182
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+map_Kd F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_BoltCatch_Low_BaseColor.png
+map_Ns F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_BoltCatch_Low_Roughness.png
+map_refl F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_BoltCatch_Low_Metallic.png
+map_Bump -bm 1.000000 F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_BoltCatch_Low_Normal.png
+
+newmtl Bolts_Low.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.045455 0.045455 0.045455
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+map_Kd F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Bolts_Low_BaseColor.png
+map_Ns F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Bolts_Low_Roughness.png
+map_refl F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Bolts_Low_Metallic.png
+map_Bump -bm 1.000000 F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Bolts_Low_Normal.png
+
+newmtl Buffertube_Low.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.068182 0.068182 0.068182
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+map_Kd F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Buffertube_Low_BaseColor.png
+map_Ns F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Buffertube_Low_Roughness.png
+map_refl F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Buffertube_Low_Metallic.png
+map_Bump -bm 1.000000 F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Buffertube_Low_Normal.png
+
+newmtl ButtStock_High.001
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+
+newmtl ButtStock_Low.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.072727 0.072727 0.072727
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+map_Kd F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_ButtStock_Low_BaseColor.png
+map_Ns F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_ButtStock_Low_Roughness.png
+map_refl F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_ButtStock_Low_Metallic.png
+map_Bump -bm 1.000000 F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_ButtStock_Low_Normal.png
+
+newmtl ButtstockCylinder_Low.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.063636 0.063636 0.063636
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+map_Kd F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_ButtstockCylinder_Low_BaseColor.png
+map_Ns F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_ButtstockCylinder_Low_Roughness.png
+map_refl F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_ButtstockCylinder_Low_Metallic.png
+map_Bump -bm 1.000000 F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_ButtstockCylinder_Low_Normal.png
+
+newmtl ButtstockStruts_Low.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.059091 0.059091 0.059091
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+map_Kd F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_ButtstockStruts_Low_BaseColor.png
+map_Ns F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_ButtstockStruts_Low_Roughness.png
+map_refl F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_ButtstockStruts_Low_Metallic.png
+map_Bump -bm 1.000000 F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_ButtstockStruts_Low_Normal.png
+
+newmtl ChargingHandle_High.001
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+
+newmtl ChargingHandle_Low.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.081818 0.081818 0.081818
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+map_Kd F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_ChargingHandle_Low_BaseColor.png
+map_Ns F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_ChargingHandle_Low_Roughness.png
+map_refl F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_ChargingHandle_Low_Metallic.png
+map_Bump -bm 1.000000 F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_ChargingHandle_Low_Normal.png
+
+newmtl ChargingHandlearms_High.001
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+
+newmtl Cylinder_Low.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.081818 0.081818 0.081818
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+map_Kd F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Cylinder_Low_BaseColor.png
+map_Ns F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Cylinder_Low_Roughness.png
+map_refl F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Cylinder_Low_Metallic.png
+map_Bump -bm 1.000000 F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Cylinder_Low_Normal.png
+
+newmtl EjectionCoverBolt_Low.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.081818 0.081818 0.081818
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+map_Kd F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_EjectionCoverBolt_Low_BaseColor.png
+map_Ns F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_EjectionCoverBolt_Low_Roughness.png
+map_refl F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_EjectionCoverBolt_Low_Metallic.png
+map_Bump -bm 1.000000 F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_EjectionCoverBolt_Low_Normal.png
+
+newmtl EjectionCover_High.001
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+
+newmtl EjectionCover_Low.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.077273 0.077273 0.077273
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+map_Kd F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_EjectionCover_Low_BaseColor.png
+map_Ns F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_EjectionCover_Low_Roughness.png
+map_refl F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_EjectionCover_Low_Metallic.png
+map_Bump -bm 1.000000 F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_EjectionCover_Low_Normal.png
+
+newmtl FrontSight2_Low.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.086364 0.086364 0.086364
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+map_Kd F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_FrontSight2_Low_BaseColor.png
+map_Ns F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_FrontSight2_Low_Roughness.png
+map_refl F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_FrontSight2_Low_Metallic.png
+map_Bump -bm 1.000000 F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_FrontSight2_Low_Normal.png
+
+newmtl FrontSightBolts_Low.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.072727 0.072727 0.072727
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+map_Kd F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_FrontSightBolts_Low_BaseColor.png
+map_Ns F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_FrontSightBolts_Low_Roughness.png
+map_refl F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_FrontSightBolts_Low_Metallic.png
+map_Bump -bm 1.000000 F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_FrontSightBolts_Low_Normal.png
+
+newmtl FrontSight_Low.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.054545 0.054545 0.054545
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+map_Kd F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_FrontSight_Low_BaseColor.png
+map_Ns F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_FrontSight_Low_Roughness.png
+map_refl F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_FrontSight_Low_Metallic.png
+map_Bump -bm 1.000000 F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_FrontSight_Low_Normal.png
+
+newmtl Gas_tube_Low.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.077273 0.077273 0.077273
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+map_Kd F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Gas_tube_Low_BaseColor.png
+map_Ns F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Gas_tube_Low_Roughness.png
+map_refl F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Gas_tube_Low_Metallic.png
+map_Bump -bm 1.000000 F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Gas_tube_Low_Normal.png
+
+newmtl Grip_High.001
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+
+newmtl Grip_Low.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.004545 0.004545 0.004545
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+map_Kd F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Grip_Low_BaseColor.png
+map_Ns F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Grip_Low_Roughness.png
+map_refl F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Grip_Low_Metallic.png
+map_Bump -bm 1.000000 F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Grip_Low_Normal.png
+
+newmtl Lower_High.001
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+
+newmtl Lower_Low.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.068182 0.068182 0.068182
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+map_Kd F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Lower_Low_BaseColor.png
+map_Ns F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Lower_Low_Roughness.png
+map_refl F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Lower_Low_Metallic.png
+map_Bump -bm 1.000000 F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Lower_Low_Normal.png
+
+newmtl MagCatch_Low.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.059091 0.059091 0.059091
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+map_Kd F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_MagCatch_Low_BaseColor.png
+map_Ns F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_MagCatch_Low_Roughness.png
+map_refl F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_MagCatch_Low_Metallic.png
+map_Bump -bm 1.000000 F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_MagCatch_Low_Normal.png
+
+newmtl MagEject_Low.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.068182 0.068182 0.068182
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+map_Kd F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_MagEject_Low_BaseColor.png
+map_Ns F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_MagCatch_Low_Roughness.png
+map_refl F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_MagEject_Low_Metallic.png
+map_Bump -bm 1.000000 F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_MagCatch_Low_Normal.png
+
+newmtl Magazine_High.001
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+
+newmtl Magazine_Low.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.068182 0.068182 0.068182
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+map_Kd F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Magazine_Low_BaseColor.png
+map_Ns F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Magazine_Low_Roughness.png
+map_refl F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Magazine_Low_Metallic.png
+map_Bump -bm 1.000000 F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Magazine_Low_Normal.png
+
+newmtl Muzzle_High.002
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+
+newmtl Muzzle_Low.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.063636 0.063636 0.063636
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+map_Kd F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Muzzle_Low_BaseColor.png
+map_Ns F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Muzzle_Low_Roughness.png
+map_refl F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Muzzle_Low_Metallic.png
+map_Bump -bm 1.000000 F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Muzzle_Low_Normal.png
+
+newmtl RearSight2_Low.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.095455 0.095455 0.095455
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+map_Kd F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_RearSight2_Low_BaseColor.png
+map_Ns F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_RearSight2_Low_Roughness.png
+map_refl F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_RearSight2_Low_Metallic.png
+map_Bump -bm 1.000000 F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_RearSight2_Low_Normal.png
+
+newmtl RearSightBolts_Low.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.081818 0.081818 0.081818
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+map_Kd F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_RearSightBolts_Low_BaseColor.png
+map_Ns F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_RearSightBolts_Low_Roughness.png
+map_refl F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_RearSightBolts_Low_Metallic.png
+map_Bump -bm 1.000000 F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_RearSightBolts_Low_Normal.png
+
+newmtl RearSight_Low.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.068182 0.068182 0.068182
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+map_Kd F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_RearSight_Low_BaseColor.png
+map_Ns F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_RearSight_Low_Roughness.png
+map_refl F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_RearSight_Low_Metallic.png
+map_Bump -bm 1.000000 F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_RearSight_Low_Normal.png
+
+newmtl Safety_Low.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.077273 0.077273 0.077273
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+map_Kd F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Safety_Low_BaseColor.png
+map_Ns F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Safety_Low_Roughness.png
+map_refl F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Safety_Low_Metallic.png
+map_Bump -bm 1.000000 F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Safety_Low_Normal.png
+
+newmtl StockButton_Low.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.077273 0.077273 0.077273
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+map_Kd F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_StockButton_Low_BaseColor.png
+map_Ns F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_StockButton_Low_Roughness.png
+map_refl F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_StockButton_Low_Metallic.png
+map_Bump -bm 1.000000 F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_StockButton_Low_Normal.png
+
+newmtl Stock_High.002
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+
+newmtl Stock_Low.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.063636 0.063636 0.063636
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+map_Kd F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Stock_Low_BaseColor.png
+map_Ns F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Stock_Low_Roughness.png
+map_refl F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Stock_Low_Metallic.png
+map_Bump -bm 1.000000 F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Stock_Low_Normal.png
+
+newmtl Trigger_Low.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.068182 0.068182 0.068182
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+map_Kd F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Trigger_Low_BaseColor.png
+map_Ns F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Trigger_Low_Roughness.png
+map_refl F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Trigger_Low_Metallic.png
+map_Bump -bm 1.000000 F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Trigger_Low_Normal.png
+
+newmtl Upper_High.002
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+
+newmtl Upper_Low.001
+Ka 1.000000 1.000000 1.000000
+Ks 0.068182 0.068182 0.068182
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.200000
+illum 9
+map_Kd F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Upper_Low_BaseColor.png
+map_Ns F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Upper_Low_Roughness.png
+map_refl F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Upper_Low_Metallic.png
+map_Bump -bm 1.000000 F:/Modelling/Honey Badger/Textures/HoneyBadger_Low_Upper_Low_Normal.png

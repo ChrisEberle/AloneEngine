@@ -33,33 +33,36 @@ int main()
 
 	Model_obj bottle("obj_models/ball.obj");
 	// 3 by 3 plane
-	const GLfloat cols_rows = 20;
-	const GLfloat max_verts = cols_rows*cols_rows;
-	const GLfloat max_indices = ((cols_rows -1)*(cols_rows-1)) * 6;
-	const GLfloat max_quads = ((cols_rows - 1) * (cols_rows - 1));
+	GLfloat cols_rows = 2000.0f;
+
+	GLfloat num_verts;
+	GLfloat num_indices;
+	GLfloat max_indices = ((cols_rows -1)*(cols_rows-1)) * 6;
+	GLfloat max_quads = ((cols_rows - 1) * (cols_rows - 1));
 
 	// OBJ
 	std::vector<Vertex> objModel = bottle.obj_vert_generator();
-	int model_size = bottle.get_num_verts();
+
+
 
 	// PLANE
-	std::vector<Vertex> plane = createPlane(0.0f, 0.0f, 0.0f, 100.0f, 100.0f, cols_rows, cols_rows, 0.05f, 4.0f);
-
-	// Use smart pointer for verts
-	std::unique_ptr<std::vector<Vertex>> verts = std::make_unique<std::vector<Vertex>>(model_size);
+	std::vector<Vertex> plane = createPlane(0.0f, 0.0f, 0.0f, 100.0f, 100.0f, cols_rows, cols_rows, 0.0f, 4.0f, 20.0f, 20.0f);
+	num_verts = plane.size();
+	// Stores every vertice created pre run, make sure to update if you are adding in more objects
+	std::unique_ptr<std::vector<Vertex>> verts = std::make_unique<std::vector<Vertex>>();
 
 	// Generate indices for the plane and chunk
 	std::unique_ptr<GLuint[]> indicesPLANE = generatePlaneIndices(cols_rows, cols_rows);
 	std::unique_ptr<GLuint[]> indicesOBJ = bottle.obj_indices();
-	
-	//copy obj verts to verts
-	std::copy(objModel.begin(), objModel.end(), verts->begin());
+
+
+	std::copy(plane.begin(), plane.end(), std::back_inserter(*verts));
 
 
 	// Generates Shader object
 	Shaderer objectShader("shaders/shape.vs", "shaders/shape.fs");
 	// Generates Vertex Buffer Object and links it to vertices
-	VBO VBO1(model_size);
+	VBO VBO1(sizeof(Vertex) * num_verts);
 	// Generates Vertex Array Object and binds it
 	VAO VAO1;
 	// binds the VAO
@@ -71,7 +74,7 @@ int main()
 
 
 	// Generates Element Buffer Object and links it to indices
-	EBO EBO1(indicesOBJ.get(), model_size);
+	EBO EBO1(indicesPLANE.get(), max_indices);
 
 	GLuint tex0 = LoadTexture("textures/grey_sand.png");
 	GLuint tex1 = LoadTexture("textures/dirt.png");
@@ -103,16 +106,17 @@ int main()
 		//switch between textured or wireframe
 		wireframe_state(wireframe);
 
-
-		move_cube(window, *verts, model_size, xpos);
+		
+		move_cube(window, *verts, num_verts, xpos);
 		// Tell OpenGL which Shader Program we want to use
 		objectShader.Activate();
 		glEnable(GL_DEPTH_TEST);
+		back_face_culling(true, true);
 		VBO1.dynamic_update(*verts);
 		VAO1.Bind();
 		// bind the textures to the texture units in the vbo/shader
 		texture_units(objectShader.ID, textureContainer, "textureContainer");
-		glDrawElements(GL_TRIANGLES, model_size, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, max_indices, GL_UNSIGNED_INT, 0);
 		VBO1.Unbind();
 		VAO1.Unbind();
 			
