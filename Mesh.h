@@ -230,20 +230,20 @@ public:
 	};
 };
 
-class BatchMesh {
+class BatchRenderer {
 public:
 	GLsizeiptr num_indices;
 	VBO vbo;
 	VAO vao;
 	EBO ebo;
 
-	BatchMesh(GLsizeiptr nm) : num_indices(nm), vbo(num_indices), ebo(num_indices) {
+	BatchRenderer(GLsizeiptr nm) : num_indices(nm), vbo(num_indices), ebo(num_indices) {
 	}
 	
-	~BatchMesh() {
-		//vao.Delete();
-		//vbo.Delete();
-		//ebo.Delete();
+	~BatchRenderer() {
+		vao.Delete();
+		vbo.Delete();
+		ebo.Delete();
 	}
 
 	void initializeMesh() {
@@ -259,13 +259,17 @@ public:
 		return glGetUniformLocation(objectShader.ID, textureSampler.c_str());
 	}
 
+	void update() {
+			vbo.dynamic_update(vertices);
+			ebo.dynamic_update(indices);
+	}
+
 	void render(Shaderer& objectShader, GLuint& tex0) {
 		
-
+		
 		// Tell OpenGL which Shader Program we want to use
 		objectShader.Activate();
-		vbo.dynamic_update(vertices);
-		ebo.dynamic_update(indices);
+		
 
 		glEnable(GL_DEPTH_TEST);
 		back_face_culling(false, true);
@@ -312,9 +316,6 @@ public:
 	}
 
 private:
-
 	std::vector<Vertex> vertices;
 	std::vector<GLuint> indices;
-
-	
 };

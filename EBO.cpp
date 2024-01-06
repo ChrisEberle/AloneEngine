@@ -5,7 +5,7 @@ EBO::EBO(GLsizeiptr num_indices)
 {
 	glCreateBuffers(1, &ID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * num_indices, nullptr, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * num_indices, nullptr, GL_STATIC_DRAW);
 }
 
 // Binds the EBO

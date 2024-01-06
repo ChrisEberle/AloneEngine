@@ -38,7 +38,7 @@ int main()
 	Model_obj car("obj_models/car.obj");
 	std::vector<Vertex> objModel = car.obj_vert_generator();
 	std::vector<GLuint> ind = car.obj_indices();
-	BatchMesh bm(1000000);
+	BatchRenderer bm(10000000);
 	bm.initializeMesh();
 
 	PlaneMesh plane(0.0f, 0.0f, 0.0f, 100.0f, 100.0f, 10.0f, 10.0f, 0.0f, 0.0f, 20.0f, 20.0f);
@@ -64,7 +64,7 @@ int main()
 	int frameCount = 0;
 	float fps = 0.0f;
 	//terrain.add_to_mesh(objectShader, cube1.vertices, cube1.indices);
-
+	bm.update();
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -95,7 +95,7 @@ int main()
 		//draw text
 		RenderText(font_shader, "Alone Engine - V 0.0.1", 25.0f, 25.0f, 1.0f, color.white, font_vao, font_vbo);
 		RenderText(font_shader, std::to_string(get_fps(frameCount,lastTime)), 25.0f, SCR_HEIGHT - 50.0f, 1.0f, color.white, font_vao, font_vbo);
-		//RenderText(font_shader, std::to_string(bm.getNumVertices()), 500.0f, SCR_HEIGHT - 50.0f, 1.0f, color.white, font_vao, font_vbo);
+		RenderText(font_shader, std::to_string(bm.getNumIndices()), 500.0f, SCR_HEIGHT - 50.0f, 1.0f, color.white, font_vao, font_vbo);
 		// ==========================================================
 
 		
