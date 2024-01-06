@@ -79,7 +79,6 @@ public:
 
 					vert.texCoord[0] = texCoords[tIndex - 1].texCoord[0];
 					vert.texCoord[1] = texCoords[tIndex - 1].texCoord[1];
-					vert.texId = 1;
 					vertices.push_back(vert);
 
 					// Store the indices if needed for further processing
@@ -96,8 +95,8 @@ public:
 
 
 
-	std::unique_ptr<GLuint[]> obj_indices() {
-		std::unique_ptr<GLuint[]> indices(new GLuint[numVertices]);
+	std::vector<GLuint> obj_indices() {
+		std::vector<GLuint> indices(numVertices);
 
 
 		for (GLuint i = 0; i < numVertices; ++i) {

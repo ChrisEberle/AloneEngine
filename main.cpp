@@ -31,50 +31,22 @@ int main()
 	ft_init(ft, face, font_shader, filepath, SCR_WIDTH, SCR_HEIGHT);
 	init_renderer(font_vao, font_vbo);
 
-	Model_obj bottle("obj_models/ball.obj");
-	// 3 by 3 plane
-	GLfloat cols_rows = 2000.0f;
-
-	GLfloat num_verts;
-	GLfloat num_indices;
-	GLfloat max_indices = ((cols_rows -1)*(cols_rows-1)) * 6;
-	GLfloat max_quads = ((cols_rows - 1) * (cols_rows - 1));
-
-	// OBJ
-	std::vector<Vertex> objModel = bottle.obj_vert_generator();
-
-
-
-	// PLANE
-	std::vector<Vertex> plane = createPlane(0.0f, 0.0f, 0.0f, 100.0f, 100.0f, cols_rows, cols_rows, 0.0f, 4.0f, 20.0f, 20.0f);
-	num_verts = plane.size();
-	// Stores every vertice created pre run, make sure to update if you are adding in more objects
-	std::unique_ptr<std::vector<Vertex>> verts = std::make_unique<std::vector<Vertex>>();
-
-	// Generate indices for the plane and chunk
-	std::unique_ptr<GLuint[]> indicesPLANE = generatePlaneIndices(cols_rows, cols_rows);
-	std::unique_ptr<GLuint[]> indicesOBJ = bottle.obj_indices();
-
-
-	std::copy(plane.begin(), plane.end(), std::back_inserter(*verts));
-
 
 	// Generates Shader object
 	Shaderer objectShader("shaders/shape.vs", "shaders/shape.fs");
-	// Generates Vertex Buffer Object and links it to vertices
-	VBO VBO1(sizeof(Vertex) * num_verts);
-	// Generates Vertex Array Object and binds it
-	VAO VAO1;
-	// binds the VAO
-	VAO1.Bind();
-	// Links VBO attributes such as coordinates and colors to VAO
-	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, sizeof(Vertex), (void*)offsetof(Vertex, position));
-	VAO1.LinkAttrib(VBO1, 1, 2, GL_FLOAT, sizeof(Vertex), (void*)offsetof(Vertex,texCoord));
-	VAO1.LinkAttrib(VBO1, 2, 1, GL_FLOAT, sizeof(Vertex), (void*)offsetof(Vertex, texId));
 
+	Model_obj car("obj_models/car.obj");
+	std::vector<Vertex> objModel = car.obj_vert_generator();
+	std::vector<GLuint> ind = car.obj_indices();
+	BatchMesh bm(1000000);
+	bm.initializeMesh();
 
-	// Generates Element Buffer Object and links it to indices
-	EBO EBO1(indicesPLANE.get(), max_indices);
+	PlaneMesh plane(0.0f, 0.0f, 0.0f, 100.0f, 100.0f, 10.0f, 10.0f, 0.0f, 0.0f, 20.0f, 20.0f);
+	CubeMesh cube1(0.0f, 0.0f, 0.0f);
+	CubeMesh cube2(2.0f, 0.0f, 0.0f);
+	//bm.add_to_mesh(plane.vertices, plane.indices);
+	//bm.add_to_mesh(cube2.vertices, cube2.indices);
+	bm.add_to_mesh(objModel, ind);
 
 	GLuint tex0 = LoadTexture("textures/grey_sand.png");
 	GLuint tex1 = LoadTexture("textures/dirt.png");
@@ -82,6 +54,7 @@ int main()
 	// put textures in container array
 	GLuint textureContainer[4] = { tex0,tex1,tex2 };
 
+	GLuint tex0Uni = glGetUniformLocation(objectShader.ID, "tex0");
 
  	// Create camera object
 	Camera camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(0.0f, 0.0f, 5.0f));
@@ -90,7 +63,7 @@ int main()
 	double lastTime = glfwGetTime();
 	int frameCount = 0;
 	float fps = 0.0f;
-
+	//terrain.add_to_mesh(objectShader, cube1.vertices, cube1.indices);
 
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
@@ -106,25 +79,12 @@ int main()
 		//switch between textured or wireframe
 		wireframe_state(wireframe);
 
-		
-		move_cube(window, *verts, num_verts, xpos);
-		// Tell OpenGL which Shader Program we want to use
-		objectShader.Activate();
-		glEnable(GL_DEPTH_TEST);
 		back_face_culling(true, true);
-		VBO1.dynamic_update(*verts);
-		VAO1.Bind();
-		// bind the textures to the texture units in the vbo/shader
-		texture_units(objectShader.ID, textureContainer, "textureContainer");
-		glDrawElements(GL_TRIANGLES, max_indices, GL_UNSIGNED_INT, 0);
-		VBO1.Unbind();
-		VAO1.Unbind();
-			
+		bm.render(objectShader,tex0);
 
-
+		//bm.render(objectShader, tex0);
 		// update the camera
 		camera.Matrix(45.0f, 0.1f, 10000.0f, objectShader, "camMatrix");
-
 
 		// Font Rendering
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -135,7 +95,7 @@ int main()
 		//draw text
 		RenderText(font_shader, "Alone Engine - V 0.0.1", 25.0f, 25.0f, 1.0f, color.white, font_vao, font_vbo);
 		RenderText(font_shader, std::to_string(get_fps(frameCount,lastTime)), 25.0f, SCR_HEIGHT - 50.0f, 1.0f, color.white, font_vao, font_vbo);
-		RenderText(font_shader, std::to_string(bottle.get_num_verts()), 500.0f, SCR_HEIGHT - 50.0f, 1.0f, color.white, font_vao, font_vbo);
+		//RenderText(font_shader, std::to_string(bm.getNumVertices()), 500.0f, SCR_HEIGHT - 50.0f, 1.0f, color.white, font_vao, font_vbo);
 		// ==========================================================
 
 		
@@ -144,10 +104,7 @@ int main()
 		// Take care of all GLFW events and swap buffers
 		wnd.events();
 	}
-	// Delete all the objects we've created
-	VAO1.Delete();
-	VBO1.Delete();
-	EBO1.Delete();
+
 	objectShader.Delete();
 	font_shader.Delete();
 	// Delete window before ending the program
