@@ -89,7 +89,7 @@ public:
 	//constructor
 	PlaneMesh(GLfloat originX, GLfloat originY, GLfloat originZ,
 		GLfloat sizeX, GLfloat sizeZ, GLuint rows, GLuint cols,
-		GLfloat frequency, GLfloat amplitude,
+		GLfloat numOctaves, GLfloat persistence,
 		GLfloat textureScaleX, GLfloat textureScaleY)
 	{
 		// create the vertices for the plane
@@ -97,10 +97,22 @@ public:
 		for (GLuint i = 0; i < rows; ++i) {
 			for (GLuint j = 0; j < cols; ++j) {
 				GLfloat x = originX + j * (sizeX / (cols - 1));
-				GLfloat y = originY + glm::perlin(glm::vec2(x * frequency, i * frequency)) * amplitude;  // Use Perlin noise for height
 				GLfloat z = originZ - i * (sizeZ / (rows - 1));
 
+				// Use multiple octaves of Perlin noise
+				GLfloat y = originY;
+				GLfloat frequency = 0.1f; // Initial frequency
+				GLfloat amplitude = 1.0f; // Initial amplitude
 
+				for (int k = 0; k < numOctaves; ++k) {
+					y += glm::perlin(glm::vec2(x * frequency, z * frequency)) * amplitude;
+					frequency *= 2.0f; // Increase frequency with each octave
+					amplitude *= persistence; // Decrease amplitude with each octave
+				}
+
+				if (y < -0.5f) {
+					y = -0.5f;
+				}
 				// Calculate texCoordX to repeat within each column
 				GLfloat texCoordX = static_cast<GLfloat>(j % cols) / (cols - 1) * textureScaleX;
 
@@ -259,18 +271,28 @@ public:
 		return glGetUniformLocation(objectShader.ID, textureSampler.c_str());
 	}
 
-	void update() {
+	void update(Shaderer& objectShader) {
 			vbo.dynamic_update(vertices);
 			ebo.dynamic_update(indices);
+
 	}
 
-	void render(Shaderer& objectShader, GLuint& tex0) {
+	void render(Shaderer& objectShader, GLuint& tex0,bool wireframe) {
 		
 		
 		// Tell OpenGL which Shader Program we want to use
 		objectShader.Activate();
-		
-
+		wireframe_state(wireframe,objectShader);
+		if (wireframe) {
+			GLint customColorLocation = glGetUniformLocation(objectShader.ID, "color");
+			// Set the value of the customColor uniform
+			glUniform4f(customColorLocation, 1.0f, 0.0f, 0.0f, 1.0f);
+		}
+		else {
+			GLint customColorLocation = glGetUniformLocation(objectShader.ID, "color");
+			// Set the value of the customColor uniform
+			glUniform4f(customColorLocation, 1.0f, 1.0f, 1.0f, 1.0f); // Set to red color
+		}
 		glEnable(GL_DEPTH_TEST);
 		back_face_culling(false, true);
 		glUniform1i(getShaderUniform(objectShader, "tex0"), 0);

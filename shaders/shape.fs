@@ -9,8 +9,10 @@ in vec2 texCoord;
 // Gets the Texture Unit from the main function
 uniform sampler2D tex0;
 
+uniform vec4 color;
+
 
 void main()
 {
-    FragColor = texture(tex0, texCoord);
+    FragColor = texture(tex0, texCoord) * color;
 }
