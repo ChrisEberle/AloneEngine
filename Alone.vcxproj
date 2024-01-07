@@ -175,8 +175,10 @@
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\shape.fs" />
-    <None Include="shaders\shape.vs" />
+    <None Include="shaders\batched.fs" />
+    <None Include="shaders\batched.vs" />
+    <None Include="shaders\default.fs" />
+    <None Include="shaders\default.vs" />
     <None Include="shaders\text.fs" />
     <None Include="shaders\text.vs" />
   </ItemGroup>

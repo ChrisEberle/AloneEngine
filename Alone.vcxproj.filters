@@ -153,11 +153,17 @@
     <None Include="shaders\text.fs">
       <Filter>Graphics\Shaders\Fragment</Filter>
     </None>
-    <None Include="shaders\shape.fs">
+    <None Include="shaders\default.fs">
       <Filter>Graphics\Shaders\Fragment</Filter>
     </None>
-    <None Include="shaders\shape.vs">
+    <None Include="shaders\default.vs">
       <Filter>Graphics\Shaders\Vertex</Filter>
+    </None>
+    <None Include="shaders\batched.vs">
+      <Filter>Graphics\Shaders\Vertex</Filter>
+    </None>
+    <None Include="shaders\batched.fs">
+      <Filter>Graphics\Shaders\Fragment</Filter>
     </None>
   </ItemGroup>
 </Project>

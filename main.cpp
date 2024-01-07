@@ -41,41 +41,60 @@ int main()
 
 
 	// Generates Shader object
-	Shaderer objectShader("shaders/shape.vs", "shaders/shape.fs");
-
-	Model_obj car("obj_models/bottle.obj");
-	std::vector<Vertex> objModel = car.obj_vert_generator();
-	std::vector<GLuint> ind = car.obj_indices();
-	BatchRenderer bm(3100*3100*6);
-	bm.initializeMesh();
-
-	PlaneMesh plane(0.0f, 0.0f, 0.0f, 100.0f, 100.0f, 3000.0f, 3000.0f, 6.0f, 0.6f, 100.0f, 100.0f);
+	//Shaderer objectShader("shaders/batched.vs", "shaders/batched.fs");
+	Shaderer objectShader1("shaders/default.vs", "shaders/default.fs");
 	
-	CubeMesh cube2(2.0f, 0.0f, 0.0f);
-	//bm.add_to_mesh(plane.vertices, plane.indices);
-	//bm.add_to_mesh(cube2.vertices, cube2.indices);
-	bm.add_to_mesh(objModel, ind);
-	CubeMesh cube1(0.0f, 0.0f, 0.0f);
-	bm.add_to_mesh(cube1.vertices, cube1.indices);
-	bm.add_to_mesh(plane.vertices, plane.indices);
+
+
+
 
 	GLuint tex0 = LoadTexture("textures/grey_sand.png");
 	GLuint tex1 = LoadTexture("textures/dessert_sand.png");
 	GLuint tex2 = LoadTexture("textures/dirt.png");
 	// put textures in container array
 	GLuint textureContainer[4] = { tex0,tex1,tex2 };
+	// unifrom pointer for texture
+	GLuint tex0Uni = glGetUniformLocation(objectShader1.ID, "tex0");
 
-	GLuint tex0Uni = glGetUniformLocation(objectShader.ID, "tex0");
 
  	// Create camera object
 	Camera camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(0.0f, 0.0f, 5.0f));
+
+	// Create a transformation matrix with a 45-degree rotation on the x-axis and a translation of 10 units to the right
+	glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(45.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(10.0f, 0.0f, 0.0f));
+	glm::mat4 worldTransform = translationMatrix * rotationMatrix;
+
+
+	//// imported obj model initialization
+	Model_obj car("obj_models/car.obj");
+	std::vector<Vertex> objVerts = car.obj_vert_generator();
+	std::vector<GLuint> objInds = car.obj_indices();
+
+
+	CubeMesh cubesmall(0.0f, 0.0f, 0.0f);
+
+	glm::mat4 start_pos = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+
+	
+
+	//Mesh object0(plane.vertices, plane.indices,tex0);
+	Mesh object2(cubesmall.vertices, cubesmall.indices, tex0);
+	Mesh object1(objVerts, objInds, tex0);
+
+	std::vector<Mesh> objects = { object1, object2 };
+
+	SingleRender simpleRender(objectShader1,objects);
+	simpleRender.use_object(1, start_pos);
+
+
 
 	// Timing variables for FPS calculation
 	double lastTime = glfwGetTime();
 	int frameCount = 0;
 	float fps = 0.0f;
-	//terrain.add_to_mesh(objectShader, cube1.vertices, cube1.indices);
-	bm.update(objectShader);
+
+
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -86,14 +105,18 @@ int main()
 		input_callback(window, camera);
 		//===============
 
-		
-
+	
 		back_face_culling(true, true);
-		bm.render(objectShader,tex1, wireframe);
 
-		//bm.render(objectShader, tex0);
+		simpleRender.wireframe_render(wireframe);
+		simpleRender.activate();
+		simpleRender.render(wireframe);
+		simpleRender.deactivate();
+
+
+
 		// update the camera
-		camera.Matrix(45.0f, 0.1f, 10000.0f, objectShader, "camMatrix");
+		camera.Matrix(45.0f, 0.1f, 10000.0f, objectShader1, "camMatrix");
 
 		// Font Rendering
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -104,7 +127,7 @@ int main()
 		//draw text
 		RenderText(font_shader, "Alone Engine - V 0.0.1", 25.0f, 25.0f, 1.0f, color.white, font_vao, font_vbo);
 		RenderText(font_shader, std::to_string(get_fps(frameCount,lastTime)), 25.0f, SCR_HEIGHT - 50.0f, 1.0f, color.white, font_vao, font_vbo);
-		RenderText(font_shader, std::to_string(bm.getNumIndices()), 500.0f, SCR_HEIGHT - 50.0f, 1.0f, color.white, font_vao, font_vbo);
+		RenderText(font_shader, std::to_string(simpleRender.max_vertices), 500.0f, SCR_HEIGHT - 50.0f, 1.0f, color.white, font_vao, font_vbo);
 		// ==========================================================
 
 		
@@ -114,7 +137,7 @@ int main()
 		wnd.events();
 	}
 
-	objectShader.Delete();
+	objectShader1.Delete();
 	font_shader.Delete();
 	// Delete window before ending the program
 	glfwDestroyWindow(window);

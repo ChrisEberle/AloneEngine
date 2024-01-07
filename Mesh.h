@@ -1,7 +1,5 @@
 #pragma once
 
-
-
 static std::vector<Vertex> createQuad(GLfloat x, GLfloat y, GLfloat z) {
 	std::vector<Vertex> vertices;
 
@@ -13,20 +11,11 @@ static std::vector<Vertex> createQuad(GLfloat x, GLfloat y, GLfloat z) {
 
 	return vertices;
 }
-
 static std::vector<Vertex> createVertice(GLfloat x, GLfloat y, GLfloat z, GLfloat texCoord0, GLfloat texCoord1) {
 	std::vector<Vertex> vertices;
 	vertices.push_back({ x,y,z,texCoord0, texCoord1});
 	return vertices;
 }
-
-
-
-
-
-
-
-
 static std::unique_ptr<GLuint[]> generateCubeChunkIndices(size_t max_index_count, size_t spacing_offset) {
 	std::unique_ptr<GLuint[]> indices(new GLuint[max_index_count]);
 	size_t offset = 0;
@@ -48,7 +37,6 @@ static std::unique_ptr<GLuint[]> generateCubeChunkIndices(size_t max_index_count
 
 	return indices;
 }
-
 static void move_cube(GLFWwindow* window, std::vector<Vertex>& verts, int numVertices, GLfloat control_variable) {
 
 
@@ -69,7 +57,6 @@ static void move_cube(GLFWwindow* window, std::vector<Vertex>& verts, int numVer
 		}
 	}
 }
-
 static void back_face_culling(bool back_cull, bool select_side) {
 	if (back_cull) {
 		glEnable(GL_CULL_FACE);
@@ -169,8 +156,6 @@ public:
 	std::vector<Vertex> vertices;
 	std::vector<GLuint> indices;
 };
-
-
 class CubeMesh {
 public:
 	//constructor
@@ -242,14 +227,39 @@ public:
 	};
 };
 
+
+class Mesh {
+public:
+	std::vector<Vertex> vertices;
+	std::vector<GLuint> indices;
+	GLuint texture;
+	Mesh(const std::vector<Vertex>& vertices, std::vector<GLuint>& indices, GLuint& texture) : vertices(vertices), indices(indices), texture(texture) {
+	}
+
+
+	size_t get_num_vertices() const {
+		return vertices.size();
+	}
+
+	size_t get_num_indices() const {
+		return indices.size();
+	}
+};
+
 class BatchRenderer {
 public:
-	GLsizeiptr num_indices;
+	Shaderer shaderProgram;
 	VBO vbo;
 	VAO vao;
 	EBO ebo;
+	std::vector<Vertex> vertices;
+	std::vector<GLuint> indices;
+	GLsizeiptr max_indices;
+	GLsizeiptr max_vertices;
+	Color color;
 
-	BatchRenderer(GLsizeiptr nm) : num_indices(nm), vbo(num_indices), ebo(num_indices) {
+	BatchRenderer(Shaderer shaderProgram, GLsizeiptr max_indices, GLsizeiptr max_vertices) : shaderProgram(shaderProgram), max_indices(max_indices),max_vertices(max_vertices), vbo(max_vertices), ebo(max_indices) {
+		initializeMesh();
 	}
 	
 	~BatchRenderer() {
@@ -259,7 +269,6 @@ public:
 	}
 
 	void initializeMesh() {
-		
 		// Generates Vertex Array Object and binds it
 		vao.Bind();
 		// Links VBO attributes such as coordinates and colors to VAO
@@ -267,41 +276,64 @@ public:
 		vao.LinkAttrib(vbo, 1, 2, GL_FLOAT, sizeof(Vertex), (void*)offsetof(Vertex, texCoord));
 	}
 
-	GLuint getShaderUniform(Shaderer& objectShader, std::string textureSampler) {
-		return glGetUniformLocation(objectShader.ID, textureSampler.c_str());
+	GLuint getShaderUniform(std::string textureSampler) {
+		return glGetUniformLocation(shaderProgram.ID, textureSampler.c_str());
 	}
 
-	void update(Shaderer& objectShader) {
-			vbo.dynamic_update(vertices);
-			ebo.dynamic_update(indices);
-
+	void update() {
+		vao.Bind();
+		vbo.dynamic_update(vertices);
+		ebo.dynamic_update(indices);
+		vbo.Unbind();
+		ebo.Unbind();
+		vao.Unbind();
 	}
 
-	void render(Shaderer& objectShader, GLuint& tex0,bool wireframe) {
-		
-		
+	void render(GLuint& tex0) {
+		//activate current buffers
+		vbo.Bind();
+		vao.Bind();
+		ebo.Bind();
+
+		glEnable(GL_DEPTH_TEST);
 		// Tell OpenGL which Shader Program we want to use
-		objectShader.Activate();
-		wireframe_state(wireframe,objectShader);
-		if (wireframe) {
-			GLint customColorLocation = glGetUniformLocation(objectShader.ID, "color");
+		shaderProgram.Activate();
+		//function for rendering one or both sides of a triangle
+		back_face_culling(false, true);
+		// binds textures
+		glUniform1i(getShaderUniform("tex0"), 0);
+		glBindTexture(GL_TEXTURE_2D, tex0);
+		set_color(color.white);
+		// draws batched objects
+		glDrawElements(GL_TRIANGLES, getNumIndices(), GL_UNSIGNED_INT, 0);
+
+		//deactivate current buffers
+		vbo.Unbind();
+		vao.Unbind();
+		ebo.Unbind();
+	}
+
+	void set_color(glm::vec4 color) {
+		GLint customColorLocation = glGetUniformLocation(shaderProgram.ID, "color");
+		// Set the value of the customColor uniform
+		glUniform4f(customColorLocation, color.x, color.y, color.z, color.a);
+	}
+
+	void wireframe_render(bool get_state) {
+		// Whether to render wireframe or full textured
+		if (get_state) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+			GLint customColorLocation = glGetUniformLocation(shaderProgram.ID, "color");
 			// Set the value of the customColor uniform
 			glUniform4f(customColorLocation, 1.0f, 0.0f, 0.0f, 1.0f);
 		}
 		else {
-			GLint customColorLocation = glGetUniformLocation(objectShader.ID, "color");
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			GLint customColorLocation = glGetUniformLocation(shaderProgram.ID, "color");
 			// Set the value of the customColor uniform
 			glUniform4f(customColorLocation, 1.0f, 1.0f, 1.0f, 1.0f); // Set to red color
 		}
-		glEnable(GL_DEPTH_TEST);
-		back_face_culling(false, true);
-		glUniform1i(getShaderUniform(objectShader, "tex0"), 0);
-		glBindTexture(GL_TEXTURE_2D, tex0);
-		vao.Bind();
-
-		glDrawElements(GL_TRIANGLES, getNumIndices(), GL_UNSIGNED_INT, 0);
-		vbo.Unbind();
-		vao.Unbind();
 	}
 
 
@@ -319,25 +351,158 @@ public:
 		indices.insert(indices.end(), objInds.begin(), objInds.end());
 	}
 
-
-	// Getter Functions
-	const std::vector<Vertex>& getVertices() const {
-		return vertices;
+	// getters
+	GLuint getShaderUniform(Shaderer& objectShader, std::string textureSampler) {
+		return glGetUniformLocation(objectShader.ID, textureSampler.c_str());
 	}
-
-	const std::vector<GLuint>& getIndices() const {
-		return indices;
-	}
-
 	size_t getNumVertices() const {
 		return vertices.size();
 	}
-
 	size_t getNumIndices() const {
 		return indices.size();
 	}
 
-private:
+	//setters
+	void set_world_transform(glm::mat4 worldTransform) {
+		// Pass the modified worldTransform matrix to the shader
+		GLint worldTransformLocation = glGetUniformLocation(shaderProgram.ID, "worldTransform");
+		glUniformMatrix4fv(worldTransformLocation, 1, GL_FALSE, glm::value_ptr(worldTransform));
+	}
+};
+
+class SingleRender {
+public:
+	GLsizeiptr max_indices;
+	GLsizeiptr max_vertices;
+	VBO vbo;
+	VAO vao;
+	EBO ebo;
+	Shaderer shaderProgram;
+
+	std::vector<Mesh> objectContainer;
+
 	std::vector<Vertex> vertices;
 	std::vector<GLuint> indices;
+	Mesh object;
+	int obj_offset;
+	GLuint texture;
+
+	SingleRender(Shaderer& shadeProgram, std::vector<Mesh>& obj) : object(obj[0]), shaderProgram(shaderProgram), vbo(obj[0].get_num_vertices()), ebo(obj[0].get_num_indices()) {
+		// initialize pointer to the shader program
+		shaderProgram = shadeProgram;
+		//initialize internal object
+		objectContainer = obj;
+		max_indices = objectContainer[0].get_num_indices();
+		max_vertices = objectContainer[0].get_num_vertices();
+		vertices = objectContainer[0].vertices;
+		indices = objectContainer[0].indices;
+		texture = objectContainer[0].texture;
+		initializeMesh();
+		//Unbind buffers
+		vbo.Unbind();
+		vao.Unbind();
+		ebo.Unbind();
+	}
+
+	~SingleRender() {
+		vao.Delete();
+		vbo.Delete();
+		ebo.Delete();
+	}
+
+	void initializeMesh() {
+		// Binds the vertex array
+		vao.Bind();
+		// Links VBO attributes position, texCoords, normals
+		vao.LinkAttrib(vbo, 0, 3, GL_FLOAT, sizeof(Vertex), (void*)offsetof(Vertex, position));
+		vao.LinkAttrib(vbo, 1, 2, GL_FLOAT, sizeof(Vertex), (void*)offsetof(Vertex, texCoord));
+	}
+
+	void activate() {
+		
+		//bind relevant
+		vbo.Bind();
+		vao.Bind();
+		ebo.Bind();
+		// Tell OpenGL which Shader Program we want to use
+		shaderProgram.Activate();
+
+	}
+	void deactivate() {
+		//un-bind relevant
+		vbo.Unbind();
+		vao.Unbind();
+		ebo.Unbind();
+	}
+
+	void use_object(int obj_index, glm::mat4& worldTransform) {
+		//initialize internal object
+		object = objectContainer[obj_index];
+		max_indices = object.get_num_indices();
+		max_vertices = object.get_num_vertices();
+		vertices = object.vertices;
+		indices = object.indices;
+		texture = object.texture;
+		//activate shader so we can attach object attribs
+		shaderProgram.Activate();
+		//update vbo and ebo with object data
+		vao.Bind();
+		vbo.dynamic_update(vertices);
+		ebo.dynamic_update(indices);
+		//initialize the objects world attribs
+		set_color(glm::vec4(1.0f,1.0f,1.0f,1.0f));
+		set_world_transform(worldTransform);
+	}
+	void update(glm::mat4 worldTransform) {
+		set_world_transform(worldTransform);
+		set_color(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	}
+
+	void render(bool wireframe) {
+		// makes sure object is rendered correctly, make sure to clear the depth
+		glEnable(GL_DEPTH_TEST);
+		// Binds the texture to the object
+		if (!wireframe) {
+			glUniform1i(getShaderUniform(shaderProgram, "tex0"), 0);
+			glBindTexture(GL_TEXTURE_2D, texture);
+		}
+		// draws the object
+		glDrawElements(GL_TRIANGLES, max_indices, GL_UNSIGNED_INT, 0);
+	}
+
+	void wireframe_render(bool get_state) {
+		// Whether to render wireframe or full textured
+		if (get_state) {
+			glBindTexture(GL_TEXTURE_2D, 0);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+			GLint customColorLocation = glGetUniformLocation(shaderProgram.ID, "color");
+			// Set the value of the customColor uniform
+			glUniform4f(customColorLocation, 1.0f, 0.0f, 0.0f, 1.0f);
+		}
+		else {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			GLint customColorLocation = glGetUniformLocation(shaderProgram.ID, "color");
+			// Set the value of the customColor uniform
+			glUniform4f(customColorLocation, 1.0f, 1.0f, 1.0f, 1.0f); // Set to red color
+		}
+	}
+
+	// getters
+	GLuint getShaderUniform(Shaderer& objectShader, std::string textureSampler) {
+		return glGetUniformLocation(objectShader.ID, textureSampler.c_str());
+	}
+
+	//setters
+	void set_world_transform(glm::mat4& worldTransform) {
+		// Pass the modified worldTransform matrix to the shader
+		GLint worldTransformLocation = glGetUniformLocation(shaderProgram.ID, "worldTransform");
+		glUniformMatrix4fv(worldTransformLocation, 1, GL_FALSE, glm::value_ptr(worldTransform));
+	}
+	void set_color(glm::vec4 color) {
+		GLint customColorLocation = glGetUniformLocation(shaderProgram.ID, "color");
+		// Set the value of the customColor uniform
+		glUniform4f(customColorLocation, color.x, color.y, color.z, color.a);
+	}
+
 };
