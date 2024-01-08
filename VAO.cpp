@@ -1,13 +1,17 @@
 #include"VAO.h"
 
+
 // Constructor that generates a VAO ID
 VAO::VAO()
 {
 	glGenVertexArrays(1, &ID);
 }
 
+// Explicit instantiation for the required data type(s)
+
+template <typename DataType>
 // Links a VBO Attribute such as a position or color to the VAO
-void VAO::LinkAttrib(VBO& VBO, GLuint layout, GLuint numComponents, GLenum type, GLsizei stride, void* offset)
+void VAO::LinkAttrib(VBO<DataType>& VBO, GLuint layout, GLuint numComponents, GLenum type, GLsizei stride, void* offset)
 {
 	VBO.Bind();
 	glVertexAttribPointer(layout, numComponents, type, GL_FALSE, stride, offset);
@@ -32,3 +36,10 @@ void VAO::Delete()
 {
 	glDeleteVertexArrays(1, &ID);
 }
+
+// Explicit instantiation for the required data type(s)
+template void VAO::LinkAttrib<Vertex>(VBO<Vertex>& VBO, GLuint layout, GLuint numComponents, GLenum type, GLsizei stride, void* offset);
+// Explicit instantiation for the required data type(s)
+template void VAO::LinkAttrib<PositionVertex>(VBO<PositionVertex>& VBO, GLuint layout, GLuint numComponents, GLenum type, GLsizei stride, void* offset);
+// Explicit instantiation for the required data type(s)
+template void VAO::LinkAttrib<TextureVertex>(VBO<TextureVertex>& VBO, GLuint layout, GLuint numComponents, GLenum type, GLsizei stride, void* offset);

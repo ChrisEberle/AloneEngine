@@ -15,3 +15,8 @@ struct TextureVertex
 {
 	GLfloat texCoord[2];
 };
+
+struct NormalVertex
+{
+	GLfloat nCoords[2];
+};

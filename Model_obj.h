@@ -4,13 +4,18 @@ class Model_obj
 public:
 	Model_obj(std::string path) : path(path) {}
 	std::string path;
+
+	std::vector<GLuint> indices;
+	std::vector<Vertex> vertices;
+	
+	std::vector<PositionVertex> positions;
+	std::vector<TextureVertex> texture_coordinates;
 	 
-	std::vector<Vertex> obj_vert_generator() {
-		std::ifstream objFile(path);
-		std::string lineText;
-		std::vector<Vertex> vertices;
+	void obj_vert_generator() {
 		std::vector<PositionVertex> posCoords;
 		std::vector<TextureVertex> texCoords;
+		std::ifstream objFile(path);
+		std::string lineText;
 		while (std::getline(objFile, lineText)) {
 			std::stringstream objTextStream(lineText);
 			GLfloat pos[3];
@@ -72,14 +77,16 @@ public:
 
 
 
-					Vertex vert;
+					PositionVertex vert;
 					vert.position[0] = posCoords[pIndex - 1].position[0];
 					vert.position[1] = posCoords[pIndex - 1].position[1];
 					vert.position[2] = posCoords[pIndex - 1].position[2];
+					positions.push_back(vert);
 
-					vert.texCoord[0] = texCoords[tIndex - 1].texCoord[0];
-					vert.texCoord[1] = texCoords[tIndex - 1].texCoord[1];
-					vertices.push_back(vert);
+					TextureVertex vertT;
+					vertT.texCoord[0] = texCoords[tIndex - 1].texCoord[0];
+					vertT.texCoord[1] = texCoords[tIndex - 1].texCoord[1];
+					texture_coordinates.push_back(vertT);
 
 					// Store the indices if needed for further processing
 					positionIndices.push_back(pIndex);
@@ -89,21 +96,20 @@ public:
 		}
 
 
-		numVertices = vertices.size();
-		return vertices;
+		numVertices = posCoords.size();
 	}
 
 
 
-	std::vector<GLuint> obj_indices() {
-		std::vector<GLuint> indices(numVertices);
+	void obj_indices() {
+		std::vector<GLuint> indicess;
 
-
-		for (GLuint i = 0; i < numVertices; ++i) {
-			indices[i] = i;
+		// Assuming you have stored the face indices during vertex generation
+		for (size_t i = 0; i < positions.size(); ++i) {
+			indicess.push_back(static_cast<GLuint>(i));
 		}
 
-		return indices;
+		indices = indicess;
 	}
 
 	//getters

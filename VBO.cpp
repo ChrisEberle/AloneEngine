@@ -1,44 +1,46 @@
 #include"VBO.h"
 
+// Explicit instantiation for the required data type(s)
+template class VBO<Vertex>;
+template class VBO<PositionVertex>;
+template class VBO<TextureVertex>;
 
+template <typename DataType>
 // Batch rendering usage of the vbo
-VBO::VBO(GLsizeiptr num_vertices)
+VBO<DataType>::VBO(GLsizeiptr num_vertices)
 {
 	glGenBuffers(1, &ID);
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * num_vertices, nullptr, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(DataType) * num_vertices, nullptr, GL_DYNAMIC_DRAW);
 }
+template <typename DataType>
 
 // dynamiccaly fills the vbo
-void VBO::dynamic_update(const std::vector<Vertex>& data) {
+void VBO<DataType>::dynamic_update(const std::vector<DataType>& data) {
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, data.size() * sizeof(Vertex), data.data());
+	glBufferSubData(GL_ARRAY_BUFFER, 0, data.size() * sizeof(DataType), data.data());
 }
 
+template <typename DataType>
 
 // Single rendering usage of the vbo
-VBO::VBO(const std::vector<Vertex>& vertices, GLsizeiptr num_vertices)
+VBO<DataType>::VBO(const std::vector<DataType>& vertices, GLsizeiptr num_vertices)
 {
 	glGenBuffers(1, &ID);
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * num_vertices, vertices.data(), GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(DataType) * num_vertices, vertices.data(), GL_DYNAMIC_DRAW);
 }
 
-
-// Binds the VBO
-void VBO::Bind()
-{
+template <typename DataType>
+void VBO<DataType>::Bind() {
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
 }
 
-// Unbinds the VBO
-void VBO::Unbind()
-{
+template <typename DataType>
+void VBO<DataType>::Unbind() {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
-
-// Deletes the VBO
-void VBO::Delete()
-{
+template <typename DataType>
+void VBO<DataType>::Delete() {
 	glDeleteBuffers(1, &ID);
 }

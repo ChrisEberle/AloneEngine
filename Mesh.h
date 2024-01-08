@@ -160,57 +160,86 @@ class CubeMesh {
 public:
 	//constructor
 	CubeMesh(GLfloat x, GLfloat y, GLfloat z) {
+
+		// POSITION VECTOR
+
 		//FRONT
-		vertices.push_back({ -0.5f + x,    -0.5f + y,     0.5f + z,      0.0f, 0.0f });
-		vertices.push_back({ 0.5f + x,    -0.5f + y,     0.5f + z,      1.0f, 0.0f });
-		vertices.push_back({ -0.5f + x,     0.5f + y,     0.5f + z,      0.0f, 1.0f });
-		vertices.push_back({ 0.5f + x,     0.5f + y,     0.5f + z,      1.0f, 1.0f });
+		position_vertices.push_back({ -0.5f + x,    -0.5f + y,     0.5f + z});
+		position_vertices.push_back({ 0.5f + x,    -0.5f + y,     0.5f + z});
+		position_vertices.push_back({ -0.5f + x,     0.5f + y,     0.5f + z});
+		position_vertices.push_back({ 0.5f + x,     0.5f + y,     0.5f + z});
 		//BACK  			
-		vertices.push_back({ -0.5f + x,    -0.5f + y,    -0.5f + z,     0.0f, 0.0f });
-		vertices.push_back({ 0.5f + x,    -0.5f + y,    -0.5f + z,     1.0f, 0.0f });
-		vertices.push_back({ -0.5f + x,     0.5f + y,    -0.5f + z,     0.0f, 1.0f });
-		vertices.push_back({ 0.5f + x,     0.5f + y,    -0.5f + z,     1.0f, 1.0f });
+		position_vertices.push_back({ -0.5f + x,    -0.5f + y,    -0.5f + z});
+		position_vertices.push_back({ 0.5f + x,    -0.5f + y,    -0.5f + z});
+		position_vertices.push_back({ -0.5f + x,     0.5f + y,    -0.5f + z});
+		position_vertices.push_back({ 0.5f + x,     0.5f + y,    -0.5f + z});
 		//LEFT  			
-		vertices.push_back({ -0.5f + x,    -0.5f + y,    -0.5f + z,     0.0f, 0.0f });
-		vertices.push_back({ -0.5f + x,    -0.5f + y,     0.5f + z,     1.0f, 0.0f });
-		vertices.push_back({ -0.5f + x,     0.5f + y,    -0.5f + z,     0.0f, 1.0f });
-		vertices.push_back({ -0.5f + x,     0.5f + y,     0.5f + z,     1.0f, 1.0f });
+		position_vertices.push_back({ -0.5f + x,    -0.5f + y,    -0.5f + z});
+		position_vertices.push_back({ -0.5f + x,    -0.5f + y,     0.5f + z});
+		position_vertices.push_back({ -0.5f + x,     0.5f + y,    -0.5f + z});
+		position_vertices.push_back({ -0.5f + x,     0.5f + y,     0.5f + z});
 		//RIGHT 		
-		vertices.push_back({ 0.5f + x,    -0.5f + y,    -0.5f + z,     0.0f, 0.0f });
-		vertices.push_back({ 0.5f + x,    -0.5f + y,     0.5f + z,     1.0f, 0.0f });
-		vertices.push_back({ 0.5f + x,     0.5f + y,    -0.5f + z,     0.0f, 1.0f });
-		vertices.push_back({ 0.5f + x,     0.5f + y,     0.5f + z,     1.0f, 1.0f });
+		position_vertices.push_back({ 0.5f + x,    -0.5f + y,    -0.5f + z});
+		position_vertices.push_back({ 0.5f + x,    -0.5f + y,     0.5f + z});
+		position_vertices.push_back({ 0.5f + x,     0.5f + y,    -0.5f + z});
+		position_vertices.push_back({ 0.5f + x,     0.5f + y,     0.5f + z});
 		//TOP   		
-		vertices.push_back({ -0.5f + x,     0.5f + y,     0.5f + z,     0.0f, 0.0f });
-		vertices.push_back({ 0.5f + x,     0.5f + y,     0.5f + z,     1.0f, 0.0f });
-		vertices.push_back({ -0.5f + x,     0.5f + y,    -0.5f + z,     0.0f, 1.0f });
-		vertices.push_back({ 0.5f + x,     0.5f + y,    -0.5f + z,     1.0f, 1.0f });
+		position_vertices.push_back({ -0.5f + x,     0.5f + y,     0.5f + z});
+		position_vertices.push_back({ 0.5f + x,     0.5f + y,     0.5f + z});
+		position_vertices.push_back({ -0.5f + x,     0.5f + y,    -0.5f + z});
+		position_vertices.push_back({ 0.5f + x,     0.5f + y,    -0.5f + z});
 		//BOTTOM	
-		vertices.push_back({ -0.5f + x,    -0.5f + y,     0.5f + z,    0.0f, 0.0f });
-		vertices.push_back({ 0.5f + x,    -0.5f + y,     0.5f + z,    1.0f, 0.0f });
-		vertices.push_back({ -0.5f + x,    -0.5f + y,    -0.5f + z,    0.0f, 1.0f });
-		vertices.push_back({ 0.5f + x,    -0.5f + y,    -0.5f + z,    1.0f, 1.0f, });
+		position_vertices.push_back({ -0.5f + x,    -0.5f + y,     0.5f + z});
+		position_vertices.push_back({ 0.5f + x,    -0.5f + y,     0.5f + z});
+		position_vertices.push_back({ -0.5f + x,    -0.5f + y,    -0.5f + z});
+		position_vertices.push_back({ 0.5f + x,    -0.5f + y,    -0.5f + z});
+
+		// TEXTURE COORDINATES
+		
+		//FRONT
+		texCoord_vertices.push_back({ 0.0f, 0.0f });
+		texCoord_vertices.push_back({1.0f, 0.0f });
+		texCoord_vertices.push_back({ 0.0f, 1.0f });
+		texCoord_vertices.push_back({1.0f, 1.0f });
+		//BACK  			
+		texCoord_vertices.push_back({ 0.0f, 0.0f });
+		texCoord_vertices.push_back({1.0f, 0.0f });
+		texCoord_vertices.push_back({ 0.0f, 1.0f });
+		texCoord_vertices.push_back({ 1.0f, 1.0f });
+		//LEFT  			
+		texCoord_vertices.push_back({0.0f, 0.0f });
+		texCoord_vertices.push_back({1.0f, 0.0f });
+		texCoord_vertices.push_back({0.0f, 1.0f });
+		texCoord_vertices.push_back({1.0f, 1.0f });
+		//RIGHT 		
+		texCoord_vertices.push_back({0.0f, 0.0f });
+		texCoord_vertices.push_back({1.0f, 0.0f });
+		texCoord_vertices.push_back({0.0f, 1.0f });
+		texCoord_vertices.push_back({1.0f, 1.0f });
+		//TOP   		
+		texCoord_vertices.push_back({ 0.0f, 0.0f });
+		texCoord_vertices.push_back({1.0f, 0.0f });
+		texCoord_vertices.push_back({ 0.0f, 1.0f });
+		texCoord_vertices.push_back({1.0f, 1.0f });
+		//BOTTOM	
+		texCoord_vertices.push_back({ 0.0f, 0.0f });
+		texCoord_vertices.push_back({1.0f, 0.0f });
+		texCoord_vertices.push_back({0.0f, 1.0f });
+		texCoord_vertices.push_back({.0f, 1.0f });
 	}
 
-
-	// Getter Functions
-	const std::vector<Vertex>& getVertices() const {
-		return vertices;
-	}
-
-	const std::vector<GLuint>& getIndices() const {
-		return indices;
-	}
 
 	size_t getNumVertices() const {
-		return vertices.size();
+		return position_vertices.size();
 	}
 
 	size_t getNumIndices() const {
 		return indices.size();
 	}
 
-	std::vector<Vertex> vertices;
+	std::vector<PositionVertex> position_vertices;
+	std::vector<TextureVertex> texCoord_vertices;
+
 	std::vector<GLuint> indices = {
 		// FRONT
 		0, 1, 2, 1, 3, 2,
@@ -230,15 +259,21 @@ public:
 
 class Mesh {
 public:
-	std::vector<Vertex> vertices;
+	std::vector<PositionVertex> position_verts;
+	std::vector<TextureVertex> texture_coordinates;
 	std::vector<GLuint> indices;
+	std::vector<Vertex> vertices;
+	glm::mat4 worldTransform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+	glm::vec4 color = glm::vec4(1.0f,1.0f,1.0f,1.0f);
+
 	GLuint texture;
-	Mesh(const std::vector<Vertex>& vertices, std::vector<GLuint>& indices, GLuint& texture) : vertices(vertices), indices(indices), texture(texture) {
+	Mesh(const std::vector<PositionVertex>& vertices, const std::vector<TextureVertex>& tex_coords, std::vector<GLuint>& indices, GLuint& texture) : position_verts(vertices), texture_coordinates(tex_coords), indices(indices), texture(texture) {
+
 	}
 
 
 	size_t get_num_vertices() const {
-		return vertices.size();
+		return position_verts.size();
 	}
 
 	size_t get_num_indices() const {
@@ -249,22 +284,37 @@ public:
 class BatchRenderer {
 public:
 	Shaderer shaderProgram;
-	VBO vbo;
 	VAO vao;
 	EBO ebo;
-	std::vector<Vertex> vertices;
+
+	VBO<PositionVertex> vbo_verts;
+	VBO<TextureVertex> vbo_texCoords;
+
+	std::vector<PositionVertex> verts_pos;
+	std::vector<TextureVertex> tex_coords;
+
 	std::vector<GLuint> indices;
 	GLsizeiptr max_indices;
 	GLsizeiptr max_vertices;
 	Color color;
 
-	BatchRenderer(Shaderer shaderProgram, GLsizeiptr max_indices, GLsizeiptr max_vertices) : shaderProgram(shaderProgram), max_indices(max_indices),max_vertices(max_vertices), vbo(max_vertices), ebo(max_indices) {
+	GLuint texture;
+	std::vector<Mesh> objects;
+
+
+	BatchRenderer(Shaderer shaderProgram, std::vector<Mesh> objs, GLsizeiptr max_indices, GLsizeiptr max_vertices) : shaderProgram(shaderProgram), max_indices(max_indices),max_vertices(max_vertices), vbo_verts(max_vertices), vbo_texCoords(max_vertices), ebo(max_indices) {
 		initializeMesh();
+		objects = objs;
+		for (size_t i = 0; i < objects.size(); i++) {
+			add_to_mesh(objects[i].position_verts, objects[i].texture_coordinates, objects[i].indices);
+		}
+		
 	}
 	
 	~BatchRenderer() {
 		vao.Delete();
-		vbo.Delete();
+		vbo_verts.Delete();
+		vbo_texCoords.Delete();
 		ebo.Delete();
 	}
 
@@ -272,8 +322,8 @@ public:
 		// Generates Vertex Array Object and binds it
 		vao.Bind();
 		// Links VBO attributes such as coordinates and colors to VAO
-		vao.LinkAttrib(vbo, 0, 3, GL_FLOAT, sizeof(Vertex), (void*)offsetof(Vertex, position));
-		vao.LinkAttrib(vbo, 1, 2, GL_FLOAT, sizeof(Vertex), (void*)offsetof(Vertex, texCoord));
+		vao.LinkAttrib(vbo_verts, 0, 3, GL_FLOAT, sizeof(PositionVertex), (void*)offsetof(PositionVertex, position));
+		vao.LinkAttrib(vbo_texCoords, 1, 2, GL_FLOAT, sizeof(TextureVertex), (void*)offsetof(TextureVertex, texCoord));
 	}
 
 	GLuint getShaderUniform(std::string textureSampler) {
@@ -282,33 +332,41 @@ public:
 
 	void update() {
 		vao.Bind();
-		vbo.dynamic_update(vertices);
+		vbo_verts.dynamic_update(verts_pos);
+		vbo_texCoords.dynamic_update(tex_coords);
 		ebo.dynamic_update(indices);
-		vbo.Unbind();
+		vbo_verts.Unbind();
+		vbo_texCoords.Unbind();
 		ebo.Unbind();
 		vao.Unbind();
+		max_indices = indices.size();
+		max_vertices = verts_pos.size();
 	}
 
-	void render(GLuint& tex0) {
+	void render(GLuint tex) {
+		texture = tex;
 		//activate current buffers
-		vbo.Bind();
+		vbo_verts.Bind();
+		vbo_texCoords.Bind();
 		vao.Bind();
 		ebo.Bind();
+
+		vbo_verts.dynamic_update(verts_pos);
+
 
 		glEnable(GL_DEPTH_TEST);
 		// Tell OpenGL which Shader Program we want to use
 		shaderProgram.Activate();
-		//function for rendering one or both sides of a triangle
-		back_face_culling(false, true);
 		// binds textures
 		glUniform1i(getShaderUniform("tex0"), 0);
-		glBindTexture(GL_TEXTURE_2D, tex0);
+		glBindTexture(GL_TEXTURE_2D, texture);
+		// set current object
 		set_color(color.white);
-		// draws batched objects
-		glDrawElements(GL_TRIANGLES, getNumIndices(), GL_UNSIGNED_INT, 0);
-
+		// draws the object
+		glDrawElements(GL_TRIANGLES, max_indices, GL_UNSIGNED_INT, 0);
 		//deactivate current buffers
-		vbo.Unbind();
+		vbo_verts.Unbind();
+		vbo_texCoords.Unbind();
 		vao.Unbind();
 		ebo.Unbind();
 	}
@@ -338,15 +396,16 @@ public:
 
 
 
-	void add_to_mesh(std::vector<Vertex>& objVerts, std::vector<GLuint>& objInds) {
+	void add_to_mesh(std::vector<PositionVertex>& pos_verts, std::vector<TextureVertex>& tex_verts, std::vector<GLuint>& objInds) {
 		// find the current size of the parent indice vector
-		GLuint indice_offset = vertices.size();
+		GLuint indice_offset = verts_pos.size();
 		// add the offset to each element of the objects indice
 		for (int i = 0; i < objInds.size(); ++i) {
 			objInds[i] += indice_offset;
 		}
 		// adds vertices of new object to parent vertex vector
-		vertices.insert(vertices.end(), objVerts.begin(), objVerts.end());
+		verts_pos.insert(verts_pos.end(), pos_verts.begin(), pos_verts.end());
+		tex_coords.insert(tex_coords.end(), tex_verts.begin(), tex_verts.end());
 		// add the object's indices to the parent indice vector
 		indices.insert(indices.end(), objInds.begin(), objInds.end());
 	}
@@ -356,7 +415,7 @@ public:
 		return glGetUniformLocation(objectShader.ID, textureSampler.c_str());
 	}
 	size_t getNumVertices() const {
-		return vertices.size();
+		return verts_pos.size();
 	}
 	size_t getNumIndices() const {
 		return indices.size();
@@ -374,15 +433,17 @@ class SingleRender {
 public:
 	GLsizeiptr max_indices;
 	GLsizeiptr max_vertices;
-	VBO vbo;
+	VBO<Vertex> vbo;
 	VAO vao;
 	EBO ebo;
 	Shaderer shaderProgram;
-
+	
 	std::vector<Mesh> objectContainer;
-
 	std::vector<Vertex> vertices;
 	std::vector<GLuint> indices;
+	glm::mat4 worldTransform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+	glm::vec4 color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
 	Mesh object;
 	int obj_offset;
 	GLuint texture;
@@ -392,12 +453,10 @@ public:
 		shaderProgram = shadeProgram;
 		//initialize internal object
 		objectContainer = obj;
-		max_indices = objectContainer[0].get_num_indices();
-		max_vertices = objectContainer[0].get_num_vertices();
-		vertices = objectContainer[0].vertices;
-		indices = objectContainer[0].indices;
-		texture = objectContainer[0].texture;
 		initializeMesh();
+		use_object(0);
+		worldTransform = object.worldTransform;
+		color = object.color;
 		//Unbind buffers
 		vbo.Unbind();
 		vao.Unbind();
@@ -435,7 +494,42 @@ public:
 		ebo.Unbind();
 	}
 
-	void use_object(int obj_index, glm::mat4& worldTransform) {
+	void render(int obj_index, glm::mat4& objectTransform, glm::vec4 objectColor) {
+		if (obj_index != obj_offset) {
+			use_object(obj_index);
+		}
+		// makes sure object is rendered correctly, make sure to clear the depth
+		glEnable(GL_DEPTH_TEST);
+		// Binds the texture to the object
+		glUniform1i(getShaderUniform(shaderProgram, "tex0"), 0);
+		glBindTexture(GL_TEXTURE_2D, texture);
+		//update the objects transform
+		worldTransform = objectTransform;
+		color = objectColor;
+		//update the objects color
+		set_world_transform(worldTransform);
+		set_color(color);
+		// draws the object
+		glDrawElements(GL_TRIANGLES, max_indices, GL_UNSIGNED_INT, 0);
+		// current object tracker
+		obj_offset = obj_index;
+	}
+
+	void wireframe_render(bool get_state) {
+		// Whether to render wireframe or full textured
+		if (get_state) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		}
+		else {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+	}
+
+		
+private:
+
+
+	void use_object(int obj_index) {
 		//initialize internal object
 		object = objectContainer[obj_index];
 		max_indices = object.get_num_indices();
@@ -443,56 +537,15 @@ public:
 		vertices = object.vertices;
 		indices = object.indices;
 		texture = object.texture;
-		//activate shader so we can attach object attribs
-		shaderProgram.Activate();
 		//update vbo and ebo with object data
-		vao.Bind();
 		vbo.dynamic_update(vertices);
 		ebo.dynamic_update(indices);
-		//initialize the objects world attribs
-		set_color(glm::vec4(1.0f,1.0f,1.0f,1.0f));
-		set_world_transform(worldTransform);
 	}
-	void update(glm::mat4 worldTransform) {
-		set_world_transform(worldTransform);
-		set_color(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	}
-
-	void render(bool wireframe) {
-		// makes sure object is rendered correctly, make sure to clear the depth
-		glEnable(GL_DEPTH_TEST);
-		// Binds the texture to the object
-		if (!wireframe) {
-			glUniform1i(getShaderUniform(shaderProgram, "tex0"), 0);
-			glBindTexture(GL_TEXTURE_2D, texture);
-		}
-		// draws the object
-		glDrawElements(GL_TRIANGLES, max_indices, GL_UNSIGNED_INT, 0);
-	}
-
-	void wireframe_render(bool get_state) {
-		// Whether to render wireframe or full textured
-		if (get_state) {
-			glBindTexture(GL_TEXTURE_2D, 0);
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-			GLint customColorLocation = glGetUniformLocation(shaderProgram.ID, "color");
-			// Set the value of the customColor uniform
-			glUniform4f(customColorLocation, 1.0f, 0.0f, 0.0f, 1.0f);
-		}
-		else {
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			GLint customColorLocation = glGetUniformLocation(shaderProgram.ID, "color");
-			// Set the value of the customColor uniform
-			glUniform4f(customColorLocation, 1.0f, 1.0f, 1.0f, 1.0f); // Set to red color
-		}
-	}
-
 	// getters
 	GLuint getShaderUniform(Shaderer& objectShader, std::string textureSampler) {
 		return glGetUniformLocation(objectShader.ID, textureSampler.c_str());
 	}
-
+	
 	//setters
 	void set_world_transform(glm::mat4& worldTransform) {
 		// Pass the modified worldTransform matrix to the shader
@@ -504,5 +557,4 @@ public:
 		// Set the value of the customColor uniform
 		glUniform4f(customColorLocation, color.x, color.y, color.z, color.a);
 	}
-
 };

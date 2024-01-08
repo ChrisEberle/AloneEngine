@@ -10,10 +10,10 @@ void input_callback(GLFWwindow* window, Camera& camera) {
 		wireframe = false;
 	}
 	if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS) {
-		res += 0.2f;
+		xpos += 0.2f;
 	}
 	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
-		res -= 0.2f;
+		xpos -= 0.2f;
 	}
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		exit(EXIT_SUCCESS);
@@ -41,7 +41,7 @@ int main()
 
 
 	// Generates Shader object
-	//Shaderer objectShader("shaders/batched.vs", "shaders/batched.fs");
+	Shaderer objectShader("shaders/batched.vs", "shaders/batched.fs");
 	Shaderer objectShader1("shaders/default.vs", "shaders/default.fs");
 	
 
@@ -68,25 +68,26 @@ int main()
 
 	//// imported obj model initialization
 	Model_obj car("obj_models/car.obj");
-	std::vector<Vertex> objVerts = car.obj_vert_generator();
-	std::vector<GLuint> objInds = car.obj_indices();
+	car.obj_vert_generator();
+	car.obj_indices();
 
-
-	CubeMesh cubesmall(0.0f, 0.0f, 0.0f);
+	CubeMesh cube0(0.0f, 0.0f, 0.0f);
+	CubeMesh cube1(3.0f, 0.0f, 0.0f);
 
 	glm::mat4 start_pos = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-
+	glm::mat4 start_pos1 = glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, 0.0f, 0.0f));
 	
 
-	//Mesh object0(plane.vertices, plane.indices,tex0);
-	Mesh object2(cubesmall.vertices, cubesmall.indices, tex0);
-	Mesh object1(objVerts, objInds, tex0);
+	////Mesh object0(plane.vertices, plane.indices,tex0);
+	//Mesh object1(objVerts, objInds, tex0);
+	Mesh object0(cube0.position_vertices, cube0.texCoord_vertices, cube0.indices, tex0);
+	Mesh object1(cube1.position_vertices, cube1.texCoord_vertices, cube1.indices, tex0);
+	Mesh object2(car.positions, car.texture_coordinates, car.indices, tex0);
+	std::vector<Mesh> objects = { object0, object1, object2};
+	//SingleRender simpleRender(objectShader1,objects);
 
-	std::vector<Mesh> objects = { object1, object2 };
-
-	SingleRender simpleRender(objectShader1,objects);
-	simpleRender.use_object(1, start_pos);
-
+	BatchRenderer batch(objectShader,objects, 1000000000, 100000000);
+	batch.update();
 
 
 	// Timing variables for FPS calculation
@@ -105,13 +106,24 @@ int main()
 		input_callback(window, camera);
 		//===============
 
-	
-		back_face_culling(true, true);
+		if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS) {
+			
+			xpos += 0.2f;
+		}
+		if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
+			xpos -= 0.2f;
+		}
 
-		simpleRender.wireframe_render(wireframe);
-		simpleRender.activate();
-		simpleRender.render(wireframe);
-		simpleRender.deactivate();
+		glm::mat4 objectTransform = glm::translate(glm::mat4(1.0f), glm::vec3(xpos, 0.0f, 0.0f));
+		back_face_culling(false, true);
+
+		//simpleRender.wireframe_render(wireframe);
+		//simpleRender.activate();
+		//simpleRender.render(0, objectTransform1, color.skyBlue);
+		//simpleRender.deactivate();
+	//	batch.objects[0].worldTransform = objectTransform;
+		wireframe_state(wireframe, objectShader);
+		batch.render(tex0);
 
 
 
@@ -127,7 +139,7 @@ int main()
 		//draw text
 		RenderText(font_shader, "Alone Engine - V 0.0.1", 25.0f, 25.0f, 1.0f, color.white, font_vao, font_vbo);
 		RenderText(font_shader, std::to_string(get_fps(frameCount,lastTime)), 25.0f, SCR_HEIGHT - 50.0f, 1.0f, color.white, font_vao, font_vbo);
-		RenderText(font_shader, std::to_string(simpleRender.max_vertices), 500.0f, SCR_HEIGHT - 50.0f, 1.0f, color.white, font_vao, font_vbo);
+		RenderText(font_shader, std::to_string(batch.max_vertices), 500.0f, SCR_HEIGHT - 50.0f, 1.0f, color.white, font_vao, font_vbo);
 		// ==========================================================
 
 		

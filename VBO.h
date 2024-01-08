@@ -6,6 +6,7 @@
 #include <vector>
 #include "Vertex.h"
 
+template <typename DataType>
 class VBO
 {
 public:
@@ -14,14 +15,12 @@ public:
 	// Constructor that generates a Vertex Buffer Object and links it to vertices
 	VBO(GLsizeiptr num_indices);
 
-	VBO(const std::vector<Vertex>& vertices, GLsizeiptr num_indices);
+	VBO(const std::vector<DataType>& vertices, GLsizeiptr num_indices);
+
 	//dynamically updates the vbo in program loop
-	void dynamic_update(const std::vector<Vertex>& data);
-	// Binds the VBO
+	void dynamic_update(const std::vector<DataType>& data);
 	void Bind();
-	// Unbinds the VBO
 	void Unbind();
-	// Deletes the VBO
 	void Delete();
 };
 
