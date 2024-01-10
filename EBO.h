@@ -12,10 +12,10 @@ public:
 	// ID reference of Elements Buffer Object
 	GLuint ID;
 	// Constructor that generates a Elements Buffer Object and links it to indices
-	EBO(GLsizeiptr num_indices);
+	EBO(GLuint num_indices);
 
 	// Single rendering usage of the vbo
-	EBO(const std::vector<Vertex>& vertices, GLsizeiptr num_vertices);
+	EBO(const std::vector<Vertex>& vertices, GLuint num_vertices);
 
 	// Binds the EBO
 	void Bind();

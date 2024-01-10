@@ -7,7 +7,7 @@ template class VBO<TextureVertex>;
 
 template <typename DataType>
 // Batch rendering usage of the vbo
-VBO<DataType>::VBO(GLsizeiptr num_vertices)
+VBO<DataType>::VBO(GLuint num_vertices)
 {
 	glGenBuffers(1, &ID);
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
@@ -24,7 +24,7 @@ void VBO<DataType>::dynamic_update(const std::vector<DataType>& data) {
 template <typename DataType>
 
 // Single rendering usage of the vbo
-VBO<DataType>::VBO(const std::vector<DataType>& vertices, GLsizeiptr num_vertices)
+VBO<DataType>::VBO(const std::vector<DataType>& vertices, GLuint num_vertices)
 {
 	glGenBuffers(1, &ID);
 	glBindBuffer(GL_ARRAY_BUFFER, ID);

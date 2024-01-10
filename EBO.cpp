@@ -1,7 +1,7 @@
 #include"EBO.h"
 
 // Batch rendering usage
-EBO::EBO(GLsizeiptr num_indices)
+EBO::EBO(GLuint num_indices)
 {
 	glCreateBuffers(1, &ID);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
@@ -16,7 +16,7 @@ void EBO::dynamic_update(const std::vector<GLuint>& data) {
 
 
 // Single rendering usage
-EBO::EBO(const std::vector<Vertex>& vertices, GLsizeiptr num_vertices)
+EBO::EBO(const std::vector<Vertex>& vertices, GLuint num_vertices)
 {
 	glGenBuffers(1, &ID);
 	glBindBuffer(GL_ARRAY_BUFFER, ID);

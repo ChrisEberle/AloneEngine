@@ -2,7 +2,10 @@
 class Model_obj
 {
 public:
-	Model_obj(std::string path) : path(path) {}
+	Model_obj(std::string path) : path(path), numIndices(0), numVertices(0) {
+		obj_vert_generator();
+		obj_indices();
+	}
 	std::string path;
 
 	std::vector<GLuint> indices;
@@ -10,6 +13,10 @@ public:
 	
 	std::vector<PositionVertex> positions;
 	std::vector<TextureVertex> texture_coordinates;
+
+	GLuint numVertices;
+	GLuint numIndices;
+
 	 
 	void obj_vert_generator() {
 		std::vector<PositionVertex> posCoords;
@@ -94,9 +101,7 @@ public:
 				}
 			}
 		}
-
-
-		numVertices = posCoords.size();
+		numVertices = static_cast<GLuint>(posCoords.size());
 	}
 
 
@@ -116,9 +121,5 @@ public:
 	int get_num_verts() {
 		return numVertices;
 	}
-
-private:
-	 int numVertices;
-	 int numIndices;
 };
 
