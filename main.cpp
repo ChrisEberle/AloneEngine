@@ -43,7 +43,7 @@ int main()
 	ft_init(ft, face, font_shader, filepath, SCR_WIDTH, SCR_HEIGHT);
 	init_renderer(font_vao, font_vbo);
 
-
+	float lightIntense = 0.1f;
 
 	// Generates Shader object
 	Shaderer objectShader("shaders/batched.vs", "shaders/batched.fs");
@@ -129,13 +129,21 @@ int main()
 			posLight.z += 0.2f;
 		}
 
+		if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) {
+			lightIntense += 0.05f;
+		}
+		if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS) {
+			lightIntense -= 0.05f;
+		}
+
+
 		//===============
 	
 		
 		back_face_culling(true);
 		batch.wireframe_render(wireframe);
-		batch1.render(camera, posLight);
-		batch.render(camera, posLight);
+		batch1.render(camera, posLight, lightIntense);
+		batch.render(camera, posLight, lightIntense);
 	
 
 

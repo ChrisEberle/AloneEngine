@@ -408,7 +408,7 @@ public:
 		max_vertices = static_cast<GLuint>(verts_pos.size());
 	}
 
-	void render(Camera& camera, glm::vec3 lightPos) {
+	void render(Camera& camera, glm::vec3 lightPos, float lt) {
 		//activate current buffers
 		vbo_verts.Bind();
 		vao.Bind();
@@ -430,6 +430,7 @@ public:
 				shaderProgram.setVec3("lightColor", glm::vec3(1.0f,1.0f,1.0f));
 				shaderProgram.setVec3("viewPos", camera.Position);
 				shaderProgram.setVec3("lightPos", lightPos);
+				shaderProgram.setFloat("lightIntensity", lt);
 
 				// world transformation
 				glm::mat4 model = glm::mat4(1.0f);
