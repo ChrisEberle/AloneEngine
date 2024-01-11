@@ -43,7 +43,7 @@ int main()
 	ft_init(ft, face, font_shader, filepath, SCR_WIDTH, SCR_HEIGHT);
 	init_renderer(font_vao, font_vbo);
 
-	float lightIntense = 0.1f;
+	float lightIntense = 0.5f;
 
 	// Generates Shader object
 	Shaderer objectShader("shaders/batched.vs", "shaders/batched.fs");
@@ -69,25 +69,20 @@ int main()
 	// imported obj model initialization
 	Model_obj car("obj_models/carUV.obj");
 
-	CubeMesh cube0(1.0f, 0.0f, 0.0f);
-	CubeMesh cube1(3.0f, 0.0f, 0.0f);
-	CubeMesh cube2(-3.0f, 0.0f, 0.0f);
-	CubeMesh cube3(0.0f, 0.0f, 0.0f);
-	PlaneMesh plane(0.0f, 0.0f, 0.0f, 100.0f, 100.0f, 1500, 1500, 0.1f, 60.0f, 20.0f, 20.0f);
-	Mesh object0(cube0.position_vertices, cube0.texCoord_vertices, cube0.normal_vertices, cube0.indices, tex0);
 
-	Mesh planeOBJ(plane.position_vertices, plane.texture_coordinates, plane.normals, plane.indices, tex0);
+	Mesh plane0(glm::vec3(0.0f,0.0f,0.0f), tex2);
+	plane0.createPlane(0.0f, 0.0f, 0.0f, 100.0f, 100.0f, 1500, 1500, 0.1f, 60.0f, 20.0f, 20.0f);
+	Mesh cubeLight(glm::vec3(1.0f,1.0f,1.0f), tex0);
+	cubeLight.createCube(0.0f, 0.0f, 0.0f);
 
-	Mesh cubeLight(cube3.position_vertices, cube3.texCoord_vertices, cube3.normal_vertices, cube3.indices, tex0);
-	Mesh flashlight(cube3.position_vertices, cube3.texCoord_vertices, cube3.normal_vertices, cube3.indices, tex0);
 
-	std::vector<Mesh> objects = { flashlight };
-	std::vector<Mesh> objs = { object0 , planeOBJ};
+	std::vector<Mesh> lightObjects = { cubeLight };
+	std::vector<Mesh> objects = { plane0 };
 
-	BatchRenderer batch1(objectShader,tex2, objs, 31000000, 31000000);
+	BatchRenderer batch1(objectShader,tex2, objects, 31000000, 31000000);
 	batch1.initializeMeshObject();
 
-	BatchRenderer batch(lightShader, tex2 ,objects, 1000, 1000);
+	BatchRenderer batch(lightShader, tex2 , lightObjects, 1000, 1000);
 	batch.initializeMeshCubeLight();
 
 	

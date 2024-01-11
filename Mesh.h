@@ -1,62 +1,5 @@
 #pragma once
 
-static std::vector<Vertex> createQuad(GLfloat x, GLfloat y, GLfloat z) {
-	std::vector<Vertex> vertices;
-
-	//Quad
-	vertices.push_back({ -0.5f + x,    -0.5f + y,     0.5f + z,      0.0f, 0.0f});
-	vertices.push_back({ 0.5f + x,    -0.5f + y,     0.5f + z,      1.0f, 0.0f});
-	vertices.push_back({ -0.5f + x,    -0.5f + y,     -0.5f + z,      0.0f, 1.0f});
-	vertices.push_back({ 0.5f + x,    -0.5f + y,     -0.5f + z,      1.0f, 1.0f});
-
-	return vertices;
-}
-static std::vector<Vertex> createVertice(GLfloat x, GLfloat y, GLfloat z, GLfloat texCoord0, GLfloat texCoord1) {
-	std::vector<Vertex> vertices;
-	vertices.push_back({ x,y,z,texCoord0, texCoord1});
-	return vertices;
-}
-static std::unique_ptr<GLuint[]> generateCubeChunkIndices(size_t max_index_count, GLuint spacing_offset) {
-	std::unique_ptr<GLuint[]> indices(new GLuint[max_index_count]);
-	GLuint offset = 0;
-
-	for (size_t i = 0; i < max_index_count; i += 36) {
-		GLuint base = offset * 24;  // Calculate the base index for each cube
-		GLuint indicesTemplate[36] = {
-			0, 1, 2, 1, 2, 3, 4, 5, 6, 5, 6, 7, 8, 9, 10, 9, 10, 11, 12, 13, 14, 13, 14, 15,
-			16, 17, 18, 17, 18, 19, 20, 21, 22, 21, 22, 23
-		};
-
-		// Offset the template by the base index for the current cube
-		for (size_t j = 0; j < 36; ++j) {
-			indices[i + j] = base + indicesTemplate[j];
-		}
-
-		offset += spacing_offset;  // Move to the next cube
-	}
-
-	return indices;
-}
-static void move_cube(GLFWwindow* window, std::vector<Vertex>& verts, int numVertices, GLfloat control_variable) {
-
-
-	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
-		// Modify the values in the verts vector
-		for (int i = 0; i < numVertices; ++i) {
-			// Access and modify the values of the vertices in the verts vector
-			verts[i].position[2] = verts[i].position[2] + control_variable;  // Modify X-coordinate
-			// Modify other attributes if needed...
-		}
-	}
-	if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS) {
-		// Modify the values in the verts vector
-		for (int i = 0; i < numVertices; ++i) {
-			// Access and modify the values of the vertices in the verts vector
-			verts[i].position[2] = verts[i].position[2] - control_variable;  // Modify X-coordinate
-			// Modify other attributes if needed...
-		}
-	}
-}
 static void back_face_culling(bool back_cull) {
 	if (back_cull) {
 		glEnable(GL_CULL_FACE);
@@ -65,286 +8,293 @@ static void back_face_culling(bool back_cull) {
 }
 
 
-class PlaneMesh {
+class LightMesh {
 public:
-	std::vector<PositionVertex> position_vertices;
-	std::vector<TextureVertex> texture_coordinates;
-	std::vector <NormalVertex> normals;
+	std::vector<PositionVertex> position_coordinates;
 	std::vector<GLuint> indices;
-	GLuint num_indices;
 
+	glm::vec3 color;
 
-	//constructor
-	PlaneMesh(GLfloat originX, GLfloat originY, GLfloat originZ,
-		GLfloat sizeX, GLfloat sizeZ, GLuint rows, GLuint cols,
-		GLfloat numOctaves, GLfloat persistence,
-		GLfloat textureScaleX, GLfloat textureScaleY) : num_indices((rows - 1)* (cols - 1) * 6)
-	{
+	glm::mat4 worldTransform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 
-		for (GLuint i = 0; i < rows; ++i) {
-			for (GLuint j = 0; j < cols; ++j) {
-				GLfloat x = originX + j * (sizeX / (cols - 1));
-				GLfloat z = originZ - i * (sizeZ / (rows - 1));
+	GLuint texture;
 
-				// Use multiple octaves of Perlin noise
-				GLfloat y = originY;
-				GLfloat frequency = 0.1f; // Initial frequency
-				GLfloat amplitude = 1.0f; // Initial amplitude
+	LightMesh(glm::vec3 COLOR) : color(COLOR) {}
 
-				for (int k = 0; k < numOctaves; ++k) {
-					y += glm::perlin(glm::vec2(x * frequency, z * frequency)) * amplitude;
-					frequency *= 2.0f; // Increase frequency with each octave
-					amplitude *= persistence; // Decrease amplitude with each octave
-				}
-
-				
-				// Calculate texCoordX to repeat within each column
-				GLfloat texCoordX = static_cast<GLfloat>(j % cols) / (cols - 1) * textureScaleX;
-
-				GLfloat texCoordY = static_cast<GLfloat>(i) / (rows - 1) * textureScaleY;
-
-				position_vertices.push_back({ x, y, z});
-				texture_coordinates.push_back({ texCoordX, texCoordY});
-			}
-		}
-
-		
-		std::vector<GLuint> planeIndices(num_indices);
-		size_t offset = 6;
-		for (size_t i = 0; i < static_cast<size_t>(rows) - 1; ++i) {
-			for (size_t j = 0; j < static_cast<size_t>(cols) - 1; ++j) {
-				size_t currentVertex = i * cols + j;
-
-				planeIndices[offset * (i * (static_cast<size_t>(cols) - 1) + j)] = static_cast<GLuint>(currentVertex);
-				planeIndices[offset * (i * (static_cast<size_t>(cols) - 1) + j) + 1] = static_cast<GLuint>(currentVertex) + 1;
-				planeIndices[offset * (i * (static_cast<size_t>(cols) - 1) + j) + 2] = static_cast<GLuint>(currentVertex) + static_cast<GLuint>(cols);
-
-				planeIndices[offset * (i * (static_cast<size_t>(cols) - 1) + j) + 3] = static_cast<GLuint>(currentVertex) + 1;
-				planeIndices[offset * (i * (static_cast<size_t>(cols) - 1) + j) + 4] = static_cast<GLuint>(currentVertex) + static_cast<GLuint>(cols) + 1;
-				planeIndices[offset * (i * (static_cast<size_t>(cols) - 1) + j) + 5] = static_cast<GLuint>(currentVertex) + static_cast<GLuint>(cols);
-			}
-		}
-		// add the object's indices to the parent indice vector
-		indices.insert(indices.end(), planeIndices.begin(), planeIndices.end());
-
-		calculateNormalsSmooth();
-	}
-
-
-	void calculateNormalsSmooth() {
-		normals.resize(position_vertices.size(), NormalVertex{ 0.0f, 0.0f, 0.0f });
-
-		for (size_t i = 0; i < indices.size(); i += 3) {
-			GLuint index1 = indices[i];
-			GLuint index2 = indices[i + 1];
-			GLuint index3 = indices[i + 2];
-
-			// Get the vertices of the current triangle
-			glm::vec3 v1(position_vertices[index1].position[0], position_vertices[index1].position[1], position_vertices[index1].position[2]);
-			glm::vec3 v2(position_vertices[index2].position[0], position_vertices[index2].position[1], position_vertices[index2].position[2]);
-			glm::vec3 v3(position_vertices[index3].position[0], position_vertices[index3].position[1], position_vertices[index3].position[2]);
-
-			// Calculate the tangent vectors
-			glm::vec3 tangent1 = v2 - v1;
-			glm::vec3 tangent2 = v3 - v1;
-
-			// Calculate the normal using the cross product of the tangents
-			glm::vec3 normal = glm::normalize(glm::cross(tangent1, tangent2));
-
-			// Accumulate the normals for each vertex of the triangle
-			normals[index1].normals[0] += normal.x;
-			normals[index1].normals[1] += normal.y;
-			normals[index1].normals[2] += normal.z;
-
-			normals[index2].normals[0] += normal.x;
-			normals[index2].normals[1] += normal.y;
-			normals[index2].normals[2] += normal.z;
-
-			normals[index3].normals[0] += normal.x;
-			normals[index3].normals[1] += normal.y;
-			normals[index3].normals[2] += normal.z;
-		}
-
-		// Normalize the accumulated normals
-		for (size_t i = 0; i < normals.size(); ++i) {
-			glm::vec3 norm = glm::normalize(glm::vec3(normals[i].normals[0], normals[i].normals[1], normals[i].normals[2]));
-
-			normals[i].normals[0] = norm.x;
-			normals[i].normals[1] = norm.y;
-			normals[i].normals[2] = norm.z;
-		}
-	}
-
-	void calculateNormalsFlat() {
-		normals.resize(position_vertices.size(), NormalVertex{ 0.0f, 0.0f, 0.0f });
-
-		for (size_t i = 0; i < indices.size(); i += 3) {
-			GLuint index1 = indices[i];
-			GLuint index2 = indices[i + 1];
-			GLuint index3 = indices[i + 2];
-
-			// Get the vertices of the current triangle
-			glm::vec3 v1(position_vertices[index1].position[0], position_vertices[index1].position[1], position_vertices[index1].position[2]);
-			glm::vec3 v2(position_vertices[index2].position[0], position_vertices[index2].position[1], position_vertices[index2].position[2]);
-			glm::vec3 v3(position_vertices[index3].position[0], position_vertices[index3].position[1], position_vertices[index3].position[2]);
-
-			// Calculate the face normal
-			glm::vec3 normal = glm::cross(v2 - v1, v3 - v1);
-
-			// Assign the face normal to all vertices of the triangle
-			normals[index1].normals[0] = normal.x;
-			normals[index1].normals[1] = normal.y;
-			normals[index1].normals[2] = normal.z;
-
-			normals[index2].normals[0] = normal.x;
-			normals[index2].normals[1] = normal.y;
-			normals[index2].normals[2] = normal.z;
-
-			normals[index3].normals[0] = normal.x;
-			normals[index3].normals[1] = normal.y;
-			normals[index3].normals[2] = normal.z;
-		}
-	}
-};
-class CubeMesh {
-public:
-	//constructor
-	CubeMesh(GLfloat x, GLfloat y, GLfloat z) {
-
-		// POSITION VECTOR
-
+	// Mesh Types
+	void createCube(GLfloat x, GLfloat y, GLfloat z) {
+		//                     POSITION VECTOR
 		//FRONT
-		position_vertices.push_back({ -0.5f + x,    -0.5f + y,     0.5f + z});
-		position_vertices.push_back({ 0.5f + x,    -0.5f + y,     0.5f + z});
-		position_vertices.push_back({ -0.5f + x,     0.5f + y,     0.5f + z});
-		position_vertices.push_back({ 0.5f + x,     0.5f + y,     0.5f + z});
+		position_coordinates.push_back({ -0.5f + x,    -0.5f + y,     0.5f + z });
+		position_coordinates.push_back({ 0.5f + x,    -0.5f + y,     0.5f + z });
+		position_coordinates.push_back({ -0.5f + x,     0.5f + y,     0.5f + z });
+		position_coordinates.push_back({ 0.5f + x,     0.5f + y,     0.5f + z });
 		//BACK  			
-		position_vertices.push_back({ -0.5f + x,    -0.5f + y,    -0.5f + z});
-		position_vertices.push_back({ 0.5f + x,    -0.5f + y,    -0.5f + z});
-		position_vertices.push_back({ -0.5f + x,     0.5f + y,    -0.5f + z});
-		position_vertices.push_back({ 0.5f + x,     0.5f + y,    -0.5f + z});
+		position_coordinates.push_back({ -0.5f + x,    -0.5f + y,    -0.5f + z });
+		position_coordinates.push_back({ 0.5f + x,    -0.5f + y,    -0.5f + z });
+		position_coordinates.push_back({ -0.5f + x,     0.5f + y,    -0.5f + z });
+		position_coordinates.push_back({ 0.5f + x,     0.5f + y,    -0.5f + z });
 		//LEFT  			
-		position_vertices.push_back({ -0.5f + x,    -0.5f + y,    -0.5f + z});
-		position_vertices.push_back({ -0.5f + x,    -0.5f + y,     0.5f + z});
-		position_vertices.push_back({ -0.5f + x,     0.5f + y,    -0.5f + z});
-		position_vertices.push_back({ -0.5f + x,     0.5f + y,     0.5f + z});
+		position_coordinates.push_back({ -0.5f + x,    -0.5f + y,    -0.5f + z });
+		position_coordinates.push_back({ -0.5f + x,    -0.5f + y,     0.5f + z });
+		position_coordinates.push_back({ -0.5f + x,     0.5f + y,    -0.5f + z });
+		position_coordinates.push_back({ -0.5f + x,     0.5f + y,     0.5f + z });
 		//RIGHT 		
-		position_vertices.push_back({ 0.5f + x,    -0.5f + y,    -0.5f + z});
-		position_vertices.push_back({ 0.5f + x,    -0.5f + y,     0.5f + z});
-		position_vertices.push_back({ 0.5f + x,     0.5f + y,    -0.5f + z});
-		position_vertices.push_back({ 0.5f + x,     0.5f + y,     0.5f + z});
+		position_coordinates.push_back({ 0.5f + x,    -0.5f + y,    -0.5f + z });
+		position_coordinates.push_back({ 0.5f + x,    -0.5f + y,     0.5f + z });
+		position_coordinates.push_back({ 0.5f + x,     0.5f + y,    -0.5f + z });
+		position_coordinates.push_back({ 0.5f + x,     0.5f + y,     0.5f + z });
 		//TOP   		
-		position_vertices.push_back({ -0.5f + x,     0.5f + y,     0.5f + z});
-		position_vertices.push_back({ 0.5f + x,     0.5f + y,     0.5f + z});
-		position_vertices.push_back({ -0.5f + x,     0.5f + y,    -0.5f + z});
-		position_vertices.push_back({ 0.5f + x,     0.5f + y,    -0.5f + z});
+		position_coordinates.push_back({ -0.5f + x,     0.5f + y,     0.5f + z });
+		position_coordinates.push_back({ 0.5f + x,     0.5f + y,     0.5f + z });
+		position_coordinates.push_back({ -0.5f + x,     0.5f + y,    -0.5f + z });
+		position_coordinates.push_back({ 0.5f + x,     0.5f + y,    -0.5f + z });
 		//BOTTOM	
-		position_vertices.push_back({ -0.5f + x,    -0.5f + y,     0.5f + z});
-		position_vertices.push_back({ 0.5f + x,    -0.5f + y,     0.5f + z});
-		position_vertices.push_back({ -0.5f + x,    -0.5f + y,    -0.5f + z});
-		position_vertices.push_back({ 0.5f + x,    -0.5f + y,    -0.5f + z});
+		position_coordinates.push_back({ -0.5f + x,    -0.5f + y,     0.5f + z });
+		position_coordinates.push_back({ 0.5f + x,    -0.5f + y,     0.5f + z });
+		position_coordinates.push_back({ -0.5f + x,    -0.5f + y,    -0.5f + z });
+		position_coordinates.push_back({ 0.5f + x,    -0.5f + y,    -0.5f + z });
 
-		// NORMAL COORDINATES
-
-		//FRONT
-		normal_vertices.push_back({ 0.0f, 0.0f, 1.0f});
-		normal_vertices.push_back({ 0.0f, 0.0f, 1.0f});
-		normal_vertices.push_back({ 0.0f, 0.0f, 1.0f});
-		normal_vertices.push_back({ 0.0f, 0.0f, 1.0f});
-		//BACK  							
-		normal_vertices.push_back({ 0.0f, 0.0f, -1.0f});
-		normal_vertices.push_back({ 0.0f, 0.0f, -1.0f});
-		normal_vertices.push_back({ 0.0f, 0.0f, -1.0f});
-		normal_vertices.push_back({ 0.0f, 0.0f, -1.0f});
-		//LEFT  					
-		normal_vertices.push_back({ -1.0f, 0.0f, 0.0f});
-		normal_vertices.push_back({ -1.0f, 0.0f, 0.0f});
-		normal_vertices.push_back({ -1.0f, 0.0f, 0.0f});
-		normal_vertices.push_back({ -1.0f, 0.0f, 0.0f});
-		//RIGHT 						
-		normal_vertices.push_back({ 1.0f, 0.0f, 0.0f});
-		normal_vertices.push_back({ 1.0f, 0.0f, 0.0f});
-		normal_vertices.push_back({ 1.0f, 0.0f, 0.0f});
-		normal_vertices.push_back({ 1.0f, 0.0f, 0.0f});
-		//TOP   								
-		normal_vertices.push_back({ 0.0f, 1.0f, 0.0f});
-		normal_vertices.push_back({ 0.0f, 1.0f, 0.0f});
-		normal_vertices.push_back({ 0.0f, 1.0f, 0.0f});
-		normal_vertices.push_back({ 0.0f, 1.0f, 0.0f});
-		//BOTTOM								   
-		normal_vertices.push_back({ 0.0f, -1.0f, 0.0f});
-		normal_vertices.push_back({ 0.0f, -1.0f, 0.0f});
-		normal_vertices.push_back({ 0.0f, -1.0f, 0.0f});
-		normal_vertices.push_back({ 0.0f, -1.0f, 0.0f});
-
-		// TEXTURE COORDINATES
-		
-		//FRONT
-		texCoord_vertices.push_back({ 0.0f, 0.0f });
-		texCoord_vertices.push_back({1.0f, 0.0f });
-		texCoord_vertices.push_back({ 0.0f, 1.0f });
-		texCoord_vertices.push_back({1.0f, 1.0f });
-		//BACK  			
-		texCoord_vertices.push_back({ 0.0f, 0.0f });
-		texCoord_vertices.push_back({1.0f, 0.0f });
-		texCoord_vertices.push_back({ 0.0f, 1.0f });
-		texCoord_vertices.push_back({ 1.0f, 1.0f });
-		//LEFT  			
-		texCoord_vertices.push_back({0.0f, 0.0f });
-		texCoord_vertices.push_back({1.0f, 0.0f });
-		texCoord_vertices.push_back({0.0f, 1.0f });
-		texCoord_vertices.push_back({1.0f, 1.0f });
-		//RIGHT 		
-		texCoord_vertices.push_back({0.0f, 0.0f });
-		texCoord_vertices.push_back({1.0f, 0.0f });
-		texCoord_vertices.push_back({0.0f, 1.0f });
-		texCoord_vertices.push_back({1.0f, 1.0f });
-		//TOP   		
-		texCoord_vertices.push_back({ 0.0f, 0.0f });
-		texCoord_vertices.push_back({1.0f, 0.0f });
-		texCoord_vertices.push_back({ 0.0f, 1.0f });
-		texCoord_vertices.push_back({1.0f, 1.0f });
-		//BOTTOM	
-		texCoord_vertices.push_back({ 0.0f, 0.0f });
-		texCoord_vertices.push_back({1.0f, 0.0f });
-		texCoord_vertices.push_back({0.0f, 1.0f });
-		texCoord_vertices.push_back({1.0f, 1.0f });
+		indices = {
+			// FRONT
+			0, 1, 2, 1, 3, 2,
+			// BACK
+			4, 6, 5, 5, 6, 7,
+			// LEFT
+			8, 9, 10, 9, 11, 10,
+			// RIGHT
+			12, 14, 13, 13, 14, 15,
+			// TOP
+			16, 17, 18, 17, 19, 18,
+			// BOTTOM
+			20, 22, 21, 21, 22, 23
+		};
 	}
 
-	std::vector<PositionVertex> position_vertices;
-	std::vector<TextureVertex> texCoord_vertices;
-	std::vector<NormalVertex> normal_vertices;
-
-	std::vector<GLuint> indices = {
-		// FRONT
-		0, 1, 2, 1, 3, 2,
-		// BACK
-		4, 6, 5, 5, 6, 7,
-		// LEFT
-		8, 9, 10, 9, 11, 10,
-		// RIGHT
-		12, 14, 13, 13, 14, 15,
-		// TOP
-		16, 17, 18, 17, 19, 18,
-		// BOTTOM
-		20, 22, 21, 21, 22, 23
-	};
 };
-
-
 class Mesh {
 public:
-	std::vector<PositionVertex> position_verts;
+	std::vector<PositionVertex> position_coordinates;
 	std::vector<TextureVertex> texture_coordinates;
-	std::vector<NormalVertex> normal_verts;
+	std::vector<NormalVertex> normals;
 	std::vector<GLuint> indices;
+
+	glm::vec3 color;
+
 	glm::mat4 worldTransform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 	glm::vec4 color = glm::vec4(1.0f,1.0f,1.0f,1.0f);
 
 	GLuint texture;
-	Mesh(const std::vector<PositionVertex>& vertices, const std::vector<TextureVertex>& tex_coords, const std::vector<NormalVertex>& normals, std::vector<GLuint>& indices, GLuint& texture) : position_verts(vertices), texture_coordinates(tex_coords), indices(indices), texture(texture), normal_verts(normals) {
 
+	// Constructor
+	Mesh(glm::vec3 objColor, GLuint& texture) : texture(texture), color(objColor) {
 	}
+
+	// Mesh Types
+	void createCube(GLfloat x, GLfloat y, GLfloat z) {
+			//                     POSITION VECTOR
+			//FRONT
+			position_coordinates.push_back({ -0.5f + x,    -0.5f + y,     0.5f + z });
+			position_coordinates.push_back({ 0.5f + x,    -0.5f + y,     0.5f + z });
+			position_coordinates.push_back({ -0.5f + x,     0.5f + y,     0.5f + z });
+			position_coordinates.push_back({ 0.5f + x,     0.5f + y,     0.5f + z });
+			//BACK  			
+			position_coordinates.push_back({ -0.5f + x,    -0.5f + y,    -0.5f + z });
+			position_coordinates.push_back({ 0.5f + x,    -0.5f + y,    -0.5f + z });
+			position_coordinates.push_back({ -0.5f + x,     0.5f + y,    -0.5f + z });
+			position_coordinates.push_back({ 0.5f + x,     0.5f + y,    -0.5f + z });
+			//LEFT  			
+			position_coordinates.push_back({ -0.5f + x,    -0.5f + y,    -0.5f + z });
+			position_coordinates.push_back({ -0.5f + x,    -0.5f + y,     0.5f + z });
+			position_coordinates.push_back({ -0.5f + x,     0.5f + y,    -0.5f + z });
+			position_coordinates.push_back({ -0.5f + x,     0.5f + y,     0.5f + z });
+			//RIGHT 		
+			position_coordinates.push_back({ 0.5f + x,    -0.5f + y,    -0.5f + z });
+			position_coordinates.push_back({ 0.5f + x,    -0.5f + y,     0.5f + z });
+			position_coordinates.push_back({ 0.5f + x,     0.5f + y,    -0.5f + z });
+			position_coordinates.push_back({ 0.5f + x,     0.5f + y,     0.5f + z });
+			//TOP   		
+			position_coordinates.push_back({ -0.5f + x,     0.5f + y,     0.5f + z });
+			position_coordinates.push_back({ 0.5f + x,     0.5f + y,     0.5f + z });
+			position_coordinates.push_back({ -0.5f + x,     0.5f + y,    -0.5f + z });
+			position_coordinates.push_back({ 0.5f + x,     0.5f + y,    -0.5f + z });
+			//BOTTOM	
+			position_coordinates.push_back({ -0.5f + x,    -0.5f + y,     0.5f + z });
+			position_coordinates.push_back({ 0.5f + x,    -0.5f + y,     0.5f + z });
+			position_coordinates.push_back({ -0.5f + x,    -0.5f + y,    -0.5f + z });
+			position_coordinates.push_back({ 0.5f + x,    -0.5f + y,    -0.5f + z });
+			//             TEXTURE COORDINATES
+			//FRONT
+			texture_coordinates.push_back({ 0.0f, 0.0f });
+			texture_coordinates.push_back({ 1.0f, 0.0f });
+			texture_coordinates.push_back({ 0.0f, 1.0f });
+			texture_coordinates.push_back({ 1.0f, 1.0f });
+			//BACK  			
+			texture_coordinates.push_back({ 0.0f, 0.0f });
+			texture_coordinates.push_back({ 1.0f, 0.0f });
+			texture_coordinates.push_back({ 0.0f, 1.0f });
+			texture_coordinates.push_back({ 1.0f, 1.0f });
+			//LEFT  			
+			texture_coordinates.push_back({ 0.0f, 0.0f });
+			texture_coordinates.push_back({ 1.0f, 0.0f });
+			texture_coordinates.push_back({ 0.0f, 1.0f });
+			texture_coordinates.push_back({ 1.0f, 1.0f });
+			//RIGHT 		
+			texture_coordinates.push_back({ 0.0f, 0.0f });
+			texture_coordinates.push_back({ 1.0f, 0.0f });
+			texture_coordinates.push_back({ 0.0f, 1.0f });
+			texture_coordinates.push_back({ 1.0f, 1.0f });
+			//TOP   		
+			texture_coordinates.push_back({ 0.0f, 0.0f });
+			texture_coordinates.push_back({ 1.0f, 0.0f });
+			texture_coordinates.push_back({ 0.0f, 1.0f });
+			texture_coordinates.push_back({ 1.0f, 1.0f });
+			//BOTTOM	
+			texture_coordinates.push_back({ 0.0f, 0.0f });
+			texture_coordinates.push_back({ 1.0f, 0.0f });
+			texture_coordinates.push_back({ 0.0f, 1.0f });
+			texture_coordinates.push_back({ 1.0f, 1.0f });
+			//           NORMAL COORDINATES
+			//FRONT
+			normals.push_back({ 0.0f, 0.0f, 1.0f });
+			normals.push_back({ 0.0f, 0.0f, 1.0f });
+			normals.push_back({ 0.0f, 0.0f, 1.0f });
+			normals.push_back({ 0.0f, 0.0f, 1.0f });
+			//BACK  							
+			normals.push_back({ 0.0f, 0.0f, -1.0f });
+			normals.push_back({ 0.0f, 0.0f, -1.0f });
+			normals.push_back({ 0.0f, 0.0f, -1.0f });
+			normals.push_back({ 0.0f, 0.0f, -1.0f });
+			//LEFT  					
+			normals.push_back({ -1.0f, 0.0f, 0.0f });
+			normals.push_back({ -1.0f, 0.0f, 0.0f });
+			normals.push_back({ -1.0f, 0.0f, 0.0f });
+			normals.push_back({ -1.0f, 0.0f, 0.0f });
+			//RIGHT 						
+			normals.push_back({ 1.0f, 0.0f, 0.0f });
+			normals.push_back({ 1.0f, 0.0f, 0.0f });
+			normals.push_back({ 1.0f, 0.0f, 0.0f });
+			normals.push_back({ 1.0f, 0.0f, 0.0f });
+			//TOP   								
+			normals.push_back({ 0.0f, 1.0f, 0.0f });
+			normals.push_back({ 0.0f, 1.0f, 0.0f });
+			normals.push_back({ 0.0f, 1.0f, 0.0f });
+			normals.push_back({ 0.0f, 1.0f, 0.0f });
+			//BOTTOM								   
+			normals.push_back({ 0.0f, -1.0f, 0.0f });
+			normals.push_back({ 0.0f, -1.0f, 0.0f });
+			normals.push_back({ 0.0f, -1.0f, 0.0f });
+			normals.push_back({ 0.0f, -1.0f, 0.0f });
+
+		    indices = {
+				// FRONT
+				0, 1, 2, 1, 3, 2,
+				// BACK
+				4, 6, 5, 5, 6, 7,
+				// LEFT
+				8, 9, 10, 9, 11, 10,
+				// RIGHT
+				12, 14, 13, 13, 14, 15,
+				// TOP
+				16, 17, 18, 17, 19, 18,
+				// BOTTOM
+				20, 22, 21, 21, 22, 23
+			};
+	}
+	void createPlane(GLfloat originX, GLfloat originY, GLfloat originZ,GLfloat sizeX, GLfloat sizeZ, GLuint rows, GLuint cols,GLfloat numOctaves, GLfloat persistence,GLfloat textureScaleX, GLfloat textureScaleY) {
+
+		GLuint num_indices = (rows - 1) * (cols - 1) * 6;
+
+			for (GLuint i = 0; i < rows; ++i) {
+				for (GLuint j = 0; j < cols; ++j) {
+					GLfloat x = originX + j * (sizeX / (cols - 1));
+					GLfloat z = originZ - i * (sizeZ / (rows - 1));
+
+					// Use multiple octaves of Perlin noise
+					GLfloat y = originY;
+					GLfloat frequency = 0.1f; // Initial frequency
+					GLfloat amplitude = 1.0f; // Initial amplitude
+
+					for (int k = 0; k < numOctaves; ++k) {
+						y += glm::perlin(glm::vec2(x * frequency, z * frequency)) * amplitude;
+						frequency *= 2.0f; // Increase frequency with each octave
+						amplitude *= persistence; // Decrease amplitude with each octave
+					}
+
+
+					// Calculate texCoordX to repeat within each column
+					GLfloat texCoordX = static_cast<GLfloat>(j % cols) / (cols - 1) * textureScaleX;
+
+					GLfloat texCoordY = static_cast<GLfloat>(i) / (rows - 1) * textureScaleY;
+
+					position_coordinates.push_back({ x, y, z });
+					texture_coordinates.push_back({ texCoordX, texCoordY });
+				}
+			}
+
+
+			std::vector<GLuint> planeIndices(num_indices);
+			size_t offset = 6;
+			for (size_t i = 0; i < static_cast<size_t>(rows) - 1; ++i) {
+				for (size_t j = 0; j < static_cast<size_t>(cols) - 1; ++j) {
+					size_t currentVertex = i * cols + j;
+
+					planeIndices[offset * (i * (static_cast<size_t>(cols) - 1) + j)] = static_cast<GLuint>(currentVertex);
+					planeIndices[offset * (i * (static_cast<size_t>(cols) - 1) + j) + 1] = static_cast<GLuint>(currentVertex) + 1;
+					planeIndices[offset * (i * (static_cast<size_t>(cols) - 1) + j) + 2] = static_cast<GLuint>(currentVertex) + static_cast<GLuint>(cols);
+
+					planeIndices[offset * (i * (static_cast<size_t>(cols) - 1) + j) + 3] = static_cast<GLuint>(currentVertex) + 1;
+					planeIndices[offset * (i * (static_cast<size_t>(cols) - 1) + j) + 4] = static_cast<GLuint>(currentVertex) + static_cast<GLuint>(cols) + 1;
+					planeIndices[offset * (i * (static_cast<size_t>(cols) - 1) + j) + 5] = static_cast<GLuint>(currentVertex) + static_cast<GLuint>(cols);
+				}
+			}
+			// add the object's indices to the parent indice vector
+			indices.insert(indices.end(), planeIndices.begin(), planeIndices.end());
+
+			// NORMAL CALCULATIONS
+			normals.resize(position_coordinates.size(), NormalVertex{ 0.0f, 0.0f, 0.0f });
+			for (size_t i = 0; i < indices.size(); i += 3) {
+				GLuint index1 = indices[i];
+				GLuint index2 = indices[i + 1];
+				GLuint index3 = indices[i + 2];
+
+				// Get the vertices of the current triangle
+				glm::vec3 v1(position_coordinates[index1].position[0], position_coordinates[index1].position[1], position_coordinates[index1].position[2]);
+				glm::vec3 v2(position_coordinates[index2].position[0], position_coordinates[index2].position[1], position_coordinates[index2].position[2]);
+				glm::vec3 v3(position_coordinates[index3].position[0], position_coordinates[index3].position[1], position_coordinates[index3].position[2]);
+
+				// Calculate the tangent vectors
+				glm::vec3 tangent1 = v2 - v1;
+				glm::vec3 tangent2 = v3 - v1;
+
+				// Calculate the normal using the cross product of the tangents
+				glm::vec3 normal = glm::normalize(glm::cross(tangent1, tangent2));
+
+				// Accumulate the normals for each vertex of the triangle
+				normals[index1].normals[0] += normal.x;
+				normals[index1].normals[1] += normal.y;
+				normals[index1].normals[2] += normal.z;
+
+				normals[index2].normals[0] += normal.x;
+				normals[index2].normals[1] += normal.y;
+				normals[index2].normals[2] += normal.z;
+
+				normals[index3].normals[0] += normal.x;
+				normals[index3].normals[1] += normal.y;
+				normals[index3].normals[2] += normal.z;
+			}
+
+			// Normalize the accumulated normals
+			for (size_t i = 0; i < normals.size(); ++i) {
+				glm::vec3 norm = glm::normalize(glm::vec3(normals[i].normals[0], normals[i].normals[1], normals[i].normals[2]));
+
+				normals[i].normals[0] = norm.x;
+				normals[i].normals[1] = norm.y;
+				normals[i].normals[2] = norm.z;
+			}
+	}
+
+private:
 };
 
 class BatchRenderer {
@@ -363,6 +313,7 @@ public:
 	std::vector<TextureVertex> tex_coords;
 	std::vector<NormalVertex> normal_vertices;
 	std::vector<GLuint> indices;
+
 	GLuint max_indices;
 	GLuint max_vertices;
 	// OTHER
@@ -377,7 +328,7 @@ public:
 		
 		objects = objs;
 		for (size_t i = 0; i < objects.size(); i++) {
-			add_to_mesh(objects[i].position_verts, objects[i].texture_coordinates, objects[i].normal_verts, objects[i].indices);
+			add_to_mesh(objects[i].position_coordinates, objects[i].texture_coordinates, objects[i].normals, objects[i].indices);
 		}
 	}
 	// DESTRUCTOR
