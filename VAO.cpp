@@ -39,7 +39,6 @@ void VAO::Delete()
 
 // Explicit instantiation for the required data type(s)
 template void VAO::LinkAttrib<Vertex>(VBO<Vertex>& VBO, GLuint layout, GLuint numComponents, GLenum type, GLsizei stride, void* offset);
-// Explicit instantiation for the required data type(s)
 template void VAO::LinkAttrib<PositionVertex>(VBO<PositionVertex>& VBO, GLuint layout, GLuint numComponents, GLenum type, GLsizei stride, void* offset);
-// Explicit instantiation for the required data type(s)
 template void VAO::LinkAttrib<TextureVertex>(VBO<TextureVertex>& VBO, GLuint layout, GLuint numComponents, GLenum type, GLsizei stride, void* offset);
+template void VAO::LinkAttrib<NormalVertex>(VBO<NormalVertex>& VBO, GLuint layout, GLuint numComponents, GLenum type, GLsizei stride, void* offset);

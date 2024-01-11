@@ -165,5 +165,11 @@
     <None Include="shaders\batched.fs">
       <Filter>Graphics\Shaders\Fragment</Filter>
     </None>
+    <None Include="shaders\light_cube.fs">
+      <Filter>Graphics\Shaders\Fragment</Filter>
+    </None>
+    <None Include="shaders\light_cube.vs">
+      <Filter>Graphics\Shaders\Vertex</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -4,6 +4,7 @@
 template class VBO<Vertex>;
 template class VBO<PositionVertex>;
 template class VBO<TextureVertex>;
+template class VBO<NormalVertex>;
 
 template <typename DataType>
 // Batch rendering usage of the vbo

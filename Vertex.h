@@ -18,5 +18,5 @@ struct TextureVertex
 
 struct NormalVertex
 {
-	GLfloat nCoords[2];
+	GLfloat normals[3];
 };

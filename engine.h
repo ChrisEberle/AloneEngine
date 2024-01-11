@@ -42,11 +42,13 @@
 #include"VBO.h"
 #include"EBO.h"
 #include"Texture.h"
+#include"Camera.h"
+
 #include "Mesh.h"
 #include "Model_obj.h"
 
 
-#include"Camera.h"
+
 
 //program run
 #include "main.h"

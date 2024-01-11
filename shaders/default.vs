@@ -4,13 +4,15 @@
 layout (location = 0) in vec3 aPos;
 // Texture Coordinates
 layout (location = 1) in vec2 aTex;
-// Outputs the texture coordinates to the fragment shader
+// Normal Coordinates
+layout (location = 2) in vec3 aNormal;
+
+out vec3 Normal;
 out vec2 texCoord;
 
 flat out float texIndex;
 
 uniform mat4 camMatrix;
-
 uniform mat4 worldTransform;
 
 

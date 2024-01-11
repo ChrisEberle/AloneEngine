@@ -179,6 +179,8 @@
     <None Include="shaders\batched.vs" />
     <None Include="shaders\default.fs" />
     <None Include="shaders\default.vs" />
+    <None Include="shaders\light_cube.fs" />
+    <None Include="shaders\light_cube.vs" />
     <None Include="shaders\text.fs" />
     <None Include="shaders\text.vs" />
   </ItemGroup>

@@ -48,7 +48,7 @@ int main()
 	// Generates Shader object
 	Shaderer objectShader("shaders/batched.vs", "shaders/batched.fs");
 	Shaderer objectShader1("shaders/default.vs", "shaders/default.fs");
-	
+	Shaderer lightShader("shaders/light_cube.vs", "shaders/light_cube.fs");
 
 
 	GLuint tex0 = LoadTexture("textures/grey_sand.png");
@@ -64,26 +64,32 @@ int main()
  	// Create camera object
 	Camera camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(0.0f, 0.0f, 5.0f));
 
-
+	glm::vec3 posLight(0.0f, 0.0f, 0.0f);
 
 	// imported obj model initialization
 	Model_obj car("obj_models/carUV.obj");
 
-	CubeMesh cube0(0.0f, 0.0f, 0.0f);
+	CubeMesh cube0(1.0f, 0.0f, 0.0f);
 	CubeMesh cube1(3.0f, 0.0f, 0.0f);
 	CubeMesh cube2(-3.0f, 0.0f, 0.0f);
-	PlaneMesh plane(0.0f, 0.0f, 0.0f, 100.0f, 100.0f, 3000, 3000, 0.1f, 4.0f, 20.0f, 20.0f);
-	Mesh object0(cube0.position_vertices, cube0.texCoord_vertices, cube0.indices, tex0);
-	Mesh object1(cube1.position_vertices, cube1.texCoord_vertices, cube1.indices, tex0);
-	Mesh object2(plane.position_vertices, plane.texture_coordinates, plane.indices, tex0);
-	Mesh object3(car.positions, car.texture_coordinates, car.indices, tex0);
-	Mesh object4(cube2.position_vertices, cube2.texCoord_vertices, cube2.indices, tex0);
-	std::vector<Mesh> objects = { object0, object1, object3};
+	CubeMesh cube3(posLight.x, posLight.y, posLight.z);
+	PlaneMesh plane(0.0f, 0.0f, 0.0f, 100.0f, 100.0f, 100, 100, 0.1f, 4.0f, 20.0f, 20.0f);
+	Mesh object0(cube0.position_vertices, cube0.texCoord_vertices, cube0.normal_vertices, cube0.indices, tex0);
 
-	BatchRenderer batch(objectShader,objects, 3100000, 3100000);
+	Mesh planeOBJ(plane.position_vertices, plane.texture_coordinates, plane.normals, plane.indices, tex0);
 
+	Mesh cubeLight(cube3.position_vertices, cube3.texCoord_vertices, cube3.normal_vertices, cube3.indices, tex0);
 
+	std::vector<Mesh> objects = { cubeLight };
+	std::vector<Mesh> objs = { planeOBJ};
 
+	BatchRenderer batch1(objectShader,tex1, objs, 3100000, 3100000);
+	batch1.initializeMeshObject();
+
+	BatchRenderer batch(lightShader, tex0 ,objects, 3100000, 3100000);
+	batch.initializeMeshCubeLight();
+
+	
 
 	// Timing variables for FPS calculation
 	double lastTime = glfwGetTime();
@@ -100,39 +106,39 @@ int main()
 
 		// input handling
 		input_callback(window, camera);
+
+		if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
+			posLight.y -= 0.2f;
+		}
+		if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) {
+			posLight.y += 0.2f;
+		}
+
+		if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS) {
+			posLight.x -= 0.2f;
+		}
+		if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS) {
+			posLight.x += 0.2f;
+		}
+
+		if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS) {
+			posLight.z -= 0.2f;
+		}
+		if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS) {
+			posLight.z += 0.2f;
+		}
+
 		//===============
-
-		if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS) {
-			
-			xpos += 0.2f;
-		}
-		if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
-			xpos -= 0.2f;
-			if (counter < 1) {
-
-				batch.add_to_mesh(object4.position_verts, object4.texture_coordinates, object4.indices);
-				counter++;
-			}
-		}
-
 	
 		
 		back_face_culling(true, true);
 		batch.wireframe_render(wireframe);
-
-		if (texChange) {
-			batch.render(tex2);
-		}
-		else {
-			batch.render(tex0);
-		}
+		batch1.render(camera, posLight);
+		batch.render(camera, posLight);
+	
 
 
-
-		// update the camera
-		camera.Matrix(45.0f, 0.1f, 10000.0f, objectShader1, "camMatrix");
-
-
+		//glUseProgram(0);
 
 		// Font Rendering
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
