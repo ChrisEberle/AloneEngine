@@ -64,7 +64,7 @@ int main()
  	// Create camera object
 	Camera camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(0.0f, 0.0f, 5.0f));
 
-	glm::vec3 posLight(0.0f, 0.0f, 0.0f);
+	glm::vec3 posLight(50.0f, 3.0f, -50.0f);
 
 	// imported obj model initialization
 	Model_obj car("obj_models/carUV.obj");
@@ -72,21 +72,22 @@ int main()
 	CubeMesh cube0(1.0f, 0.0f, 0.0f);
 	CubeMesh cube1(3.0f, 0.0f, 0.0f);
 	CubeMesh cube2(-3.0f, 0.0f, 0.0f);
-	CubeMesh cube3(posLight.x, posLight.y, posLight.z);
-	PlaneMesh plane(0.0f, 0.0f, 0.0f, 100.0f, 100.0f, 100, 100, 0.1f, 4.0f, 20.0f, 20.0f);
+	CubeMesh cube3(0.0f, 0.0f, 0.0f);
+	PlaneMesh plane(0.0f, 0.0f, 0.0f, 100.0f, 100.0f, 1500, 1500, 0.1f, 60.0f, 20.0f, 20.0f);
 	Mesh object0(cube0.position_vertices, cube0.texCoord_vertices, cube0.normal_vertices, cube0.indices, tex0);
 
 	Mesh planeOBJ(plane.position_vertices, plane.texture_coordinates, plane.normals, plane.indices, tex0);
 
 	Mesh cubeLight(cube3.position_vertices, cube3.texCoord_vertices, cube3.normal_vertices, cube3.indices, tex0);
+	Mesh flashlight(cube3.position_vertices, cube3.texCoord_vertices, cube3.normal_vertices, cube3.indices, tex0);
 
-	std::vector<Mesh> objects = { cubeLight };
-	std::vector<Mesh> objs = { planeOBJ};
+	std::vector<Mesh> objects = { flashlight };
+	std::vector<Mesh> objs = { object0 , planeOBJ};
 
-	BatchRenderer batch1(objectShader,tex1, objs, 3100000, 3100000);
+	BatchRenderer batch1(objectShader,tex2, objs, 31000000, 31000000);
 	batch1.initializeMeshObject();
 
-	BatchRenderer batch(lightShader, tex0 ,objects, 3100000, 3100000);
+	BatchRenderer batch(lightShader, tex2 ,objects, 1000, 1000);
 	batch.initializeMeshCubeLight();
 
 	
@@ -131,7 +132,7 @@ int main()
 		//===============
 	
 		
-		back_face_culling(true, true);
+		back_face_culling(true);
 		batch.wireframe_render(wireframe);
 		batch1.render(camera, posLight);
 		batch.render(camera, posLight);

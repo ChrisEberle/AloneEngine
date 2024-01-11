@@ -57,15 +57,10 @@ static void move_cube(GLFWwindow* window, std::vector<Vertex>& verts, int numVer
 		}
 	}
 }
-static void back_face_culling(bool back_cull, bool select_side) {
+static void back_face_culling(bool back_cull) {
 	if (back_cull) {
 		glEnable(GL_CULL_FACE);
-		if (select_side) {
-			glCullFace(GL_BACK);
-		}
-		else {
-			glCullFace(GL_FRONT);
-		}
+		glCullFace(GL_BACK);
 	}
 }
 
@@ -102,9 +97,7 @@ public:
 					amplitude *= persistence; // Decrease amplitude with each octave
 				}
 
-				if (y < -0.5f) {
-					y = -0.5f;
-				}
+				
 				// Calculate texCoordX to repeat within each column
 				GLfloat texCoordX = static_cast<GLfloat>(j % cols) / (cols - 1) * textureScaleX;
 
@@ -134,11 +127,11 @@ public:
 		// add the object's indices to the parent indice vector
 		indices.insert(indices.end(), planeIndices.begin(), planeIndices.end());
 
-		calculateNormals();
+		calculateNormalsSmooth();
 	}
 
 
-	void calculateNormals() {
+	void calculateNormalsSmooth() {
 		normals.resize(position_vertices.size(), NormalVertex{ 0.0f, 0.0f, 0.0f });
 
 		for (size_t i = 0; i < indices.size(); i += 3) {
@@ -179,6 +172,37 @@ public:
 			normals[i].normals[0] = norm.x;
 			normals[i].normals[1] = norm.y;
 			normals[i].normals[2] = norm.z;
+		}
+	}
+
+	void calculateNormalsFlat() {
+		normals.resize(position_vertices.size(), NormalVertex{ 0.0f, 0.0f, 0.0f });
+
+		for (size_t i = 0; i < indices.size(); i += 3) {
+			GLuint index1 = indices[i];
+			GLuint index2 = indices[i + 1];
+			GLuint index3 = indices[i + 2];
+
+			// Get the vertices of the current triangle
+			glm::vec3 v1(position_vertices[index1].position[0], position_vertices[index1].position[1], position_vertices[index1].position[2]);
+			glm::vec3 v2(position_vertices[index2].position[0], position_vertices[index2].position[1], position_vertices[index2].position[2]);
+			glm::vec3 v3(position_vertices[index3].position[0], position_vertices[index3].position[1], position_vertices[index3].position[2]);
+
+			// Calculate the face normal
+			glm::vec3 normal = glm::cross(v2 - v1, v3 - v1);
+
+			// Assign the face normal to all vertices of the triangle
+			normals[index1].normals[0] = normal.x;
+			normals[index1].normals[1] = normal.y;
+			normals[index1].normals[2] = normal.z;
+
+			normals[index2].normals[0] = normal.x;
+			normals[index2].normals[1] = normal.y;
+			normals[index2].normals[2] = normal.z;
+
+			normals[index3].normals[0] = normal.x;
+			normals[index3].normals[1] = normal.y;
+			normals[index3].normals[2] = normal.z;
 		}
 	}
 };
@@ -404,6 +428,7 @@ public:
 			
 				shaderProgram.setVec3("objectColor", 1.0f, 1.0f, 1.0f);
 				shaderProgram.setVec3("lightColor", glm::vec3(1.0f,1.0f,1.0f));
+				shaderProgram.setVec3("viewPos", camera.Position);
 				shaderProgram.setVec3("lightPos", lightPos);
 
 				// world transformation
