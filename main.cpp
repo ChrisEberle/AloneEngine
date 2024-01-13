@@ -61,32 +61,48 @@ int main()
 
 
 	//Material(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, GLfloat shine, GLuint & texture) : ambient(ambient), diffuse(diffuse), specular(specular), shine(shine), texture(texture) {
-	Material mat0(glm::vec3(1.0f,0.5f,0.31f), glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(0.5f, 0.5f, 0.5f), 302.0f, tex2);
+	Material mat0(glm::vec3(1.0f,0.5f,0.31f), glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(0.5f, 0.5f, 0.5f), 302.0f, tex0);
+	Material mat1(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.5f, 0.5f, 0.5f), 302.0f, tex0);
 
  	// Create camera object
 	Camera camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(0.0f, 0.0f, 5.0f));
 
-	glm::vec3 posLight(0.0f, 8.0f, 10.0f);
 
-	ModelOBJ  car("obj_models/village_home1.obj");
 
-	Mesh model0(mat0);
+	// OBJECTS
+	ModelOBJ  car("obj_models/AK47.obj");
+	Mesh model0(mat1);
 	model0.modelObj(car);
-
 	Mesh plane0(mat0);
-	plane0.createPlane(-50.0f, 0.0f, 50.0f, 100.0f, 100.0f, 1500, 1500, 0.1f, 60.0f, 20.0f, 20.0f);
-	Mesh cubeLight(mat0);
-	cubeLight.createCube(0.0f, 0.0f, 0.0f);
-
+	plane0.createPlane(-50.0f, -5.0f, 50.0f, 100.0f, 100.0f, 1500, 1500, 0.1f, 60.0f, 20.0f, 20.0f);
 	Mesh cubeOBJ(mat0);
 	cubeOBJ.createCube(48.0f, 2.0f, -48.0f);
 
 
-	std::vector<Mesh> lightObjects = { cubeLight };
+
+	// LIGHTS
+	Mesh cubeLight0(mat0);
+	cubeLight0.createCube(-5.0f, 0.0f, 0.0f);
+	Mesh cubeLight1(mat0);
+	cubeLight1.createCube(5.0f, 0.0f, 0.0f);
+	Mesh cubeLight2(mat0);
+	cubeLight2.createCube(0.0f, 10.0f, 0.0f);
+	std::vector<glm::vec3> lightPositions;
+	lightPositions.push_back(cubeLight0.position);
+	lightPositions.push_back(cubeLight1.position);
+	lightPositions.push_back(cubeLight2.position);
+
+
+
+	// Mesh vectors
+	std::vector<Mesh> lightObjects = { cubeLight0,cubeLight1,cubeLight2 };
 	std::vector<Mesh> objectsTerrain = { plane0 };
 	std::vector<Mesh> objectsBuildings = { model0};
+
+
+
 	//house
-	MatBatchRenderer batchBuildings(objectShader, objectsBuildings, mat0,31000000, 31000000);
+	MatBatchRenderer batchBuildings(objectShader, objectsBuildings, mat1,31000000, 31000000);
 	batchBuildings.initializeMeshObject();
 	// terrain
 	MatBatchRenderer batchTerrain(objectShader, objectsTerrain, mat0, 31000000, 31000000);
@@ -94,15 +110,12 @@ int main()
 	// light
 	MatBatchRenderer batchLight(lightShader, lightObjects,mat0, 1000, 1000);
 	batchLight.initializeMeshCubeLight();
-
 	
 
 	// Timing variables for FPS calculation
 	double lastTime = glfwGetTime();
 	int frameCount = 0;
 	float fps = 0.0f;
-
-	int counter = 0;
 
 	// Main while loop
 	while (!glfwWindowShouldClose(window))
@@ -114,47 +127,6 @@ int main()
 
 		// input handling
 		input_callback(window, camera);
-
-		if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
-			posLight.y -= 0.05f;
-		}
-		if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) {
-			posLight.y += 0.05f;
-		}
-
-		if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS) {
-			posLight.x -= 0.05f;
-		}
-		if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS) {
-			posLight.x += 0.05f;
-		}
-
-		if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS) {
-			posLight.z -= 0.05f;
-		}
-		if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS) {
-			posLight.z += 0.05f;
-		}
-
-		if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) {
-			batchBuildings.material.diffuse += 0.1f;
-		}
-		if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS) {
-			batchBuildings.material.diffuse -= 0.1f;
-		}
-
-		if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
-			batchBuildings.material.shine += 1.1f;
-		}
-		if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS) {
-			batchBuildings.material.shine -= 1.1f;
-		}
-		if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS) {
-			batchBuildings.material.specular += 1.1f;
-		}
-		if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS) {
-			batchBuildings.material.specular -= 1.1f;
-		}
 		//===============
 	
 
@@ -162,9 +134,9 @@ int main()
 		// Object Rendering
 		back_face_culling(true);
 		batchTerrain.wireframe_render(wireframe);
-		batchTerrain.render(camera, posLight);
-		batchBuildings.render(camera, posLight);
-		batchLight.render(camera, posLight);
+		batchTerrain.render(camera, lightPositions);
+		batchBuildings.render(camera, lightPositions);
+		batchLight.renderLight(camera, glm::vec3(0.0f,0.0f,0.0f));
 
 		// Font Rendering
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

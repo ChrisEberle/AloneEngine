@@ -100,6 +100,8 @@ public:
 
 	glm::mat4 worldTransform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 
+	glm::vec3 position;
+
 	// Constructor
 	Mesh(Material& mat) : material(mat) {
 
@@ -108,6 +110,8 @@ public:
 
 	// Mesh Types
 	void createCube(GLfloat x, GLfloat y, GLfloat z) {
+		position.x = x; position.y = y; position.z = z;
+
 			//                     POSITION VECTOR
 			//FRONT
 			position_coordinates.push_back({ -0.5f + x,    -0.5f + y,     0.5f + z });
@@ -218,7 +222,7 @@ public:
 			};
 	}
 	void createPlane(GLfloat originX, GLfloat originY, GLfloat originZ,GLfloat sizeX, GLfloat sizeZ, GLuint rows, GLuint cols,GLfloat numOctaves, GLfloat persistence,GLfloat textureScaleX, GLfloat textureScaleY) {
-
+		position.x = originX; position.y = originY; position.z = originZ;
 		GLuint num_indices = (rows - 1) * (cols - 1) * 6;
 
 			for (GLuint i = 0; i < rows; ++i) {
@@ -390,7 +394,7 @@ public:
 		max_vertices = static_cast<GLuint>(verts_pos.size());
 	}
 
-	void render(Camera& camera, glm::vec3 lightPos) {
+	void render(Camera& camera, const std::vector<glm::vec3>& lightPositions) {
 		//activate current buffers
 		vbo_verts.Bind();
 		vao.Bind();
@@ -403,48 +407,47 @@ public:
 		shaderProgram.Activate();
 		// binds textures
 		glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
-		if (!is_light) {
-			// If object being render is a object and not a light
-				glUniform1i(getShaderUniform("tex0"), 0);
-				glBindTexture(GL_TEXTURE_2D, material.texture);
-			
-				glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);
-				glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f);
-				glm::vec3 specularColor(1.0f, 1.0f, 1.0f);
 
-				//lighting
-				shaderProgram.setVec3("viewPos", camera.Position);
-				shaderProgram.setVec3("light.position", lightPos);
-				shaderProgram.setVec3("light.ambient", ambientColor);
-				shaderProgram.setVec3("light.diffuse", diffuseColor);
-				shaderProgram.setVec3("light.specular", specularColor);
+		// If object being render is a object and not a light
+		glUniform1i(getShaderUniform("tex0"), 0);
+		glBindTexture(GL_TEXTURE_2D, material.texture);
 
-				// material
-				shaderProgram.setVec3("material.ambient", material.ambient);
-				shaderProgram.setVec3("material.diffuse", material.diffuse);
-				shaderProgram.setVec3("material.specular", material.specular);
-				shaderProgram.setFloat("material.shine", material.shine);
+		// material
+		shaderProgram.setVec3("material.ambient", material.ambient);
+		shaderProgram.setVec3("material.diffuse", material.diffuse);
+		shaderProgram.setVec3("material.specular", material.specular);
+		shaderProgram.setFloat("material.shine", material.shine);
 
-				// world transformation
-				glm::mat4 model = glm::mat4(1.0f);
 
-				
-				// Create the scaling matrix
-				glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(5.0f, 5.0f, 5.0f));
 
-				// Apply scaling to the existing model matrix
-				model = scaleMatrix * model;
+		
+		glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);
+		glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f);
+		glm::vec3 specularColor(1.0f, 1.0f, 1.0f);
 
-				// Pass the combined matrix to the shader
-				shaderProgram.setMat4("model", model);
+		shaderProgram.setVec3("viewPos", camera.Position);
+
+		for (size_t i = 0; i < lightPositions.size(); i++) {
+			// lighting
+			shaderProgram.setVec3("lights[" + std::to_string(i) + "].position", lightPositions[i]);
+			shaderProgram.setVec3("lights[" + std::to_string(i) + "].ambient", ambientColor);
+			shaderProgram.setVec3("lights[" + std::to_string(i) + "].diffuse", diffuseColor);
+			shaderProgram.setVec3("lights[" + std::to_string(i) + "].specular", specularColor);
 		}
-		else {
-			glm::mat4 model = glm::mat4(1.0f);
-			model = glm::translate(model, lightPos);
-			shaderProgram.setVec3("objectColor", lightColor);
-			shaderProgram.setMat4("model", model);
-		}
+	
 
+		// world transformation
+		glm::mat4 model = glm::mat4(1.0f);
+
+		
+		// Create the scaling matrix
+		glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(5.0f, 5.0f, 5.0f));
+
+		// Apply scaling to the existing model matrix
+		model = scaleMatrix * model;
+
+		// Pass the combined matrix to the shader
+		shaderProgram.setMat4("model", model);
 			
 		camera.Matrix(45.0f, 0.1f, 10000.0f, shaderProgram, "camMatrix");
 		// draws the object
@@ -456,6 +459,38 @@ public:
 		ebo.Unbind();
 
 		
+	}
+
+
+	void renderLight(Camera& camera, glm::vec3 lightPos) {
+		//activate current buffers
+		vbo_verts.Bind();
+		vao.Bind();
+		ebo.Bind();
+		// update object positions
+		vbo_verts.dynamic_update(verts_pos);
+		// Object doesn't render correctly without this
+		glEnable(GL_DEPTH_TEST);
+		// Tell OpenGL which Shader Program we want to use
+		shaderProgram.Activate();
+		// binds textures
+		glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
+	
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, lightPos);
+		shaderProgram.setVec3("objectColor", lightColor);
+		shaderProgram.setMat4("model", model);
+		
+		camera.Matrix(45.0f, 0.1f, 10000.0f, shaderProgram, "camMatrix");
+		// draws the object
+		glDrawElements(GL_TRIANGLES, max_indices, GL_UNSIGNED_INT, 0);
+		//deactivate current buffers
+		vbo_verts.Unbind();
+		vbo_texCoords.Unbind();
+		vao.Unbind();
+		ebo.Unbind();
+
+
 	}
 
 	void set_color(glm::vec4 color) {
