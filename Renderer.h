@@ -1,7 +1,7 @@
 #pragma once
 #include "engine.h"
 
-static void wireframe_state(bool get_state, Shaderer& objectShader) {
+static void wireframe_state(bool get_state, Shader& objectShader) {
 	// Whether to render wireframe or full textured
 	if (get_state) { 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); 

@@ -46,9 +46,9 @@ int main()
 	float lightIntense = 0.5f;
 
 	// Generates Shader object
-	Shaderer objectShader("shaders/batched.vs", "shaders/batched.fs");
-	Shaderer objectShader1("shaders/default.vs", "shaders/default.fs");
-	Shaderer lightShader("shaders/light_cube.vs", "shaders/light_cube.fs");
+	Shader objectShader("shaders/batched.vs", "shaders/batched.fs");
+	Shader objectShader1("shaders/default.vs", "shaders/default.fs");
+	Shader lightShader("shaders/light_cube.vs", "shaders/light_cube.fs");
 
 
 	GLuint tex0 = LoadTexture("textures/grey_sand.png");
@@ -151,7 +151,7 @@ int main()
 		// Font Rendering
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDisable(GL_DEPTH_TEST);
-		font_shader.use();
+		font_shader.Activate();
 
 
 		//draw text

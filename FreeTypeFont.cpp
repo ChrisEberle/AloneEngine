@@ -12,7 +12,7 @@ int ft_init(FT_Library& ft, FT_Face& face, Shader& shader, const char* filepath,
 
     // compile and setup the shader
     glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(SCR_WIDTH), 0.0f, static_cast<float>(SCR_HEIGHT));
-    shader.use();
+    shader.Activate();
     glUniformMatrix4fv(glGetUniformLocation(shader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
     // All functions return a value different than 0 whenever an error occurred
     if (FT_Init_FreeType(&ft))
@@ -95,7 +95,7 @@ void init_renderer(unsigned int& font_vao, unsigned int& font_vbo)
 void RenderText(Shader& shader, std::string text, float x, float y, float scale, const glm::vec4 color, unsigned int VAO, unsigned int VBO)
 {
     // activate corresponding render state	
-    shader.use();
+    shader.Activate();
     glUniform3f(glGetUniformLocation(shader.ID, "textColor"), color.x, color.y, color.z);
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(VAO);

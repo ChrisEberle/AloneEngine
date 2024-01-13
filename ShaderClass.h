@@ -16,13 +16,13 @@
 
 std::string get_file_contents(const char* filename);
 
-class Shaderer
+class Shader
 {
 public:
 	// Reference ID of the Shader Program
 	GLuint ID;
 	// Constructor that build the Shader Program from 2 different shaders
-	Shaderer(const char* vertexFile, const char* fragmentFile);
+    Shader(const char* vertexFile, const char* fragmentFile);
 
 	// Activates the Shader Program
 	void Activate();

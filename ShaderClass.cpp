@@ -18,7 +18,7 @@ std::string get_file_contents(const char* filename)
 }
 
 // Constructor that build the Shader Program from 2 different shaders
-Shaderer::Shaderer(const char* vertexFile, const char* fragmentFile)
+Shader::Shader(const char* vertexFile, const char* fragmentFile)
 {
 	// Read vertexFile and fragmentFile and store the strings
 	std::string vertexCode = get_file_contents(vertexFile);
@@ -63,19 +63,19 @@ Shaderer::Shaderer(const char* vertexFile, const char* fragmentFile)
 }
 
 // Activates the Shader Program
-void Shaderer::Activate()
+void Shader::Activate()
 {
 	glUseProgram(ID);
 }
 
 // Deletes the Shader Program
-void Shaderer::Delete()
+void Shader::Delete()
 {
 	glDeleteProgram(ID);
 }
 
 // Checks if the different Shaders have compiled properly
-void Shaderer::compileErrors(unsigned int shader, const char* type)
+void Shader::compileErrors(unsigned int shader, const char* type)
 {
 	// Stores status of compilation
 	GLint hasCompiled;

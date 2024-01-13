@@ -304,7 +304,7 @@ private:
 class BatchRenderer {
 public:
 	// SHADER PROGRAM
-	Shaderer shaderProgram;
+	Shader shaderProgram;
 	// BUFFERS
 	VAO vao;
 	EBO ebo;
@@ -328,7 +328,7 @@ public:
 	bool is_light = false;
 	
 	// CONSTRUCTOR
-	BatchRenderer(Shaderer shaderProgram, GLuint& tex, std::vector<Mesh> objs, GLuint max_indices, GLuint max_vertices) : texture(tex), shaderProgram(shaderProgram), max_indices(max_indices),max_vertices(max_vertices), vbo_verts(max_vertices), vbo_texCoords(max_vertices), ebo(max_indices), vbo_normals(max_vertices) {
+	BatchRenderer(Shader shaderProgram, GLuint& tex, std::vector<Mesh> objs, GLuint max_indices, GLuint max_vertices) : texture(tex), shaderProgram(shaderProgram), max_indices(max_indices),max_vertices(max_vertices), vbo_verts(max_vertices), vbo_texCoords(max_vertices), ebo(max_indices), vbo_normals(max_vertices) {
 		
 		objects = objs;
 		for (size_t i = 0; i < objects.size(); i++) {

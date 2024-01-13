@@ -96,9 +96,6 @@
     <ClInclude Include="FreeTypeFont.h">
       <Filter>Graphics\Font</Filter>
     </ClInclude>
-    <ClInclude Include="shaders\shader.h">
-      <Filter>Graphics\Shaders</Filter>
-    </ClInclude>
     <ClInclude Include="main.h">
       <Filter>Build</Filter>
     </ClInclude>
