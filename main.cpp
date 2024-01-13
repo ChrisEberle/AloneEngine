@@ -72,7 +72,7 @@ int main()
 	model0.modelObj(car);
 
 	Mesh plane0(glm::vec3(0.0f,0.0f,0.0f), tex2);
-	plane0.createPlane(0.0f, 0.0f, 0.0f, 100.0f, 100.0f, 1500, 1500, 0.1f, 60.0f, 20.0f, 20.0f);
+	plane0.createPlane(-50.0f, 0.0f, 50.0f, 100.0f, 100.0f, 1500, 1500, 0.1f, 60.0f, 20.0f, 20.0f);
 	Mesh cubeLight(glm::vec3(1.0f,1.0f,1.0f), tex0);
 	cubeLight.createCube(0.0f, 0.0f, 0.0f);
 
@@ -81,9 +81,9 @@ int main()
 
 
 	std::vector<Mesh> lightObjects = { cubeLight };
-	std::vector<Mesh> objects = { model0 };
+	std::vector<Mesh> objects = { model0, plane0 };
 
-	BatchRenderer batch1(objectShader,tex2, objects, 31000000, 31000000);
+	BatchRenderer batch1(objectShader,tex0, objects, 31000000, 31000000);
 	batch1.initializeMeshObject();
 
 	BatchRenderer batch(lightShader, tex2 , lightObjects, 1000, 1000);
@@ -143,8 +143,8 @@ int main()
 		// Object Rendering
 		back_face_culling(true);
 		batch.wireframe_render(wireframe);
-		batch1.render(camera, posLight, lightIntense);
-		batch.render(camera, posLight, lightIntense);
+		batch1.render(camera, camera.Position, lightIntense);
+		batch.render(camera, camera.Position, lightIntense);
 	
 
 
@@ -157,7 +157,7 @@ int main()
 		//draw text
 		RenderText(font_shader, "Alone Engine - V 0.0.1", 25.0f, 25.0f, 1.0f, color.white, font_vao, font_vbo);
 		RenderText(font_shader, std::to_string(get_fps(frameCount,lastTime)), 25.0f, SCR_HEIGHT - 50.0f, 1.0f, color.white, font_vao, font_vbo);
-		RenderText(font_shader, std::to_string(batch.max_vertices), 500.0f, SCR_HEIGHT - 50.0f, 1.0f, color.white, font_vao, font_vbo);
+		RenderText(font_shader, std::to_string(batch1.max_vertices), 500.0f, SCR_HEIGHT - 50.0f, 1.0f, color.white, font_vao, font_vbo);
 		// ==========================================================
 
 		
