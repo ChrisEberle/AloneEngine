@@ -44,9 +44,9 @@
 #include"Texture.h"
 #include"Camera.h"
 
-#include "Mesh.h"
-#include "Model_obj.h"
 
+#include "Model_obj.h"
+#include "Mesh.h"
 
 
 

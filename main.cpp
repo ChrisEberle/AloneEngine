@@ -64,20 +64,24 @@ int main()
  	// Create camera object
 	Camera camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(0.0f, 0.0f, 5.0f));
 
-	glm::vec3 posLight(50.0f, 3.0f, -50.0f);
+	glm::vec3 posLight(0.0f, 8.0f, 10.0f);
 
-	// imported obj model initialization
-	Model_obj car("obj_models/carUV.obj");
+	ModelOBJ  car("obj_models/village_home0.obj");
 
+	Mesh model0(glm::vec3(0.0f, 0.0f, 0.0f), tex2);
+	model0.modelObj(car);
 
 	Mesh plane0(glm::vec3(0.0f,0.0f,0.0f), tex2);
 	plane0.createPlane(0.0f, 0.0f, 0.0f, 100.0f, 100.0f, 1500, 1500, 0.1f, 60.0f, 20.0f, 20.0f);
 	Mesh cubeLight(glm::vec3(1.0f,1.0f,1.0f), tex0);
 	cubeLight.createCube(0.0f, 0.0f, 0.0f);
 
+	Mesh cubeOBJ(glm::vec3(1.0f, 1.0f, 1.0f), tex0);
+	cubeOBJ.createCube(48.0f, 2.0f, -48.0f);
+
 
 	std::vector<Mesh> lightObjects = { cubeLight };
-	std::vector<Mesh> objects = { plane0 };
+	std::vector<Mesh> objects = { model0 };
 
 	BatchRenderer batch1(objectShader,tex2, objects, 31000000, 31000000);
 	batch1.initializeMeshObject();
@@ -99,6 +103,8 @@ int main()
 	{
 		//set the window background color and clear the window buffer
 		wnd.clear_buffer(color.darkGrey);
+
+
 
 		// input handling
 		input_callback(window, camera);
@@ -130,19 +136,17 @@ int main()
 		if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS) {
 			lightIntense -= 0.05f;
 		}
-
-
 		//===============
 	
-		
+
+
+		// Object Rendering
 		back_face_culling(true);
 		batch.wireframe_render(wireframe);
 		batch1.render(camera, posLight, lightIntense);
 		batch.render(camera, posLight, lightIntense);
 	
 
-
-		//glUseProgram(0);
 
 		// Font Rendering
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -162,7 +166,8 @@ int main()
 		// Take care of all GLFW events and swap buffers
 		wnd.events();
 	}
-
+	lightShader.Delete();
+	objectShader.Delete();
 	objectShader1.Delete();
 	font_shader.Delete();
 	// Delete window before ending the program

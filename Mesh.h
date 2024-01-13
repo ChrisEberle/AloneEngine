@@ -292,7 +292,12 @@ public:
 				normals[i].normals[2] = norm.z;
 			}
 	}
-
+	void modelObj(ModelOBJ& model) {
+		position_coordinates = model.position_coordinates;
+		texture_coordinates = model.texture_coordinates;
+		normals = model.normal_coordinates;
+		indices = model.indices;
+	}
 private:
 };
 
@@ -377,7 +382,7 @@ public:
 				glBindTexture(GL_TEXTURE_2D, texture);
 			
 				shaderProgram.setVec3("objectColor", 1.0f, 1.0f, 1.0f);
-				shaderProgram.setVec3("lightColor", glm::vec3(1.0f,1.0f,1.0f));
+				shaderProgram.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
 				shaderProgram.setVec3("viewPos", camera.Position);
 				shaderProgram.setVec3("lightPos", lightPos);
 				shaderProgram.setFloat("lightIntensity", lt);
@@ -389,6 +394,7 @@ public:
 		else {
 			glm::mat4 model = glm::mat4(1.0f);
 			model = glm::translate(model, lightPos);
+			shaderProgram.setVec3("objectColor", objects[0].color);
 			shaderProgram.setMat4("model", model);
 		}
 

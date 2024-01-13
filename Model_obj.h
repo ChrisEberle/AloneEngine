@@ -1,125 +1,102 @@
 #pragma once
-class Model_obj
-{
+
+class ModelOBJ {
 public:
-	Model_obj(std::string path) : path(path), numIndices(0), numVertices(0) {
-		obj_vert_generator();
-		obj_indices();
-	}
 	std::string path;
 
 	std::vector<GLuint> indices;
-	std::vector<Vertex> vertices;
-	
-	std::vector<PositionVertex> positions;
+
+	std::vector<PositionVertex> position_coordinates;
+	std::vector<NormalVertex> normal_coordinates;
 	std::vector<TextureVertex> texture_coordinates;
 
-	GLuint numVertices;
-	GLuint numIndices;
+	// CONSTRUCTOR
+	ModelOBJ(std::string path) : path(path) {
+		loadFromFile();
+	}
 
-	 
-	void obj_vert_generator() {
-		std::vector<PositionVertex> posCoords;
-		std::vector<TextureVertex> texCoords;
-		std::ifstream objFile(path);
-		std::string lineText;
-		while (std::getline(objFile, lineText)) {
-			std::stringstream objTextStream(lineText);
-			GLfloat pos[3];
-			GLfloat tc[2];
+	void loadFromFile() {
+		std::ifstream file(path);
 
-			// Extract the three float position values
-			if (lineText[0] == 'v' && lineText[1] == ' ') {
-				// Ignore the first token ("v")
-				std::string token;
-				objTextStream >> token;
-				objTextStream >> pos[0] >> pos[1] >> pos[2];
-				PositionVertex vert;
-				vert.position[0] = pos[0];
-				vert.position[1] = pos[1];
-				vert.position[2] = pos[2];
-				posCoords.push_back(vert);
-			}
-			// Extract the two float texCoord values
-			if (lineText[0] == 'v' && lineText[1] == 't') {
-				// Ignore the first token ("vt")
-				std::string token;
-				objTextStream >> token;
-				objTextStream >> tc[0] >> tc[1];
-				TextureVertex vert;
-				vert.texCoord[0] = tc[0];  // Corrected line
-				vert.texCoord[1] = tc[1];  // Corrected line
-				texCoords.push_back(vert);
-			}
-		}
+		std::vector<PositionVertex> pos_coordinates;
+		std::vector<NormalVertex> norm_coordinates;
+		std::vector<TextureVertex> tex_coordinates;
 
+		// File successfully opens case
+		if (file) {
+			std::string lineText;
+			while (std::getline(file, lineText)) {
 
-		// Move the file cursor back to the beginning of the file
-		objFile.clear();
-		objFile.seekg(0, std::ios::beg);
-
-
-		while (std::getline(objFile, lineText)) {
-			std::stringstream objTextStream(lineText);
-
-			if (lineText.substr(0, 2) == "f ") {
-				// Extract face indices
-				std::string token;
-				objTextStream >> token; // Ignore 'f'
-
-				std::vector<int> positionIndices;
-				std::vector<int> textureIndices;
-
-				while (objTextStream >> token) {
-					std::istringstream indexStream(token);
-					std::string positionIndexStr, textureIndexStr;
-
-					// Extract position index and texture coordinate index
-					std::getline(indexStream, positionIndexStr, '/');
-					std::getline(indexStream, textureIndexStr, '/');
-
-					// Convert strings to integers
-					int pIndex = std::stoi(positionIndexStr);
-					int tIndex = std::stoi(textureIndexStr);
-
-
-
-					PositionVertex vert;
-					vert.position[0] = posCoords[pIndex - 1].position[0];
-					vert.position[1] = posCoords[pIndex - 1].position[1];
-					vert.position[2] = posCoords[pIndex - 1].position[2];
-					positions.push_back(vert);
-
-					TextureVertex vertT;
-					vertT.texCoord[0] = texCoords[tIndex - 1].texCoord[0];
-					vertT.texCoord[1] = texCoords[tIndex - 1].texCoord[1];
-					texture_coordinates.push_back(vertT);
-
-					// Store the indices if needed for further processing
-					positionIndices.push_back(pIndex);
-					textureIndices.push_back(tIndex);
+				// position data case
+				if (startWith(lineText, "v ")) {
+					PositionVertex pos;
+					sscanf_s(lineText.c_str(), "v %f %f %f", &pos.position[0], &pos.position[1], &pos.position[2]);
+					pos_coordinates.push_back(pos);
 				}
+				// normal coord data case
+				if (startWith(lineText, "vn ")) {
+					NormalVertex n;
+					sscanf_s(lineText.c_str(), "vn %f %f %f", &n.normals[0], &n.normals[1], &n.normals[2]);
+					norm_coordinates.push_back(n);
+				}
+				// texture coord data case
+				if (startWith(lineText, "vt ")) {
+					TextureVertex tex;
+					sscanf_s(lineText.c_str(), "vt %f %f %f", &tex.texCoord[0], &tex.texCoord[1], &tex.texCoord[2]);
+					tex_coordinates.push_back(tex);
+				}
+				// face creation case
+				if (startWith(lineText, "f ")) {
+					int v1, v2, v3;
+					int vt1, vt2, vt3;
+					int vn1, vn2, vn3;
+					sscanf_s(lineText.c_str(), "f %d/%d/%d %d/%d/%d %d/%d/%d",
+						&v1, &vt1, &vn1,
+						&v2, &vt2, &vn2,
+						&v3, &vt3, &vn3);
+
+					// Add face data
+					addVertexData(v1, vn1, vt1, pos_coordinates, tex_coordinates, norm_coordinates);
+					addVertexData(v2, vn2, vt2, pos_coordinates, tex_coordinates, norm_coordinates);
+					addVertexData(v3, vn3, vt3, pos_coordinates, tex_coordinates, norm_coordinates);
+
+					// Add indices for the vertices
+					indices.push_back(static_cast<GLuint>(position_coordinates.size() - 3));
+					indices.push_back(static_cast<GLuint>(position_coordinates.size() - 2));
+					indices.push_back(static_cast<GLuint>(position_coordinates.size() - 1));
+				}
+				// all other data case
 			}
 		}
-		numVertices = static_cast<GLuint>(posCoords.size());
-	}
-
-
-
-	void obj_indices() {
-		std::vector<GLuint> indicess;
-
-		// Assuming you have stored the face indices during vertex generation
-		for (size_t i = 0; i < positions.size(); ++i) {
-			indicess.push_back(static_cast<GLuint>(i));
+		// File does not open case
+		else {  
+			std::cout << "Failed to load file: " << path << std::endl;
 		}
-
-		indices = indicess;
 	}
 
-	//getters
-	int get_num_verts() {
-		return numVertices;
+
+private:
+
+	void addVertexData(int vIdx, int nIdx, int vtIdx, std::vector<PositionVertex>& pos, std::vector<TextureVertex>& tex, std::vector<NormalVertex>& norm) {
+
+		PositionVertex p = pos[vIdx - 1];
+		NormalVertex n = norm[nIdx - 1];
+		TextureVertex t = tex[vtIdx - 1];
+
+		position_coordinates.push_back(p);
+		normal_coordinates.push_back(n);
+		texture_coordinates.push_back(t);
+	}
+
+	bool startWith(std::string& line, const char* text) {
+		size_t textLen = strlen(text);
+		if (line.size() < textLen) {
+			return false;
+		}
+		for (size_t i = 0; i < textLen; i++) {
+			if (line[i] == text[i]) continue;
+			else return false;
+		}
+		return true;
 	}
 };
-
