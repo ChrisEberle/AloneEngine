@@ -82,8 +82,6 @@ public:
 	glm::vec3 specular; 
 	GLfloat shine;
 
-	glm::vec3 objColor;
-
 	GLuint texture;
 
 	// CONSTRUCTOR
@@ -320,7 +318,7 @@ public:
 private:
 };
 
-class BatchRenderer {
+class MatBatchRenderer {
 public:
 	// SHADER PROGRAM
 	Shader shaderProgram;
@@ -356,8 +354,8 @@ public:
 
 
 	// CONSTRUCTOR
-	BatchRenderer(Shader shaderProgram, std::vector<Mesh> objs, Material material, GLuint max_indices, GLuint max_vertices) : material(material), shaderProgram(shaderProgram), max_indices(max_indices),max_vertices(max_vertices), vbo_verts(max_vertices), vbo_texCoords(max_vertices), ebo(max_indices), vbo_normals(max_vertices) {
-		
+	MatBatchRenderer(Shader shaderProgram, std::vector<Mesh> objs, Material material, GLuint max_indices, GLuint max_vertices) : material(material), shaderProgram(shaderProgram), max_indices(max_indices),max_vertices(max_vertices), vbo_verts(max_vertices), vbo_texCoords(max_vertices), ebo(max_indices), vbo_normals(max_vertices) {
+		// initialize the class mesh vector with inputted objects
 		objects = objs;
 		//add all mesh objects to the buffers
 		for (size_t i = 0; i < objects.size(); i++) {
@@ -365,7 +363,7 @@ public:
 		}
 	}
 	// DESTRUCTOR
-	~BatchRenderer() {
+	~MatBatchRenderer() {
 		vao.Delete();
 		vbo_verts.Delete();
 		vbo_texCoords.Delete();
@@ -392,7 +390,7 @@ public:
 		max_vertices = static_cast<GLuint>(verts_pos.size());
 	}
 
-	void render(Camera& camera, glm::vec3 lightPos, float lt) {
+	void render(Camera& camera, glm::vec3 lightPos) {
 		//activate current buffers
 		vbo_verts.Bind();
 		vao.Bind();

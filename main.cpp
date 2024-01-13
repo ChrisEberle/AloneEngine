@@ -83,13 +83,17 @@ int main()
 
 
 	std::vector<Mesh> lightObjects = { cubeLight };
-	std::vector<Mesh> objects = { model0, plane0 };
-
-	BatchRenderer batch1(objectShader, objects, mat0,31000000, 31000000);
-	batch1.initializeMeshObject();
-
-	BatchRenderer batch(lightShader, lightObjects,mat0, 1000, 1000);
-	batch.initializeMeshCubeLight();
+	std::vector<Mesh> objectsTerrain = { plane0 };
+	std::vector<Mesh> objectsBuildings = { model0};
+	//house
+	MatBatchRenderer batchBuildings(objectShader, objectsBuildings, mat0,31000000, 31000000);
+	batchBuildings.initializeMeshObject();
+	// terrain
+	MatBatchRenderer batchTerrain(objectShader, objectsTerrain, mat0, 31000000, 31000000);
+	batchTerrain.initializeMeshObject();
+	// light
+	MatBatchRenderer batchLight(lightShader, lightObjects,mat0, 1000, 1000);
+	batchLight.initializeMeshCubeLight();
 
 	
 
@@ -133,17 +137,23 @@ int main()
 		}
 
 		if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) {
-			batch1.material.diffuse += 0.1f;
+			batchBuildings.material.diffuse += 0.1f;
 		}
 		if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS) {
-			batch1.material.diffuse -= 0.1f;
+			batchBuildings.material.diffuse -= 0.1f;
 		}
 
 		if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
-			batch1.material.shine += 0.1f;
+			batchBuildings.material.shine += 1.1f;
 		}
 		if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS) {
-			batch1.material.shine -= 0.1f;
+			batchBuildings.material.shine -= 1.1f;
+		}
+		if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS) {
+			batchBuildings.material.specular += 1.1f;
+		}
+		if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS) {
+			batchBuildings.material.specular -= 1.1f;
 		}
 		//===============
 	
@@ -151,11 +161,12 @@ int main()
 
 		// Object Rendering
 		back_face_culling(true);
-		batch.wireframe_render(wireframe);
-		batch1.render(camera, posLight, lightIntense);
-		batch.render(camera, posLight, lightIntense);
-	
-
+		batchTerrain.wireframe_render(wireframe);
+		batchTerrain.render(camera, posLight);
+		for (int i = 0; i < 100; i++) {
+			batchBuildings.render(camera, posLight);
+		}
+		batchLight.render(camera, posLight);
 
 		// Font Rendering
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -166,7 +177,7 @@ int main()
 		//draw text
 		RenderText(font_shader, "Alone Engine - V 0.0.1", 25.0f, 25.0f, 1.0f, color.white, font_vao, font_vbo);
 		RenderText(font_shader, std::to_string(get_fps(frameCount,lastTime)), 25.0f, SCR_HEIGHT - 50.0f, 1.0f, color.white, font_vao, font_vbo);
-		RenderText(font_shader, std::to_string(batch1.max_vertices), 500.0f, SCR_HEIGHT - 50.0f, 1.0f, color.white, font_vao, font_vbo);
+		RenderText(font_shader, std::to_string(batchBuildings.max_vertices), 500.0f, SCR_HEIGHT - 50.0f, 1.0f, color.white, font_vao, font_vbo);
 		// ==========================================================
 
 		
