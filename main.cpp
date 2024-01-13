@@ -163,9 +163,7 @@ int main()
 		back_face_culling(true);
 		batchTerrain.wireframe_render(wireframe);
 		batchTerrain.render(camera, posLight);
-		for (int i = 0; i < 100; i++) {
-			batchBuildings.render(camera, posLight);
-		}
+		batchBuildings.render(camera, posLight);
 		batchLight.render(camera, posLight);
 
 		// Font Rendering
