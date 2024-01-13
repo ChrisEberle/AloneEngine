@@ -72,6 +72,25 @@ public:
 	}
 
 };
+
+
+
+class Material {
+public:
+	glm::vec3 ambient;
+	glm::vec3 diffuse;
+	glm::vec3 specular; 
+	GLfloat shine;
+
+	glm::vec3 objColor;
+
+	GLuint texture;
+
+	// CONSTRUCTOR
+	Material(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, GLfloat shine, GLuint& texture) : ambient(ambient), diffuse(diffuse), specular(specular), shine(shine), texture(texture) {
+
+	}
+};
 class Mesh {
 public:
 	std::vector<PositionVertex> position_coordinates;
@@ -79,14 +98,14 @@ public:
 	std::vector<NormalVertex> normals;
 	std::vector<GLuint> indices;
 
-	glm::vec3 color;
+	Material material;
 
 	glm::mat4 worldTransform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 
-	GLuint texture;
-
 	// Constructor
-	Mesh(glm::vec3 objColor, GLuint& texture) : texture(texture), color(objColor) {
+	Mesh(Material& mat) : material(mat) {
+
+
 	}
 
 	// Mesh Types
@@ -322,15 +341,25 @@ public:
 	GLuint max_vertices;
 	// OTHER
 	Color color;
-	GLuint texture;
+	Material material;
+
 
 	bool wire_state = false;
 	bool is_light = false;
 	
+
+	// Set your scaling factors
+	float scaleX = 1.0f;
+	float scaleY = 1.0f;
+	float scaleZ = 1.0f;
+
+
+
 	// CONSTRUCTOR
-	BatchRenderer(Shader shaderProgram, GLuint& tex, std::vector<Mesh> objs, GLuint max_indices, GLuint max_vertices) : texture(tex), shaderProgram(shaderProgram), max_indices(max_indices),max_vertices(max_vertices), vbo_verts(max_vertices), vbo_texCoords(max_vertices), ebo(max_indices), vbo_normals(max_vertices) {
+	BatchRenderer(Shader shaderProgram, std::vector<Mesh> objs, Material material, GLuint max_indices, GLuint max_vertices) : material(material), shaderProgram(shaderProgram), max_indices(max_indices),max_vertices(max_vertices), vbo_verts(max_vertices), vbo_texCoords(max_vertices), ebo(max_indices), vbo_normals(max_vertices) {
 		
 		objects = objs;
+		//add all mesh objects to the buffers
 		for (size_t i = 0; i < objects.size(); i++) {
 			add_to_mesh(objects[i].position_coordinates, objects[i].texture_coordinates, objects[i].normals, objects[i].indices);
 		}
@@ -375,26 +404,46 @@ public:
 		// Tell OpenGL which Shader Program we want to use
 		shaderProgram.Activate();
 		// binds textures
-		
+		glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
 		if (!is_light) {
 			// If object being render is a object and not a light
 				glUniform1i(getShaderUniform("tex0"), 0);
-				glBindTexture(GL_TEXTURE_2D, texture);
+				glBindTexture(GL_TEXTURE_2D, material.texture);
 			
-				shaderProgram.setVec3("objectColor", 1.0f, 1.0f, 1.0f);
-				shaderProgram.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+				glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);
+				glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f);
+				glm::vec3 specularColor(1.0f, 1.0f, 1.0f);
+
+				//lighting
 				shaderProgram.setVec3("viewPos", camera.Position);
-				shaderProgram.setVec3("lightPos", lightPos);
-				shaderProgram.setFloat("lightIntensity", lt);
+				shaderProgram.setVec3("light.position", lightPos);
+				shaderProgram.setVec3("light.ambient", ambientColor);
+				shaderProgram.setVec3("light.diffuse", diffuseColor);
+				shaderProgram.setVec3("light.specular", specularColor);
+
+				// material
+				shaderProgram.setVec3("material.ambient", material.ambient);
+				shaderProgram.setVec3("material.diffuse", material.diffuse);
+				shaderProgram.setVec3("material.specular", material.specular);
+				shaderProgram.setFloat("material.shine", material.shine);
 
 				// world transformation
 				glm::mat4 model = glm::mat4(1.0f);
+
+				
+				// Create the scaling matrix
+				glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(5.0f, 5.0f, 5.0f));
+
+				// Apply scaling to the existing model matrix
+				model = scaleMatrix * model;
+
+				// Pass the combined matrix to the shader
 				shaderProgram.setMat4("model", model);
 		}
 		else {
 			glm::mat4 model = glm::mat4(1.0f);
 			model = glm::translate(model, lightPos);
-			shaderProgram.setVec3("objectColor", objects[0].color);
+			shaderProgram.setVec3("objectColor", lightColor);
 			shaderProgram.setMat4("model", model);
 		}
 

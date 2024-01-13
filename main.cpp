@@ -43,7 +43,7 @@ int main()
 	ft_init(ft, face, font_shader, filepath, SCR_WIDTH, SCR_HEIGHT);
 	init_renderer(font_vao, font_vbo);
 
-	float lightIntense = 0.5f;
+	float lightIntense = 1.0f;
 
 	// Generates Shader object
 	Shader objectShader("shaders/batched.vs", "shaders/batched.fs");
@@ -60,33 +60,35 @@ int main()
 	GLuint tex0Uni = glGetUniformLocation(objectShader1.ID, "tex0");
 
 
+	//Material(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, GLfloat shine, GLuint & texture) : ambient(ambient), diffuse(diffuse), specular(specular), shine(shine), texture(texture) {
+	Material mat0(glm::vec3(1.0f,0.5f,0.31f), glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(0.5f, 0.5f, 0.5f), 302.0f, tex2);
 
  	// Create camera object
 	Camera camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(0.0f, 0.0f, 5.0f));
 
 	glm::vec3 posLight(0.0f, 8.0f, 10.0f);
 
-	ModelOBJ  car("obj_models/village_home0.obj");
+	ModelOBJ  car("obj_models/village_home1.obj");
 
-	Mesh model0(glm::vec3(0.0f, 0.0f, 0.0f), tex2);
+	Mesh model0(mat0);
 	model0.modelObj(car);
 
-	Mesh plane0(glm::vec3(0.0f,0.0f,0.0f), tex2);
+	Mesh plane0(mat0);
 	plane0.createPlane(-50.0f, 0.0f, 50.0f, 100.0f, 100.0f, 1500, 1500, 0.1f, 60.0f, 20.0f, 20.0f);
-	Mesh cubeLight(glm::vec3(1.0f,1.0f,1.0f), tex0);
+	Mesh cubeLight(mat0);
 	cubeLight.createCube(0.0f, 0.0f, 0.0f);
 
-	Mesh cubeOBJ(glm::vec3(1.0f, 1.0f, 1.0f), tex0);
+	Mesh cubeOBJ(mat0);
 	cubeOBJ.createCube(48.0f, 2.0f, -48.0f);
 
 
 	std::vector<Mesh> lightObjects = { cubeLight };
 	std::vector<Mesh> objects = { model0, plane0 };
 
-	BatchRenderer batch1(objectShader,tex0, objects, 31000000, 31000000);
+	BatchRenderer batch1(objectShader, objects, mat0,31000000, 31000000);
 	batch1.initializeMeshObject();
 
-	BatchRenderer batch(lightShader, tex2 , lightObjects, 1000, 1000);
+	BatchRenderer batch(lightShader, lightObjects,mat0, 1000, 1000);
 	batch.initializeMeshCubeLight();
 
 	
@@ -110,31 +112,38 @@ int main()
 		input_callback(window, camera);
 
 		if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
-			posLight.y -= 0.2f;
+			posLight.y -= 0.05f;
 		}
 		if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) {
-			posLight.y += 0.2f;
+			posLight.y += 0.05f;
 		}
 
 		if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS) {
-			posLight.x -= 0.2f;
+			posLight.x -= 0.05f;
 		}
 		if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS) {
-			posLight.x += 0.2f;
+			posLight.x += 0.05f;
 		}
 
 		if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS) {
-			posLight.z -= 0.2f;
+			posLight.z -= 0.05f;
 		}
 		if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS) {
-			posLight.z += 0.2f;
+			posLight.z += 0.05f;
 		}
 
 		if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) {
-			lightIntense += 0.05f;
+			batch1.material.diffuse += 0.1f;
 		}
 		if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS) {
-			lightIntense -= 0.05f;
+			batch1.material.diffuse -= 0.1f;
+		}
+
+		if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
+			batch1.material.shine += 0.1f;
+		}
+		if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS) {
+			batch1.material.shine -= 0.1f;
 		}
 		//===============
 	
@@ -143,8 +152,8 @@ int main()
 		// Object Rendering
 		back_face_culling(true);
 		batch.wireframe_render(wireframe);
-		batch1.render(camera, camera.Position, lightIntense);
-		batch.render(camera, camera.Position, lightIntense);
+		batch1.render(camera, posLight, lightIntense);
+		batch.render(camera, posLight, lightIntense);
 	
 
 
