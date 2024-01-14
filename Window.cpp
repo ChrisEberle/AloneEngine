@@ -87,4 +87,5 @@ void Window::clear_buffer(const glm::vec4 color) {
     glClearColor(color.x, color.y, color.z, color.w);
     // Clean the back buffer and depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glDepthFunc(GL_LESS);
 }

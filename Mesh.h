@@ -8,75 +8,9 @@ static void back_face_culling(bool back_cull) {
 }
 
 
-class LightMesh {
-public:
-	std::vector<PositionVertex> position_coordinates;
-	std::vector<GLuint> indices;
-
-	glm::vec3 color;
-
-	glm::mat4 worldTransform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-
-	GLuint texture;
-
-	LightMesh(glm::vec3 COLOR) : color(COLOR) {}
-
-	// Mesh Types
-	void createCube(GLfloat x, GLfloat y, GLfloat z) {
-		//                     POSITION VECTOR
-		//FRONT
-		position_coordinates.push_back({ -0.5f + x,    -0.5f + y,     0.5f + z });
-		position_coordinates.push_back({ 0.5f + x,    -0.5f + y,     0.5f + z });
-		position_coordinates.push_back({ -0.5f + x,     0.5f + y,     0.5f + z });
-		position_coordinates.push_back({ 0.5f + x,     0.5f + y,     0.5f + z });
-		//BACK  			
-		position_coordinates.push_back({ -0.5f + x,    -0.5f + y,    -0.5f + z });
-		position_coordinates.push_back({ 0.5f + x,    -0.5f + y,    -0.5f + z });
-		position_coordinates.push_back({ -0.5f + x,     0.5f + y,    -0.5f + z });
-		position_coordinates.push_back({ 0.5f + x,     0.5f + y,    -0.5f + z });
-		//LEFT  			
-		position_coordinates.push_back({ -0.5f + x,    -0.5f + y,    -0.5f + z });
-		position_coordinates.push_back({ -0.5f + x,    -0.5f + y,     0.5f + z });
-		position_coordinates.push_back({ -0.5f + x,     0.5f + y,    -0.5f + z });
-		position_coordinates.push_back({ -0.5f + x,     0.5f + y,     0.5f + z });
-		//RIGHT 		
-		position_coordinates.push_back({ 0.5f + x,    -0.5f + y,    -0.5f + z });
-		position_coordinates.push_back({ 0.5f + x,    -0.5f + y,     0.5f + z });
-		position_coordinates.push_back({ 0.5f + x,     0.5f + y,    -0.5f + z });
-		position_coordinates.push_back({ 0.5f + x,     0.5f + y,     0.5f + z });
-		//TOP   		
-		position_coordinates.push_back({ -0.5f + x,     0.5f + y,     0.5f + z });
-		position_coordinates.push_back({ 0.5f + x,     0.5f + y,     0.5f + z });
-		position_coordinates.push_back({ -0.5f + x,     0.5f + y,    -0.5f + z });
-		position_coordinates.push_back({ 0.5f + x,     0.5f + y,    -0.5f + z });
-		//BOTTOM	
-		position_coordinates.push_back({ -0.5f + x,    -0.5f + y,     0.5f + z });
-		position_coordinates.push_back({ 0.5f + x,    -0.5f + y,     0.5f + z });
-		position_coordinates.push_back({ -0.5f + x,    -0.5f + y,    -0.5f + z });
-		position_coordinates.push_back({ 0.5f + x,    -0.5f + y,    -0.5f + z });
-
-		indices = {
-			// FRONT
-			0, 1, 2, 1, 3, 2,
-			// BACK
-			4, 6, 5, 5, 6, 7,
-			// LEFT
-			8, 9, 10, 9, 11, 10,
-			// RIGHT
-			12, 14, 13, 13, 14, 15,
-			// TOP
-			16, 17, 18, 17, 19, 18,
-			// BOTTOM
-			20, 22, 21, 21, 22, 23
-		};
-	}
-
-};
-
-
-
 class Material {
 public:
+	glm::vec3 objectColor;
 	glm::vec3 ambient;
 	glm::vec3 diffuse;
 	glm::vec3 specular; 
@@ -85,7 +19,7 @@ public:
 	GLuint texture;
 
 	// CONSTRUCTOR
-	Material(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, GLfloat shine, GLuint& texture) : ambient(ambient), diffuse(diffuse), specular(specular), shine(shine), texture(texture) {
+	Material(glm::vec3 color, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, GLfloat shine, GLuint& texture) : objectColor(color), ambient(ambient), diffuse(diffuse), specular(specular), shine(shine), texture(texture) {
 
 	}
 };
@@ -95,6 +29,7 @@ public:
 	std::vector<TextureVertex> texture_coordinates;
 	std::vector<NormalVertex> normals;
 	std::vector<GLuint> indices;
+	GLuint index_offset;
 
 	Material material;
 
@@ -102,16 +37,31 @@ public:
 
 	glm::vec3 position;
 
-	// Constructor
-	Mesh(Material& mat) : material(mat) {
+	// For Mesh Lights
+	glm::vec3 direction; // For directional light
+	GLfloat cutoff;   // For spotlight
+	GLfloat outerCone = 0.90f; // For spotlight
+	GLint type;       // 0 for directional, 1 for spotlight
+	GLfloat lightIntensity;
+
+	// Constructor for regular object
+	Mesh(glm::vec3 pos, Material& mat) : material(mat), position(pos) {
+
+
+	}
+
+	// Constructor for light object
+	Mesh(glm::vec3 pos, Material& mat, GLint type) : material(mat), type(type), position(pos) {
 
 
 	}
 
 	// Mesh Types
-	void createCube(GLfloat x, GLfloat y, GLfloat z) {
-		position.x = x; position.y = y; position.z = z;
-
+	void createCube() {
+		GLfloat x = position.x;
+		GLfloat y = position.y;
+		GLfloat z = position.z;
+			
 			//                     POSITION VECTOR
 			//FRONT
 			position_coordinates.push_back({ -0.5f + x,    -0.5f + y,     0.5f + z });
@@ -221,8 +171,11 @@ public:
 				20, 22, 21, 21, 22, 23
 			};
 	}
-	void createPlane(GLfloat originX, GLfloat originY, GLfloat originZ,GLfloat sizeX, GLfloat sizeZ, GLuint rows, GLuint cols,GLfloat numOctaves, GLfloat persistence,GLfloat textureScaleX, GLfloat textureScaleY) {
-		position.x = originX; position.y = originY; position.z = originZ;
+	void createPlane(GLfloat sizeX, GLfloat sizeZ, GLuint rows, GLuint cols,GLfloat numOctaves, GLfloat persistence,GLfloat textureScaleX, GLfloat textureScaleY) {
+		GLfloat originX = position.x;
+		GLfloat originY = position.y;
+		GLfloat originZ = position.z;
+
 		GLuint num_indices = (rows - 1) * (cols - 1) * 6;
 
 			for (GLuint i = 0; i < rows; ++i) {
@@ -322,6 +275,8 @@ public:
 private:
 };
 
+
+
 class MatBatchRenderer {
 public:
 	// SHADER PROGRAM
@@ -358,9 +313,7 @@ public:
 
 
 	// CONSTRUCTOR
-	MatBatchRenderer(Shader shaderProgram, std::vector<Mesh> objs, Material material, GLuint max_indices, GLuint max_vertices) : material(material), shaderProgram(shaderProgram), max_indices(max_indices),max_vertices(max_vertices), vbo_verts(max_vertices), vbo_texCoords(max_vertices), ebo(max_indices), vbo_normals(max_vertices) {
-		// initialize the class mesh vector with inputted objects
-		objects = objs;
+	MatBatchRenderer(Shader shaderProgram, std::vector<Mesh> objs, Material material, GLuint max_indices, GLuint max_vertices) : objects(objs), material(material), shaderProgram(shaderProgram), max_indices(max_indices),max_vertices(max_vertices), vbo_verts(max_vertices), vbo_texCoords(max_vertices), ebo(max_indices), vbo_normals(max_vertices) {
 		//add all mesh objects to the buffers
 		for (size_t i = 0; i < objects.size(); i++) {
 			add_to_mesh(objects[i].position_coordinates, objects[i].texture_coordinates, objects[i].normals, objects[i].indices);
@@ -394,7 +347,7 @@ public:
 		max_vertices = static_cast<GLuint>(verts_pos.size());
 	}
 
-	void render(Camera& camera, const std::vector<glm::vec3>& lightPositions) {
+	void render(Camera& camera, const std::vector<Mesh>& lights) {
 		//activate current buffers
 		vbo_verts.Bind();
 		vao.Bind();
@@ -418,23 +371,38 @@ public:
 		shaderProgram.setVec3("material.specular", material.specular);
 		shaderProgram.setFloat("material.shine", material.shine);
 
-
-
-		
-		glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);
-		glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f);
-		glm::vec3 specularColor(1.0f, 1.0f, 1.0f);
-
 		shaderProgram.setVec3("viewPos", camera.Position);
 
-		for (size_t i = 0; i < lightPositions.size(); i++) {
-			// lighting
-			shaderProgram.setVec3("lights[" + std::to_string(i) + "].position", lightPositions[i]);
-			shaderProgram.setVec3("lights[" + std::to_string(i) + "].ambient", ambientColor);
-			shaderProgram.setVec3("lights[" + std::to_string(i) + "].diffuse", diffuseColor);
-			shaderProgram.setVec3("lights[" + std::to_string(i) + "].specular", specularColor);
+		// Iterate over lights
+		for (size_t i = 0; i < lights.size(); i++) {
+			std::string lightPrefix = "lights[" + std::to_string(i) + "].";
+
+			
+			// Set light type
+			shaderProgram.setInt(lightPrefix + "type", lights[i].type);
+			shaderProgram.setFloat(lightPrefix + "lightIntensity", lights[i].lightIntensity);
+
+
+			// Set light properties based on type
+			if (lights[i].type == 0) { // Directional light
+				shaderProgram.setVec3(lightPrefix + "direction", lights[i].direction);
+			}
+			else if (lights[i].type == 1) { // Spotlight
+				shaderProgram.setVec3(lightPrefix + "position", lights[i].position);
+				shaderProgram.setVec3(lightPrefix + "direction", lights[i].direction);
+				shaderProgram.setFloat(lightPrefix + "cutoff", lights[i].cutoff);
+				shaderProgram.setFloat(lightPrefix + "outerCone", lights[i].outerCone);
+			}
+			else if (lights[i].type == 2) { // Point light
+				shaderProgram.setVec3(lightPrefix + "position", lights[i].position);
+			}
+
+			// Set common light properties
+			shaderProgram.setVec3(lightPrefix + "ambient", lights[i].material.ambient);
+			shaderProgram.setVec3(lightPrefix + "diffuse", lights[i].material.diffuse);
+			shaderProgram.setVec3(lightPrefix + "specular", lights[i].material.specular);
+			shaderProgram.setVec3(lightPrefix + "colorMultiplier", lights[i].material.objectColor);
 		}
-	
 
 		// world transformation
 		glm::mat4 model = glm::mat4(1.0f);
@@ -462,35 +430,43 @@ public:
 	}
 
 
-	void renderLight(Camera& camera, glm::vec3 lightPos) {
-		//activate current buffers
+	void renderLight(Camera& camera) {
+		// activate current buffers
 		vbo_verts.Bind();
 		vao.Bind();
 		ebo.Bind();
-		// update object positions
-		vbo_verts.dynamic_update(verts_pos);
 		// Object doesn't render correctly without this
 		glEnable(GL_DEPTH_TEST);
 		// Tell OpenGL which Shader Program we want to use
 		shaderProgram.Activate();
-		// binds textures
-		glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
-	
-		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, lightPos);
-		shaderProgram.setVec3("objectColor", lightColor);
-		shaderProgram.setMat4("model", model);
+
+
+		// Temporary offset variable
+		GLuint offset = 0;
+		for (size_t i = 0; i < objects.size(); i++) {
+
+			// Calculate the offset for the current object
+			objects[i].index_offset = offset;
+
+			// Set uniform values for each object
+			glm::mat4 model = glm::mat4(1.0f);
+			shaderProgram.setVec3("objectColor", objects[i].material.objectColor);
+			shaderProgram.setMat4("model", model);
+			camera.Matrix(45.0f, 0.1f, 10000.0f, shaderProgram, "camMatrix");
+
+			// Calculate the new offset for the next object
+			offset += sizeof(GLuint) * objects[i].indices.size();
+
+			// Draw each object separately
+			glDrawElements(GL_TRIANGLES, objects[i].indices.size(), GL_UNSIGNED_INT, reinterpret_cast<void*>(objects[i].index_offset));
 		
-		camera.Matrix(45.0f, 0.1f, 10000.0f, shaderProgram, "camMatrix");
-		// draws the object
-		glDrawElements(GL_TRIANGLES, max_indices, GL_UNSIGNED_INT, 0);
-		//deactivate current buffers
+		}
+
+		// deactivate current buffers
 		vbo_verts.Unbind();
 		vbo_texCoords.Unbind();
 		vao.Unbind();
 		ebo.Unbind();
-
-
 	}
 
 	void set_color(glm::vec4 color) {
@@ -513,6 +489,7 @@ public:
 	void add_to_mesh(std::vector<PositionVertex>& pos_verts, std::vector<TextureVertex>& tex_verts, std::vector<NormalVertex>& normals, std::vector<GLuint>& objInds) {
 		// find the current size of the parent indice vector
 		GLuint indice_offset = GLuint(verts_pos.size());
+
 		// add the offset to each element of the objects indice
 		for (GLuint i = 0; i < objInds.size(); ++i) {
 			objInds[i] += indice_offset;
@@ -523,6 +500,10 @@ public:
 		// add the object's indices to the parent indice vector
 		indices.insert(indices.end(), objInds.begin(), objInds.end());
 		normal_vertices.insert(normal_vertices.end(), normals.begin(), normals.end());
+		// Set the index_offset for the added object
+
+	
+
 		update_all_buffers();
 	}
 

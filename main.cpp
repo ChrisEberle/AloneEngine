@@ -1,9 +1,5 @@
 #include "engine.h"
 
-float res = 1.0f;
-
-bool texChange = false;
-
 void input_callback(GLFWwindow* window, Camera& camera) {
 	if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) {
 		wireframe = true;
@@ -11,15 +7,10 @@ void input_callback(GLFWwindow* window, Camera& camera) {
 	if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS) {
 		wireframe = false;
 	}
-	if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS) {
-		texChange = true;
-	}
-	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
-		texChange = false;
-	}
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		exit(EXIT_SUCCESS);
 	}
+
 	// Handles camera inputs
 	camera.Inputs(window);
 }
@@ -60,42 +51,54 @@ int main()
 	GLuint tex0Uni = glGetUniformLocation(objectShader1.ID, "tex0");
 
 
-	//Material(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, GLfloat shine, GLuint & texture) : ambient(ambient), diffuse(diffuse), specular(specular), shine(shine), texture(texture) {
-	Material mat0(glm::vec3(1.0f,0.5f,0.31f), glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(0.5f, 0.5f, 0.5f), 302.0f, tex0);
-	Material mat1(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.5f, 0.5f, 0.5f), 302.0f, tex0);
 
  	// Create camera object
 	Camera camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(0.0f, 0.0f, 5.0f));
 
 
 
+	// MATERIALS
+	//Material(glm::vec3 color, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, GLfloat shine, GLuint & texture) : ambient(ambient), diffuse(diffuse), specular(specular), shine(shine), texture(texture) {
+	Material mat0(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(1.0f, 0.5f, 0.31f), glm::vec3(0.5f, 0.5f, 0.5f), 302.0f, tex0);
+	Material mat1(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.5f, 0.5f, 0.5f), 302.0f, tex0);
+
+
+
 	// OBJECTS
 	ModelOBJ  car("obj_models/AK47.obj");
-	Mesh model0(mat1);
+	Mesh model0(glm::vec3(0.0f,0.0f,0.0f), mat1);
 	model0.modelObj(car);
-	Mesh plane0(mat0);
-	plane0.createPlane(-50.0f, -5.0f, 50.0f, 100.0f, 100.0f, 1500, 1500, 0.1f, 60.0f, 20.0f, 20.0f);
-	Mesh cubeOBJ(mat0);
-	cubeOBJ.createCube(48.0f, 2.0f, -48.0f);
+	Mesh plane0(glm::vec3(-50.0f, -5.0f, 50.0f), mat0);
+	plane0.createPlane( 100.0f, 100.0f, 1500, 1500, 0.1f, 60.0f, 20.0f, 20.0f);
+	Mesh cubeOBJ(glm::vec3(48.0f, 2.0f, -48.0f), mat0);
+	cubeOBJ.createCube();
 
 
 
 	// LIGHTS
-	Mesh cubeLight0(mat0);
-	cubeLight0.createCube(-5.0f, 0.0f, 0.0f);
-	Mesh cubeLight1(mat0);
-	cubeLight1.createCube(5.0f, 0.0f, 0.0f);
-	Mesh cubeLight2(mat0);
-	cubeLight2.createCube(0.0f, 10.0f, 0.0f);
-	std::vector<glm::vec3> lightPositions;
-	lightPositions.push_back(cubeLight0.position);
-	lightPositions.push_back(cubeLight1.position);
-	lightPositions.push_back(cubeLight2.position);
+	glm::vec3 diffuseColor = glm::vec3(1.0f, 1.0f, 1.0f) * glm::vec3(0.5f);
+	glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f);
+	glm::vec3 specularColor(1.0f, 1.0f, 1.0f);
+
+	Material lightMat0(glm::vec3(1.0f, 0.0f, 0.0f), ambientColor, diffuseColor, specularColor, 32.0f, tex0);
+	Material lightMat1(glm::vec3(1.0f, 1.0f, 1.0f), ambientColor, diffuseColor, specularColor, 32.0f, tex0);
+
+	Mesh pointLight0(glm::vec3(-5.0f, 0.0f, 0.0f), lightMat1, 2);
+	pointLight0.createCube();
+	Mesh spotLight0(glm::vec3(5.0f, 0.0f, 0.0f), lightMat1, 1);
+	spotLight0.createCube();
+	Mesh dirLight0(glm::vec3(0.0f, 10.0f, 0.0f), lightMat1, 0);
+	dirLight0.createCube();
+	dirLight0.direction = glm::vec3(1.0f, -1.0f, 1.0f);
 
 
+
+	std::vector<Mesh> lightsVec;
+	lightsVec.push_back(pointLight0);
+	lightsVec.push_back(spotLight0);
+	lightsVec.push_back(dirLight0);
 
 	// Mesh vectors
-	std::vector<Mesh> lightObjects = { cubeLight0,cubeLight1,cubeLight2 };
 	std::vector<Mesh> objectsTerrain = { plane0 };
 	std::vector<Mesh> objectsBuildings = { model0};
 
@@ -108,7 +111,7 @@ int main()
 	MatBatchRenderer batchTerrain(objectShader, objectsTerrain, mat0, 31000000, 31000000);
 	batchTerrain.initializeMeshObject();
 	// light
-	MatBatchRenderer batchLight(lightShader, lightObjects,mat0, 1000, 1000);
+	MatBatchRenderer batchLight(lightShader, lightsVec,mat0, 1000, 1000);
 	batchLight.initializeMeshCubeLight();
 	
 
@@ -128,29 +131,73 @@ int main()
 		// input handling
 		input_callback(window, camera);
 		//===============
-	
+
+		if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS) {
+			if (lightsVec[0].lightIntensity > 0.0f) {
+				lightsVec[0].lightIntensity -= 0.5f;
+			}
+		}
+		if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
+			if (lightsVec[0].lightIntensity < 40.0f) {
+				lightsVec[0].lightIntensity += 0.5f;
+			}
+		}
+
+
+
+		if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS) {
+			if (lightsVec[1].lightIntensity > 0.0f) {
+				lightsVec[1].lightIntensity -= 0.5f;
+			}
+		}
+		if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS) {
+			if (lightsVec[1].lightIntensity < 40.0f) {
+				lightsVec[1].lightIntensity += 0.5f;
+			}
+		}
+
+
+
+		if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS) {
+			if (lightsVec[2].lightIntensity > 0.0f) {
+				lightsVec[2].lightIntensity -= 0.5f;
+			}
+		}
+		if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS) {
+			if (lightsVec[2].lightIntensity < 40.0f) {
+				lightsVec[2].lightIntensity += 0.5f;
+			}
+		}
+		if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS) {
+			
+			lightsVec[0].material.objectColor = glm::vec3(1.0f, 0.0f, 0.0f);
+			batchLight.objects[0].material.objectColor = glm::vec3(1.0f, 0.0f, 0.0f);
+		}
+
 
 
 		// Object Rendering
 		back_face_culling(true);
 		batchTerrain.wireframe_render(wireframe);
-		batchTerrain.render(camera, lightPositions);
-		batchBuildings.render(camera, lightPositions);
-		batchLight.renderLight(camera, glm::vec3(0.0f,0.0f,0.0f));
+		batchTerrain.render(camera, lightsVec);
+		batchBuildings.render(camera, lightsVec);
+		batchLight.renderLight(camera);
+
+
 
 		// Font Rendering
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDisable(GL_DEPTH_TEST);
 		font_shader.Activate();
-
-
 		//draw text
 		RenderText(font_shader, "Alone Engine - V 0.0.1", 25.0f, 25.0f, 1.0f, color.white, font_vao, font_vbo);
 		RenderText(font_shader, std::to_string(get_fps(frameCount,lastTime)), 25.0f, SCR_HEIGHT - 50.0f, 1.0f, color.white, font_vao, font_vbo);
 		RenderText(font_shader, std::to_string(batchBuildings.max_vertices), 500.0f, SCR_HEIGHT - 50.0f, 1.0f, color.white, font_vao, font_vbo);
+		RenderText(font_shader, std::to_string(lightsVec[0].lightIntensity), 500.0f, SCR_HEIGHT - 100.0f, 1.0f, color.white, font_vao, font_vbo);
 		// ==========================================================
 
 		
+
 		// Swap the back buffer with the front buffer
 		wnd.swap_buffers(window);
 		// Take care of all GLFW events and swap buffers
