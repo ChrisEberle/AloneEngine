@@ -42,6 +42,7 @@
 #include"EBO.h"
 #include"Texture.h"
 #include"Camera.h"
+#include "aloneGUI.h"
 
 
 #include "Model_obj.h"

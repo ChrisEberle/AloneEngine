@@ -49,6 +49,12 @@
     <Filter Include="Graphics\Objects\BaseMesh">
       <UniqueIdentifier>{6f699b07-c307-4f81-b4ab-bd1071478c57}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Graphics\Objects\objModels">
+      <UniqueIdentifier>{4e3d98a9-ff4c-4084-a8fa-526f7d9afec9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics\GUI">
+      <UniqueIdentifier>{08653728-a843-4501-b947-0de86a77ec09}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FreeTypeFont.cpp">
@@ -85,11 +91,14 @@
     <ClCompile Include="VBO.cpp">
       <Filter>Graphics\Renderer\Pipeline</Filter>
     </ClCompile>
-    <ClCompile Include="Model_obj.cpp">
-      <Filter>Graphics\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="Mesh.cpp">
       <Filter>Graphics\Objects\BaseMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_obj.cpp">
+      <Filter>Graphics\Objects\objModels</Filter>
+    </ClCompile>
+    <ClCompile Include="aloneGUI.cpp">
+      <Filter>Graphics\GUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -140,7 +149,10 @@
       <Filter>Graphics\Objects\BaseMesh</Filter>
     </ClInclude>
     <ClInclude Include="Model_obj.h">
-      <Filter>Graphics\Objects</Filter>
+      <Filter>Graphics\Objects\objModels</Filter>
+    </ClInclude>
+    <ClInclude Include="aloneGUI.h">
+      <Filter>Graphics\GUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -167,6 +179,12 @@
     </None>
     <None Include="shaders\light_cube.vs">
       <Filter>Graphics\Shaders\Vertex</Filter>
+    </None>
+    <None Include="shaders\instancedUI.vs">
+      <Filter>Graphics\Shaders\Vertex</Filter>
+    </None>
+    <None Include="shaders\instancedUI.fs">
+      <Filter>Graphics\Shaders\Fragment</Filter>
     </None>
   </ItemGroup>
 </Project>

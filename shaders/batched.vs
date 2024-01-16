@@ -15,7 +15,7 @@ out vec2 texCoord;
 flat out int objIndex;
 
 uniform mat4 camMatrix;
-uniform mat4 model;
+uniform mat4 model = mat4(1.0);  
 
 void main()
 {

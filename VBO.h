@@ -17,6 +17,8 @@ public:
 
 	VBO(const std::vector<DataType>& vertices, GLuint num_indices);
 
+	//instancing
+	VBO(std::vector<DataType>& mat4s);
 	//dynamically updates the vbo in program loop
 	void dynamic_update(const std::vector<DataType>& data);
 	void Bind();

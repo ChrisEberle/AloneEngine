@@ -20,3 +20,8 @@ struct NormalVertex
 {
 	GLfloat normals[3];
 };
+
+struct MatriceVertex
+{
+	glm::mat4 matrices;
+};

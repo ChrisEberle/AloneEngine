@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="aloneGUI.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Colors.cpp" />
     <ClCompile Include="EBO.cpp" />
@@ -155,6 +156,7 @@
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="aloneGUI.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Colors.h" />
     <ClInclude Include="debugUtils.h" />
@@ -178,6 +180,8 @@
     <None Include="shaders\batched.vs" />
     <None Include="shaders\default.fs" />
     <None Include="shaders\default.vs" />
+    <None Include="shaders\instancedUI.fs" />
+    <None Include="shaders\instancedUI.vs" />
     <None Include="shaders\light_cube.fs" />
     <None Include="shaders\light_cube.vs" />
     <None Include="shaders\text.fs" />

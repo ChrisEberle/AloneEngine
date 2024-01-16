@@ -37,6 +37,8 @@ public:
 
 	glm::vec3 position;
 
+	unsigned int instancing;
+
 	// For Mesh Lights
 	glm::vec3 direction; // For directional light
 	GLfloat cutoff;   // For spotlight
@@ -45,9 +47,9 @@ public:
 	GLfloat lightIntensity;
 
 	// Constructor for regular object
-	Mesh(glm::vec3 pos, Material& mat) : material(mat), position(pos) {
+	Mesh(glm::vec3 pos, Material& mat) : material(mat), position(pos), instancing(1) {
 
-
+		std::vector<MatriceVertex> instanceMatrix = {};
 	}
 
 	// Constructor for light object
@@ -302,15 +304,6 @@ public:
 
 
 	bool wire_state = false;
-	bool is_light = false;
-	
-
-	// Set your scaling factors
-	float scaleX = 1.0f;
-	float scaleY = 1.0f;
-	float scaleZ = 1.0f;
-
-
 
 	// CONSTRUCTOR
 	MatBatchRenderer(Shader shaderProgram, std::vector<Mesh> objs, Material material, GLuint max_indices, GLuint max_vertices) : objects(objs), material(material), shaderProgram(shaderProgram), max_indices(max_indices),max_vertices(max_vertices), vbo_verts(max_vertices), vbo_texCoords(max_vertices), ebo(max_indices), vbo_normals(max_vertices) {
@@ -318,6 +311,17 @@ public:
 		for (size_t i = 0; i < objects.size(); i++) {
 			add_to_mesh(objects[i].position_coordinates, objects[i].texture_coordinates, objects[i].normals, objects[i].indices);
 		}
+
+		// Temporary offset variable
+		GLuint offset = 0;
+		for (size_t i = 0; i < objects.size(); i++) {
+			// Calculate the offset for the current object
+			objects[i].index_offset = offset;
+			// Calculate the new offset for the next object
+			offset += sizeof(GLuint) * objects[i].indices.size();
+		}
+
+
 	}
 	// DESTRUCTOR
 	~MatBatchRenderer() {
@@ -345,6 +349,15 @@ public:
 		// set class vars
 		max_indices = static_cast<GLuint>(indices.size());
 		max_vertices = static_cast<GLuint>(verts_pos.size());
+
+		// Temporary offset variable
+		GLuint offset = 0;
+		for (size_t i = 0; i < objects.size(); i++) {
+			// Calculate the offset for the current object
+			objects[i].index_offset = offset;
+			// Calculate the new offset for the next object
+			offset += sizeof(GLuint) * objects[i].indices.size();
+		}
 	}
 
 	void render(Camera& camera, const std::vector<Mesh>& lights) {
@@ -353,7 +366,7 @@ public:
 		vao.Bind();
 		ebo.Bind();
 		// update object positions
-		vbo_verts.dynamic_update(verts_pos);
+		//vbo_verts.dynamic_update(verts_pos);
 		// Object doesn't render correctly without this
 		glEnable(GL_DEPTH_TEST);
 		// Tell OpenGL which Shader Program we want to use
@@ -362,7 +375,6 @@ public:
 		glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
 
 		// If object being render is a object and not a light
-		glUniform1i(getShaderUniform("tex0"), 0);
 		glBindTexture(GL_TEXTURE_2D, material.texture);
 
 		// material
@@ -370,53 +382,24 @@ public:
 		shaderProgram.setVec3("material.diffuse", material.diffuse);
 		shaderProgram.setVec3("material.specular", material.specular);
 		shaderProgram.setFloat("material.shine", material.shine);
-
 		shaderProgram.setVec3("viewPos", camera.Position);
 
 		// Iterate over lights
 		for (size_t i = 0; i < lights.size(); i++) {
 			std::string lightPrefix = "lights[" + std::to_string(i) + "].";
-
-			
-			// Set light type
+			// Set light properties
 			shaderProgram.setInt(lightPrefix + "type", lights[i].type);
+			shaderProgram.setVec3(lightPrefix + "direction", lights[i].direction);
+			shaderProgram.setVec3(lightPrefix + "position", lights[i].position);
+			shaderProgram.setFloat(lightPrefix + "cutoff", lights[i].cutoff);
+			shaderProgram.setFloat(lightPrefix + "outerCone", lights[i].outerCone);
 			shaderProgram.setFloat(lightPrefix + "lightIntensity", lights[i].lightIntensity);
-
-
-			// Set light properties based on type
-			if (lights[i].type == 0) { // Directional light
-				shaderProgram.setVec3(lightPrefix + "direction", lights[i].direction);
-			}
-			else if (lights[i].type == 1) { // Spotlight
-				shaderProgram.setVec3(lightPrefix + "position", lights[i].position);
-				shaderProgram.setVec3(lightPrefix + "direction", lights[i].direction);
-				shaderProgram.setFloat(lightPrefix + "cutoff", lights[i].cutoff);
-				shaderProgram.setFloat(lightPrefix + "outerCone", lights[i].outerCone);
-			}
-			else if (lights[i].type == 2) { // Point light
-				shaderProgram.setVec3(lightPrefix + "position", lights[i].position);
-			}
-
-			// Set common light properties
+			shaderProgram.setVec3(lightPrefix + "colorMultiplier", lights[i].material.objectColor);
 			shaderProgram.setVec3(lightPrefix + "ambient", lights[i].material.ambient);
 			shaderProgram.setVec3(lightPrefix + "diffuse", lights[i].material.diffuse);
 			shaderProgram.setVec3(lightPrefix + "specular", lights[i].material.specular);
-			shaderProgram.setVec3(lightPrefix + "colorMultiplier", lights[i].material.objectColor);
 		}
 
-		// world transformation
-		glm::mat4 model = glm::mat4(1.0f);
-
-		
-		// Create the scaling matrix
-		glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(5.0f, 5.0f, 5.0f));
-
-		// Apply scaling to the existing model matrix
-		model = scaleMatrix * model;
-
-		// Pass the combined matrix to the shader
-		shaderProgram.setMat4("model", model);
-			
 		camera.Matrix(45.0f, 0.1f, 10000.0f, shaderProgram, "camMatrix");
 		// draws the object
 		glDrawElements(GL_TRIANGLES, max_indices, GL_UNSIGNED_INT, 0);
@@ -425,8 +408,6 @@ public:
 		vbo_texCoords.Unbind();
 		vao.Unbind();
 		ebo.Unbind();
-
-		
 	}
 
 
@@ -441,21 +422,13 @@ public:
 		shaderProgram.Activate();
 
 
-		// Temporary offset variable
-		GLuint offset = 0;
+
 		for (size_t i = 0; i < objects.size(); i++) {
-
-			// Calculate the offset for the current object
-			objects[i].index_offset = offset;
-
 			// Set uniform values for each object
 			glm::mat4 model = glm::mat4(1.0f);
 			shaderProgram.setVec3("objectColor", objects[i].material.objectColor);
 			shaderProgram.setMat4("model", model);
-			camera.Matrix(45.0f, 0.1f, 10000.0f, shaderProgram, "camMatrix");
-
-			// Calculate the new offset for the next object
-			offset += sizeof(GLuint) * objects[i].indices.size();
+			camera.Matrix(45.0f, 0.1f, 10000.0f, shaderProgram, "camMatrix");;
 
 			// Draw each object separately
 			glDrawElements(GL_TRIANGLES, objects[i].indices.size(), GL_UNSIGNED_INT, reinterpret_cast<void*>(objects[i].index_offset));
@@ -468,13 +441,6 @@ public:
 		vao.Unbind();
 		ebo.Unbind();
 	}
-
-	void set_color(glm::vec4 color) {
-		GLint customColorLocation = glGetUniformLocation(shaderProgram.ID, "color");
-		// Set the value of the customColor uniform
-		glUniform4f(customColorLocation, color.x, color.y, color.z, color.a);
-	}
-
 	void wireframe_render(bool get_state) {
 		wire_state = get_state;
 		// Whether to render wireframe or full textured
@@ -501,14 +467,10 @@ public:
 		indices.insert(indices.end(), objInds.begin(), objInds.end());
 		normal_vertices.insert(normal_vertices.end(), normals.begin(), normals.end());
 		// Set the index_offset for the added object
-
-	
-
 		update_all_buffers();
 	}
 
 	void initializeMeshObject() {
-		is_light = false;
 		// Generates Vertex Array Object and binds it
 		vao.Bind();
 		// Links VBO attributes such as coordinates and colors to VAO
@@ -518,7 +480,6 @@ public:
 	}
 
 	void initializeMeshCubeLight() {
-		is_light = true;
 		// Generates Vertex Array Object and binds it
 		vao.Bind();
 		// Links VBO attributes such as coordinates and colors to VAO
