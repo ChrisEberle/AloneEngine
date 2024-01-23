@@ -23,7 +23,7 @@ void main()
      Normal = mat3(transpose(inverse(model))) * aNormal;  
 
     // Outputs the positions/coordinates of all vertices
-    gl_Position = camMatrix * vec4(FragPos, 1.0);
+   FragPos = vec3(model * vec4(aPos, 1.0));
 
     // Assigns the texture coordinates from the Vertex Data to "texCoord"
     texCoord = aTex;

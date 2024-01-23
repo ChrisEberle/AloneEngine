@@ -7,6 +7,7 @@ void Window::events()
 
 void Window::swap_buffers(GLFWwindow* window)
 {
+    //glFlush();
     glfwSwapBuffers(window);
 }
 // ---------------------------------------------------------------------------------------------
@@ -56,6 +57,8 @@ GLFWwindow* Window::createWindow(int width, int height, const char* title) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_ANY_PROFILE /*GLFW_OPENGL_CORE_PROFILE*/);
     glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
+    //remove double buffer for max fps cap
+   // glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_FALSE);
 
     
     GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, title, NULL, NULL);

@@ -7,7 +7,7 @@
 #include <cmath>
 #include <iomanip>
 #include <fstream>
-
+#include <cstdlib>
 //openGL libs
 #include "glad/glad.h"
 #include <GLFW/glfw3.h>
@@ -17,7 +17,9 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/vector_angle.hpp>
 #include <glm/gtc/noise.hpp>
-
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 //Texture libs
 #include <stb/stb_image.h>
 
@@ -29,24 +31,24 @@
 #include FT_TRIGONOMETRY_H
 
 // internal engine files
-#include "mathUtils.h"
-#include "debugUtils.h"
+#include"Camera.h"
 #include "Vertex.h"
-#include "Colors.h"
-#include "Window.h"
-#include"shaderClass.h"
-#include "FreeTypeFont.h"
-#include "Renderer.h"
 #include"VAO.h"
 #include"VBO.h"
 #include"EBO.h"
+#include "mathUtils.h"
+#include "debugUtils.h"
+#include "Colors.h"
+#include "Window.h"
+#include"shaderClass.h"
 #include"Texture.h"
-#include"Camera.h"
+#include "Material.h"
+#include "Mesh.h"
+#include "Model.h"
+#include "FreeTypeFont.h"
+#include "Renderer.h"
 #include "aloneGUI.h"
 
-
-#include "Model_obj.h"
-#include "Mesh.h"
 
 
 

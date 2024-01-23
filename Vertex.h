@@ -2,23 +2,25 @@
 
 struct Vertex
 {
-	GLfloat position[3];
-	GLfloat texCoord[2];
+	glm::vec3 position;
+	glm::vec3 normals;
+	glm::vec2 texCoord;
+	glm::vec3 color;
 };
 
 struct PositionVertex
 {
-	GLfloat position[3];
+	glm::vec3 position;
 };
 
 struct TextureVertex
 {
-	GLfloat texCoord[2];
+	glm::vec2 texCoord;
 };
 
 struct NormalVertex
 {
-	GLfloat normals[3];
+	glm::vec3 normals;
 };
 
 struct MatriceVertex

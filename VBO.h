@@ -1,28 +1,26 @@
 #ifndef VBO_CLASS_H
 #define VBO_CLASS_H
 
-
+#include<glm/glm.hpp>
 #include<glad/glad.h>
-#include <vector>
+#include<vector>
 #include "Vertex.h"
 
-template <typename DataType>
+
 class VBO
 {
 public:
 	// Reference ID of the Vertex Buffer Object
 	GLuint ID;
 	// Constructor that generates a Vertex Buffer Object and links it to vertices
-	VBO(GLuint num_indices);
+	VBO(std::vector<Vertex>& vertices);
+	VBO(std::vector<glm::mat4>& mat4s);
 
-	VBO(const std::vector<DataType>& vertices, GLuint num_indices);
-
-	//instancing
-	VBO(std::vector<DataType>& mat4s);
-	//dynamically updates the vbo in program loop
-	void dynamic_update(const std::vector<DataType>& data);
+	// Binds the VBO
 	void Bind();
+	// Unbinds the VBO
 	void Unbind();
+	// Deletes the VBO
 	void Delete();
 };
 

@@ -78,9 +78,6 @@
     <ClCompile Include="Window.cpp">
       <Filter>Window</Filter>
     </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Graphics\Camera</Filter>
-    </ClCompile>
     <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="EBO.cpp">
       <Filter>Graphics\Renderer\Pipeline</Filter>
@@ -94,11 +91,17 @@
     <ClCompile Include="Mesh.cpp">
       <Filter>Graphics\Objects\BaseMesh</Filter>
     </ClCompile>
-    <ClCompile Include="Model_obj.cpp">
-      <Filter>Graphics\Objects\objModels</Filter>
-    </ClCompile>
     <ClCompile Include="aloneGUI.cpp">
       <Filter>Graphics\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Graphics\Objects\BaseMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Graphics\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Build</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -145,14 +148,17 @@
     <ClInclude Include="mathUtils.h">
       <Filter>Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="aloneGUI.h">
+      <Filter>Graphics\GUI</Filter>
+    </ClInclude>
     <ClInclude Include="Mesh.h">
       <Filter>Graphics\Objects\BaseMesh</Filter>
     </ClInclude>
-    <ClInclude Include="Model_obj.h">
-      <Filter>Graphics\Objects\objModels</Filter>
+    <ClInclude Include="Model.h">
+      <Filter>Graphics\Objects\BaseMesh</Filter>
     </ClInclude>
-    <ClInclude Include="aloneGUI.h">
-      <Filter>Graphics\GUI</Filter>
+    <ClInclude Include="Material.h">
+      <Filter>Graphics\Objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

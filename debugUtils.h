@@ -1,6 +1,9 @@
 #pragma once
 # include "engine.h"
 
+#include "chrono"
+#include <thread>
+
 
 static int get_fps(int& frameCount, double& lastTime) {
 	double currentTime = glfwGetTime();

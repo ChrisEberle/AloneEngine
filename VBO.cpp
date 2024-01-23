@@ -1,58 +1,33 @@
 #include"VBO.h"
 
-// Explicit instantiation for the required data type(s)
-template class VBO<Vertex>;
-template class VBO<PositionVertex>;
-template class VBO<TextureVertex>;
-template class VBO<NormalVertex>;
-template class VBO<MatriceVertex>;
-
-template <typename DataType>
-// Batch rendering usage of the vbo
-VBO<DataType>::VBO(GLuint num_vertices)
+// Constructor that generates a Vertex Buffer Object and links it to vertices
+VBO::VBO(std::vector<Vertex>& vertices)
 {
 	glGenBuffers(1, &ID);
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(DataType) * num_vertices, nullptr, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
 }
-template <typename DataType>
-
-// dynamiccaly fills the vbo
-void VBO<DataType>::dynamic_update(const std::vector<DataType>& data) {
-	glBindBuffer(GL_ARRAY_BUFFER, ID);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, data.size() * sizeof(DataType), data.data());
-}
-
-template <typename DataType>
-
-// Single rendering usage of the vbo
-VBO<DataType>::VBO(const std::vector<DataType>& vertices, GLuint num_vertices)
+VBO::VBO(std::vector<glm::mat4>& mat4s)
 {
 	glGenBuffers(1, &ID);
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(DataType) * num_vertices, vertices.data(), GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, mat4s.size() * sizeof(glm::mat4), mat4s.data(), GL_STATIC_DRAW);
 }
 
-
-template<typename DataType>
-VBO<DataType>::VBO(std::vector<DataType>& mat4s)
+// Binds the VBO
+void VBO::Bind()
 {
-	glGenBuffers(1, &ID);
-	glBindBuffer(GL_ARRAY_BUFFER, ID);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(DataType) * mat4s.size(), mat4s.data(), GL_DYNAMIC_DRAW);
-
-}
-
-template <typename DataType>
-void VBO<DataType>::Bind() {
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
 }
 
-template <typename DataType>
-void VBO<DataType>::Unbind() {
+// Unbinds the VBO
+void VBO::Unbind()
+{
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
-template <typename DataType>
-void VBO<DataType>::Delete() {
+
+// Deletes the VBO
+void VBO::Delete()
+{
 	glDeleteBuffers(1, &ID);
 }

@@ -3,6 +3,7 @@
 
 #include<glad/glad.h>
 #include"VBO.h"
+
 class VAO
 {
 public:
@@ -10,9 +11,9 @@ public:
 	GLuint ID;
 	// Constructor that generates a VAO ID
 	VAO();
-	template <typename DataType>
+
 	// Links a VBO Attribute such as a position or color to the VAO
-	void LinkAttrib(VBO<DataType>& VBO, GLuint layout, GLuint numComponents, GLenum type, GLsizei stride, void* offset);
+	void LinkAttrib(VBO& VBO, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset);
 	// Binds the VAO
 	void Bind();
 	// Unbinds the VAO
@@ -20,4 +21,5 @@ public:
 	// Deletes the VAO
 	void Delete();
 };
+
 #endif
