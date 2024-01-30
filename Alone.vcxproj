@@ -178,10 +178,8 @@
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\batched.fs" />
-    <None Include="shaders\batched.vs" />
-    <None Include="shaders\default.fs" />
-    <None Include="shaders\default.vs" />
+    <None Include="shaders\instanced.fs" />
+    <None Include="shaders\instanced.vs" />
     <None Include="shaders\instancedUI.fs" />
     <None Include="shaders\instancedUI.vs" />
     <None Include="shaders\light_cube.fs" />

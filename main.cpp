@@ -37,10 +37,8 @@ int main()
 
 
 	// Generates Shader object
-	Shader objectShader("shaders/batched.vs", "shaders/batched.fs");
-	Shader objectShader1("shaders/default.vs", "shaders/default.fs");
-	Shader lightShader("shaders/light_cube.vs", "shaders/light_cube.fs");
-	Shader instanceShader("shaders/instancedUI.vs", "shaders/instancedUI.fs");
+	//Shader lightShader("shaders/light_cube.vs", "shaders/light_cube.fs");
+	Shader instanceShader("shaders/instanced.vs", "shaders/instanced.fs");
 
 
 	// Take care of all the light related things
@@ -53,7 +51,7 @@ int main()
 	// Holds all transformations for the asteroids
 	std::vector <glm::mat4> instanceMatrix;
 
-	unsigned int number = 2;
+	unsigned int number = 15;
 	for (unsigned int i = 0; i < number; i++)
 	{
 		for (unsigned int j = 0; j < number; j++)
@@ -64,11 +62,11 @@ int main()
 			glm::vec3 scale;
 
 			// Generates a translation near a circle of radius "radius"
-			trans = glm::vec3(0.0f + i*0.89f, 0.0f, 0.0f + j);
+			trans = glm::vec3(0.0f + i*3.5f, 0.0f, 0.0f + j*3.5f);
 			// Generates random rotations
 			rot = glm::quat(0.0f, 0.0f, 0.0f, 0.0f);
 			// Generates random scales
-			scale = 0.1f * glm::vec3(1.0f, 1.0f, 1.0f);
+			scale = 0.1f * glm::vec3(5.0f, 5.0f, 5.0f);
 
 
 
@@ -81,7 +79,7 @@ int main()
 	
 
 
-	std::string path = "obj_models/AK47_LP.obj";
+	std::string path = "obj_models/statue0.obj";
 	Model cube0(path, number*number, instanceMatrix);
 	cube0.loadMesh();
 	instanceShader.Activate();
@@ -99,7 +97,7 @@ int main()
 	while (!glfwWindowShouldClose(window))
 	{
 		//set the window background color and clear the window buffer
-		wnd.clear_buffer(color.darkGrey);
+		wnd.clear_buffer(color.black);
 		counter++;
 
 		
@@ -107,26 +105,29 @@ int main()
 		input_callback(window, camera);
 
 		if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS) {
+			wireframe_state(true, instanceShader);
 			
 		}
+		if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS) {
+			wireframe_state(false, instanceShader);
+		}
+
 		//===============
 		// Enables the Depth Buffer
 		glEnable(GL_DEPTH_TEST);
+	
 		
-		// Draw jupiter
-		
-
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		cube0.Draw(instanceShader, camera, glm::vec3(0.0f, 0.0f, 0.0f), glm::quat(counter, 0.0f, 0.0f, 0.0f), glm::vec3(1.0f,1.0f,1.0f));
+		cube0.Draw(instanceShader, camera);
 
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDisable(GL_DEPTH_TEST);
 		font_shader.Activate();
 		RenderText(font_shader, "Alone Engine - V 0.0.1", 25.0f, 25.0f, 1.0f, color.white, font_vao, font_vbo);
 		RenderText(font_shader, std::to_string(get_fps(frameCount,lastTime)), 25.0f, SCR_HEIGHT - 50.0f, 1.0f, color.white, font_vao, font_vbo);
-		RenderText(font_shader, std::to_string(cube0.vertices.size()), 500.0f, SCR_HEIGHT - 50.0f, 1.0f, color.white, font_vao, font_vbo);
+		RenderText(font_shader, "P COUNT: ", 600.0f, SCR_HEIGHT - 50.0f, 1.0f, color.white, font_vao, font_vbo);
+		RenderText(font_shader, std::to_string(cube0.vertices.size()*number), 950.0f, SCR_HEIGHT - 50.0f, 1.0f, color.white, font_vao, font_vbo);
 		//// ==========================================================
-
 		
 
 		// Swap the back buffer with the front buffer
@@ -134,9 +135,7 @@ int main()
 		// Take care of all GLFW events and swap buffers
 		wnd.events();
 	}
-	lightShader.Delete();
-	objectShader.Delete();
-	objectShader1.Delete();
+	//lightShader.Delete();
 	font_shader.Delete();
 	instanceShader.Delete();
 	// Delete window before ending the program
